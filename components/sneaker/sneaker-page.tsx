@@ -209,6 +209,7 @@ export const Sneaker = () => {
                   md={!hideSidebar ? 12 : 8}
                   xxl={8}
                   lg={!hideSidebar ? 8 : 6}
+                  key={x.id}
                 >
                   <CommonProduct data={x} />
                 </Col>

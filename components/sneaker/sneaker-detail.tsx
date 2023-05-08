@@ -18,9 +18,76 @@ import { formatter } from "@/models/common";
 import { listProduct } from "../product/product";
 import { Confirm } from "../dialog_size";
 import { ButtonBlack } from "../home-pages/home-pages-styled";
+import { CSSProperties } from "styled-components";
 export const SneakerDetail = () => {
   const [thumbsSwiper, setThumbsSwiper] = useState<any>(null);
   const [isConfirm, setIsConfirm] = useState<boolean>(false);
+  const [idColorChooes,setIdColorChooes]=useState<Number>()
+  const [idSizeChooes,setIdSizeChooes]=useState<Number>()
+  const [notExist,setNotExist]=useState<any>();
+  const [isActiveColor,setIsActiveColor]=useState<boolean>(false)
+  const [isActiveSize,setIsActiveSize]=useState<boolean>(false)
+  const [chooseColor,setChooseColor]=useState<String>('')
+  const [chooseSizes,setChooseSizes]=useState<String>('')
+
+  const onChooseOption=(type:String,value:any,id:Number)=>{
+    if(type=="Color"){
+      let checkColor=listProduct[0].variant.find((p:any)=>p.color==value)
+      if(checkColor){
+        if(isActiveColor&&chooseColor==value){
+          setIsActiveColor(false)
+          setChooseColor('')
+          setIdColorChooes(0)
+        }else{
+          setIsActiveColor(true)
+          setChooseColor(value)
+          setIdColorChooes(id)
+        }
+      }
+    }else if(type=="Size"){
+      let checkSize=listProduct[0].variant.find((p:any)=>p.size==value)
+      if(checkSize){
+        if(isActiveSize&&chooseSizes==value){
+          setIdSizeChooes(0)
+          setChooseSizes('')
+          setIsActiveSize(false)
+        }else{
+          setIdSizeChooes(id)
+          setChooseSizes(value)
+          setIsActiveSize(true)
+        }
+      }
+    }
+  }
+
+  const checkColor=(value:String)=>{
+    let checkColor=listProduct[0].variant.find((p:any)=>p.color==value)
+    if(checkColor){
+      return {
+        check:true,
+        quantity:checkColor.quantity
+      }
+    }else{
+      return {
+        check:false,
+        quantity:0
+      }
+    }
+  }
+  const checkSize=(value:String)=>{
+    let checkSizes=listProduct[0].variant.find((p:any)=>p.size==value)
+    if(checkSizes){
+      return {
+        check:true,
+        quantity:checkSizes.quantity
+      }
+    }else{
+      return {
+        check:false,
+        quantity:0
+      }
+    }
+  }
 
   return (
     <ContainerSneaker>
@@ -32,7 +99,7 @@ export const SneakerDetail = () => {
                 style={{
                   "--swiper-navigation-color": "#fff",
                   "--swiper-pagination-color": "#fff",
-                }}
+                } as CSSProperties}
                 scrollbar={{
                   hide: true,
                 }}
@@ -110,9 +177,18 @@ export const SneakerDetail = () => {
                 <div className="wrap_color">
                   {product.available_colors.map((x: any, index: number) => {
                     return (
-                      <div className="color" key={index}>
+                      <div className="color" key={index} >
                         <Image
+                          style={{
+                            border:`${isActiveColor&&chooseColor==x?'solid 1px #c9192e':'none'}`,
+                            background: `${
+                              checkColor(x)&&checkColor(x).quantity>0
+                                ? "rgba(198, 198, 198, 0.88)"
+                                : "#fff"
+                            }`,  
+                          }}
                           preview={false}
+                          onClick={()=>onChooseOption("Color",x,product.id)}
                           src="https://converse.ca/media/catalog/product/cache/f9d46213ae1d882c35b397bec3e31308/m/7/m7650_a_107x1_2nd.jpg"
                         />
                         <p></p>
@@ -124,13 +200,23 @@ export const SneakerDetail = () => {
                 <span>Kích cỡ</span>
                 <br />
                 <div className="wrap_color">
-                  <div className="box">M3 / W5</div>
-                  <div className="box">M3 / W5</div>
-                  <div className="box">M3 / W5</div>
-                  <div className="box">M3 / W5</div>
-                  <div className="box">M3 / W5</div>
-                  <div className="box">M3 / W5</div>
-                  <div className="box">M3 / W5</div>
+                  {
+                    product.sizes.map((sz:any)=>{
+                      return (
+                        <div className="box" 
+                          onClick={()=>onChooseOption("Size",sz,product.id)}
+                          style={{
+                            border:`${isActiveSize&&chooseSizes==sz?'solid 1px #c9192e':'none'}`,
+                            background: `${
+                              checkSize(sz).check&&checkSize(sz).quantity>0
+                              ? "rgba(198, 198, 198, 0.88) !important"
+                              : "#fff !important"
+                            }`, 
+                          }}
+                        >{sz}</div>
+                      )
+                    })
+                  }
                 </div>
                 <br />
                 <hr />
