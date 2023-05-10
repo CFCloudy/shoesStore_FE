@@ -11,6 +11,9 @@ export const WrapPaging=styled.div`
         gap: 20px;
         cursor: pointer;
         font-size: 16px;
+        li{
+            
+        }
     }
     .prev{
         cursor: pointer;
