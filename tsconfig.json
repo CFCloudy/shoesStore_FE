@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -16,20 +20,56 @@
     "incremental": true,
     "baseUrl": ".",
     "paths": {
-      "@/app/*": ["./app/*"],
-      "@/components/*": ["./components/*"],
-      "@/pages/*": ["./pages/*"],
-      "@/styles/*": ["./styles/*"],
-      "@/models/*": ["./models/*"],
-      "@/functions/*": ["./functions/*"],
-      "@/utils/*": ["./utils/*"],
-      "@/assets/*": ["./assets/*"],
-      "@/redux/*": ["./redux/*"],
-      "@/features/*": ["./features/*"],
-      "@/config/*": ["./config/*"],
-      "@/data/*": ["./data/*"]
-    }
+      "@/app/*": [
+        "./app/*"
+      ],
+      "@/components/*": [
+        "./components/*"
+      ],
+      "@/pages/*": [
+        "./pages/*"
+      ],
+      "@/styles/*": [
+        "./styles/*"
+      ],
+      "@/models/*": [
+        "./models/*"
+      ],
+      "@/functions/*": [
+        "./functions/*"
+      ],
+      "@/utils/*": [
+        "./utils/*"
+      ],
+      "@/assets/*": [
+        "./assets/*"
+      ],
+      "@/redux/*": [
+        "./redux/*"
+      ],
+      "@/features/*": [
+        "./features/*"
+      ],
+      "@/config/*": [
+        "./config/*"
+      ],
+      "@/data/*": [
+        "./data/*"
+      ]
+    },
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules"]
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

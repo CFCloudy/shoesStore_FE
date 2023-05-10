@@ -113,9 +113,9 @@ export const HomePages = () => {
           modules={[Navigation]}
           className="mySwiper"
         >
-          {listProduct.map((x) => {
+          {listProduct.map((x,index:number) => {
             return (
-              <SwiperSlide className="swiperSlide">
+              <SwiperSlide className="swiperSlide" key={index}>
                 <CommonProduct data={x} />
               </SwiperSlide>
             );

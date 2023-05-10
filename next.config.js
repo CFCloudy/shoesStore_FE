@@ -16,7 +16,8 @@ const nextConfig = {
         ignoreBuildErrors: true
     },
     experimental: {
-        outputStandalone: true,
+        outputStandalone: false,
+        appDir:true
     },
     optimizeFonts: false,
     presets: ["next/babel"],

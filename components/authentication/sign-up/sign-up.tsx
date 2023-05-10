@@ -11,10 +11,30 @@ export const SignUp = () => {
 
       <div className="form">
         <Form layout="vertical">
-          <Form.Item label="Họ tên" required>
+          <Form.Item label="Họ tên" 
+            name={'fullname'}
+            rules={[
+              {
+                required:true,
+                message:'Họ tên không được để trống'
+              },
+            ]}
+          >
             <Input className="signin"></Input>
           </Form.Item>
-          <Form.Item label="Email" required>
+          <Form.Item label="Email"
+            name={'email'}
+            rules={[
+              {
+                required:true,
+                message:'Email không được để trống!'
+              },
+              {
+                type:'email',
+                message:'Email bạn nhập không hợp lệ! Vui lòng thử lại.'
+              }
+            ]}
+          >
             <Input type="e" size={"large"} maxLength={20} className="signin" />
           </Form.Item>
           <Form.Item
@@ -75,8 +95,8 @@ export const SignUp = () => {
           >
             <Input type="e" size={"large"} maxLength={20} className="signin" />
           </Form.Item>
-          <ButtonBlack>Đăng ký</ButtonBlack>
-          <span className="forgot">Quên mật khẩu?</span>
+          <ButtonBlack >Đăng ký</ButtonBlack>
+          <span className="forgot"  onClick={() => Router.push("/auth/forgot-password")}>Quên mật khẩu?</span>
         </Form>
       </div>
       <br />

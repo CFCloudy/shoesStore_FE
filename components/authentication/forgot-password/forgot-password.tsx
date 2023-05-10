@@ -5,12 +5,19 @@ import { Fragment } from "react";
 import { WrapperAuthen } from "../auth-styled";
 
 export const ForgotPassWord = () => {
+
+  const onSubmit=(value:any)=>{
+    Router.push("/auth/send-otp")
+  }
+
   return (
     <WrapperAuthen>
       <h2>Quên mật khẩu?</h2>
       <p>Vui lòng nhập địa chỉ email bạn đã đăng ký để lấy lại mật khẩu.</p>
       <div className="form">
-        <Form layout="vertical">
+        <Form layout="vertical"
+          onFinish={onSubmit}
+        >
           <Form.Item
             label="Email"
             name={"email"}
@@ -24,7 +31,7 @@ export const ForgotPassWord = () => {
           >
             <Input className="signin"></Input>
           </Form.Item>
-          <ButtonBlack onClick={() => Router.push("/auth/send-otp")}>
+          <ButtonBlack htmlType="submit">
             Lấy lại mật khẩu
           </ButtonBlack>
         </Form>

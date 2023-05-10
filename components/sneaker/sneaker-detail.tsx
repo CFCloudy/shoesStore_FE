@@ -29,9 +29,11 @@ export const SneakerDetail = () => {
   const [isActiveSize,setIsActiveSize]=useState<boolean>(false)
   const [chooseColor,setChooseColor]=useState<String>('')
   const [chooseSizes,setChooseSizes]=useState<String>('')
+  const [indexImg,setIndexImg]=useState<any>(0)
 
-  const onChooseOption=(type:String,value:any,id:Number)=>{
+  const onChooseOption=(type:String,value:any,id:Number,index:Number)=>{
     if(type=="Color"){
+      setIndexImg(index)
       let checkColor=listProduct[0].variant.find((p:any)=>p.color==value)
       if(checkColor){
         if(isActiveColor&&chooseColor==value){
@@ -59,41 +61,158 @@ export const SneakerDetail = () => {
       }
     }
   }
+  const available_sizes= [
+    "M 4 / W 4.5",
+    "M 4.5 / W 5",
+    "M 5 / W 5.5",
+    "M 5.5 / W 6",
+    "M 6 / W 6.5",
+    "M 6.5 / W 7",
+    "M 7 / W 7.5",
+    "M 7.5 / W 8",
+    "M 8 / W 8.5",
+    "M 8.5 / W 9",
+    "M 9 / W 9.5",
+    "M 9.5 / W 10",
+    "M 10 / W 10.5",
+    "M 10.5 / W 11",
+    "M 11 / W 11.5",
+    "M 11.5 / W 12",
+    "M 12 / W 12.5",
+    "M 12.5 / W 13",
+    "M 13 / W 13.5",
+    "M 13.5 / W 14",
+    "M 14 / W 14.5",
+    "M 14.5 / W 15",
+    "M 15 / W 15.5",
+    "M 15.5 / W 16",
+    "M 16 / W 16.5",
+  ]
+
+  const generateProduct=()=>{
+    let pr=[];
+    for(let i=1;i<=25;i++){
+      var obj={
+        id: i,
+        size: `M ${4+i-1-1} / W ${4.5+i-1-1}`,
+        color: `Xanh berin`,
+        rgba: "127, 255, 212",
+        prices: 1900000,
+        quantity: i-1,
+        sku: `OLDF_OL${i}`,
+      }
+      pr.push(obj)
+    }
+    let newpr=[]
+    for(let i=1;i<pr.length;i++){
+      let obj={
+        ...pr[i],
+        size:available_sizes[i]
+      }
+      newpr.push(obj)
+    }
+    console.log(newpr)
+  }
+
+  generateProduct()
 
   const checkColor=(value:String)=>{
-    let checkColor=listProduct[0].variant.find((p:any)=>p.color==value)
-    if(checkColor){
-      return {
-        check:true,
-        quantity:checkColor.quantity
+    let checkSizes=listProduct[0].variant.find((p:any)=>p.color==value&&p.size==chooseSizes)
+    if(chooseSizes=="") {
+      return
+    }else if(chooseSizes && chooseColor=="" && checkSizes){
+      if(checkSizes&&checkSizes.quantity>0){
+        return {
+          check:true,
+          quantity:checkSizes.quantity
+        }
+      }else{
+        return {
+          check:false,
+          quantity:0
+        }
       }
-    }else{
-      return {
-        check:false,
-        quantity:0
+    }else if(chooseSizes && chooseColor && checkSizes){
+      if(checkSizes.color==chooseColor&&checkSizes.size==chooseSizes){
+        if(checkSizes.quantity>0){
+          return {
+            check:true,
+            quantity:checkSizes.quantity
+          }
+        }else{
+          return {
+            check:false,
+            quantity:0
+          }
+        }
+      }else if(checkSizes.quantity>0){
+        return {
+          check:true,
+          quantity:0
+        }
+      }else{
+        return {
+          check:false,
+          quantity:0
+        }
       }
     }
+    
   }
+
+  
   const checkSize=(value:String)=>{
-    let checkSizes=listProduct[0].variant.find((p:any)=>p.size==value)
-    if(checkSizes){
-      return {
-        check:true,
-        quantity:checkSizes.quantity
+    let checkSizes=listProduct[0].variant.find((p:any)=>p.size==value&&p.color==chooseColor)
+    if(chooseColor=="") {
+      return
+    }else if(chooseColor && chooseSizes=="" && checkSizes){
+      if(checkSizes&&checkSizes.quantity>0){
+            return {
+              check:true,
+              quantity:checkSizes.quantity
+            }
+          }else{
+            return {
+              check:false,
+              quantity:0
+            }
+          }
+    }else if(chooseSizes && chooseColor && checkSizes){
+      if(checkSizes.color==chooseColor&&checkSizes.size==chooseSizes){
+        if(checkSizes.quantity>0){
+          return {
+            check:true,
+            quantity:checkSizes.quantity
+          }
+        }else{
+          return {
+            check:false,
+            quantity:0
+          }
+        }
       }
-    }else{
-      return {
-        check:false,
-        quantity:0
+      else if(checkSizes.quantity>0){
+        return {
+          check:true,
+          quantity:0
+        }
+      }else{
+        return {
+          check:false,
+          quantity:0
+        }
       }
     }
+    
   }
+
+
 
   return (
     <ContainerSneaker>
-      {listProduct.map((product: any) => {
+      {listProduct.map((product: any,index:number) => {
         return (
-          <Row gutter={[40, 20]}>
+          <Row gutter={[40, 20]} key={index}>
             <Col xs={24} md={24} xxl={15} lg={15}>
               <Swiper
                 style={{
@@ -114,21 +233,17 @@ export const SneakerDetail = () => {
                 modules={[FreeMode, Navigation, Thumbs, Scrollbar]}
                 className="mySwiper2"
               >
-                <SwiperSlide>
-                  <img src="https://converse.ca/media/catalog/product/cache/7675cebc3e2f09ee2a340c17d68ace33/m/9/m9006c_a_107x1_1_2nd.jpg" />
-                </SwiperSlide>
-                <SwiperSlide>
-                  <img src="https://converse.ca/media/catalog/product/cache/7675cebc3e2f09ee2a340c17d68ace33/m/9/m9006c_b_107x1_2nd.jpg" />
-                </SwiperSlide>
-                <SwiperSlide>
-                  <img src="https://converse.ca/media/catalog/product/cache/7675cebc3e2f09ee2a340c17d68ace33/m/9/m9006c_c_107x1_2nd.jpg" />
-                </SwiperSlide>
-                <SwiperSlide>
-                  <img src="https://converse.ca/media/catalog/product/cache/7675cebc3e2f09ee2a340c17d68ace33/m/9/m9006c_c_107x1_2nd.jpg" />
-                </SwiperSlide>
-                <SwiperSlide>
-                  <img src="https://converse.ca/media/catalog/product/cache/7675cebc3e2f09ee2a340c17d68ace33/m/9/m9006c_g_107x1_2nd.jpg" />
-                </SwiperSlide>
+                {
+                  product.available_colors[indexImg].src.map((img:any)=>
+                    {
+                      return (
+                        <SwiperSlide>
+                        <img src={img} />
+                      </SwiperSlide>
+                      )
+                    }
+                  )
+                }
               </Swiper>
               <Swiper
                 onSwiper={setThumbsSwiper}
@@ -143,21 +258,17 @@ export const SneakerDetail = () => {
                 }}
                 className="mySwiper"
               >
-                <SwiperSlide>
-                  <img src="https://converse.ca/media/catalog/product/cache/7675cebc3e2f09ee2a340c17d68ace33/m/9/m9006c_a_107x1_1_2nd.jpg" />
-                </SwiperSlide>
-                <SwiperSlide>
-                  <img src="https://converse.ca/media/catalog/product/cache/7675cebc3e2f09ee2a340c17d68ace33/m/9/m9006c_b_107x1_2nd.jpg" />
-                </SwiperSlide>
-                <SwiperSlide>
-                  <img src="https://converse.ca/media/catalog/product/cache/7675cebc3e2f09ee2a340c17d68ace33/m/9/m9006c_c_107x1_2nd.jpg" />
-                </SwiperSlide>
-                <SwiperSlide>
-                  <img src="https://converse.ca/media/catalog/product/cache/7675cebc3e2f09ee2a340c17d68ace33/m/9/m9006c_c_107x1_2nd.jpg" />
-                </SwiperSlide>
-                <SwiperSlide>
-                  <img src="https://converse.ca/media/catalog/product/cache/7675cebc3e2f09ee2a340c17d68ace33/m/9/m9006c_g_107x1_2nd.jpg" />
-                </SwiperSlide>
+                {
+                  product.available_colors[indexImg].src.map((img:any)=>
+                    {
+                      return (
+                        <SwiperSlide>
+                        <img src={img} />
+                      </SwiperSlide>
+                      )
+                    }
+                  )
+                }
               </Swiper>
             </Col>
             <Col xs={24} md={24} xxl={9} lg={9}>
@@ -177,21 +288,28 @@ export const SneakerDetail = () => {
                 <div className="wrap_color">
                   {product.available_colors.map((x: any, index: number) => {
                     return (
-                      <div className="color" key={index} >
+                      <div className="color" key={index} 
+                        style={{
+                          pointerEvents:`${
+                            chooseSizes?checkColor(x.name)?.check?'auto':'none':'auto'
+                        }`
+                        }}
+                      >
                         <Image
                           style={{
-                            border:`${isActiveColor&&chooseColor==x?'solid 1px #c9192e':'none'}`,
-                            background: `${
-                              checkColor(x)&&checkColor(x).quantity>0
-                                ? "rgba(198, 198, 198, 0.88)"
-                                : "#fff"
-                            }`,  
+                            // background: `${
+                            //   checkColor(x.name)?.check
+                            //     ? "rgba(198, 198, 198, 0.88)"
+                            //     : "#fff"
+                            // }`,  
+                            border:`${checkColor(x.name)?.check?'solid 1px black':'none'}`,
                           }}
                           preview={false}
-                          onClick={()=>onChooseOption("Color",x,product.id)}
-                          src="https://converse.ca/media/catalog/product/cache/f9d46213ae1d882c35b397bec3e31308/m/7/m7650_a_107x1_2nd.jpg"
+                          onClick={()=>onChooseOption("Color",x.name,product.id,index)}
+                          src={x.src[0]}
                         />
-                        <p></p>
+                        {isActiveColor&&chooseColor==x.name?<p></p>:null}
+                        
                       </div>
                     );
                   })}
@@ -201,17 +319,21 @@ export const SneakerDetail = () => {
                 <br />
                 <div className="wrap_color">
                   {
-                    product.sizes.map((sz:any)=>{
+                    product.available_sizes.map((sz:any,index:Number)=>{
                       return (
                         <div className="box" 
-                          onClick={()=>onChooseOption("Size",sz,product.id)}
+                          onClick={()=>onChooseOption("Size",sz,product.id,index)}
                           style={{
-                            border:`${isActiveSize&&chooseSizes==sz?'solid 1px #c9192e':'none'}`,
-                            background: `${
-                              checkSize(sz).check&&checkSize(sz).quantity>0
-                              ? "rgba(198, 198, 198, 0.88) !important"
-                              : "#fff !important"
-                            }`, 
+                            background:`${isActiveSize&&chooseSizes==sz?'black':'white'}`,
+                            color:`${isActiveSize&&chooseSizes==sz?'white':'black'}`, 
+                            border:`${checkSize(sz)?.check?'solid 1px black':'none'}`,
+                            // pointerEvents:`${
+                            //   chooseColor&&chooseSizes?checkSize(sz)?.check?'auto':'none'
+                            //   :'auto'
+                            // }`
+                            pointerEvents:`${
+                                chooseColor?checkSize(sz)?.check?'auto':'none':'auto'
+                            }`
                           }}
                         >{sz}</div>
                       )

@@ -223,7 +223,7 @@ export const ContainerSneaker = styled.div`
 
   .mySwiper2 {
     width: 100%;
-    height: 500px;
+    height: 50%;
     margin-bottom: 10px;
     img {
       width: 100%;
@@ -231,7 +231,7 @@ export const ContainerSneaker = styled.div`
     }
   }
   .mySwiper {
-    height: 20%;
+    height: 16%;
     box-sizing: border-box;
   }
   .mySwiper .swiper-slide {
@@ -335,6 +335,7 @@ export const Swap_Product_Detail = styled.div`
     flex-wrap: wrap;
     .color {
       padding-top: 14px;
+      height: 88.2px;
       img {
         width: 86.2px;
         height: 86.2px;
@@ -344,12 +345,7 @@ export const Swap_Product_Detail = styled.div`
       p {
         width: 86.2px;
         height: 3px;
-        background-color: #e5e5e5;
-      }
-      :hover {
-        p {
-          background-color: black;
-        }
+        background-color: black;
       }
     }
     .box {

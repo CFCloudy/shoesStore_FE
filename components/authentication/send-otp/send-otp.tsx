@@ -5,30 +5,41 @@ import { Fragment } from "react";
 import { WrapperAuthen } from "../auth-styled";
 
 export const SendOTP = () => {
+
+  const onSubmit=(value:any)=>{
+    Router.push("/auth/confirm-password")
+  }
+
   return (
     <WrapperAuthen>
       <h2>Nhập mã xác nhận</h2>
       <p>Vui lòng nhập mã xác nhận để tiếp tục.</p>
       <div className="form">
-        <Form layout="vertical">
+        <Form layout="vertical"
+              onFinish={onSubmit}
+        >
           <Form.Item
             label="Mã OTP"
             name={"email"}
             required
             rules={[
               {
-                type: "email",
-                message: "Email bạn vừa nhập không hợp lệ",
+                type: "number",
+                message: "Mã Otp bạn nhập không hợp lệ!",
               },
+              {
+                required:true,
+                message:'Mã Otp không được để trống!'
+              }
             ]}
           >
-            <Input className="signin"></Input>
+            <Input className="signin" minLength={5} maxLength={5}></Input>
           </Form.Item>
           <p>
             Bạn không nhận được mã OTP? <Button type="link">Gửi lại</Button>
           </p>
           <br />
-          <ButtonBlack onClick={() => Router.push("/auth/confirm-password")}>
+          <ButtonBlack htmlType="submit">
             Xác nhận
           </ButtonBlack>
         </Form>

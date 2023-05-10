@@ -12,6 +12,7 @@ import {
   Col,
   Drawer,
   Image,
+  Pagination,
   Row,
   Select,
   Space,
@@ -20,6 +21,7 @@ import {
 import { Fragment, useEffect, useState } from "react";
 import { CommonProduct, listProduct } from "../product/product";
 import { ContainerSneaker, Container_Filter } from "./sneaker-pages-styled";
+import { Paging } from "../paging/paging";
 
 export const Sneaker = () => {
   const [hideFilter, setHideFilter] = useState<boolean>(true);
@@ -30,6 +32,20 @@ export const Sneaker = () => {
   });
   const [open, setOpen] = useState(false);
   const [listId, setListId] = useState<any>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [startIndex,setStartIndex]=useState<number>(0)
+  const [endIndex,setEndIndex]=useState<number>(20)
+  const totalItems = 100;
+  const itemsPerPage = 10;
+
+  const handlePageChange = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage; 
+    setStartIndex(startIndex)
+    setEndIndex(endIndex)
+  };
+
 
   useEffect(() => {
     function handleResize() {
@@ -202,7 +218,7 @@ export const Sneaker = () => {
           }}
         >
           <Row gutter={[20, 20]}>
-            {listProduct.map((x) => {
+            {listProduct.map((x,index:number) => {
               return (
                 <Col
                   xs={!hideSidebar ? 12 : 24}
@@ -216,6 +232,17 @@ export const Sneaker = () => {
               );
             })}
           </Row>
+          <Pagination defaultCurrent={1} style={{
+            display:"flex",
+            alignItems:'center',
+            justifyContent:'center'
+          }}
+          current={currentPage}
+          pageSize={itemsPerPage}
+          total={totalItems}
+          onChange={handlePageChange}
+          />
+
         </div>
       </div>
       <Drawer
