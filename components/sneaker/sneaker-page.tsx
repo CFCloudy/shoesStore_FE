@@ -182,9 +182,9 @@ export const Sneaker = () => {
                   }}
                 >
                   {filter.name === "Màu sắc"
-                    ? filter.arrays.map((arr: any) => {
+                    ? filter.arrays.map((arr: any,index:number) => {
                         return (
-                          <Tooltip title={arr.color}>
+                          <Tooltip title={arr.color} key={index}>
                             <div
                               className="box_color"
                               style={{ background: `rgba(${arr.rgba})` }}
@@ -193,13 +193,13 @@ export const Sneaker = () => {
                         );
                       })
                     : filter.name === "Kích cỡ"
-                    ? filter.arrays.map((arr: any) => {
-                        return <div className="box_size">{arr.size}</div>;
+                    ? filter.arrays.map((arr: any,index:number) => {
+                        return <div className="box_size" key={index}>{arr.size}</div>;
                       })
                     : filter.name === "Phong cách"
-                    ? filter.arrays.map((arr: any) => {
+                    ? filter.arrays.map((arr: any,index:number) => {
                         return (
-                          <div className="box_styles">
+                          <div className="box_styles" key={index}>
                             <div className="name">{arr.styles}</div>
                             <div className="count">112</div>
                           </div>
@@ -294,9 +294,9 @@ export const Sneaker = () => {
                   }}
                 >
                   {filter.name === "Màu sắc"
-                    ? filter.arrays.map((arr: any) => {
+                    ? filter.arrays.map((arr: any,index:number) => {
                         return (
-                          <Tooltip title={arr.color}>
+                          <Tooltip title={arr.color} key={index}>
                             <div
                               className="box_color"
                               style={{ background: `rgba(${arr.rgba})` }}
@@ -305,13 +305,13 @@ export const Sneaker = () => {
                         );
                       })
                     : filter.name === "Kích cỡ"
-                    ? filter.arrays.map((arr: any) => {
-                        return <div className="box_size">{arr.size}</div>;
+                    ? filter.arrays.map((arr: any,index:number) => {
+                        return <div className="box_size" key={index}>{arr.size}</div>;
                       })
                     : filter.name === "Phong cách"
-                    ? filter.arrays.map((arr: any) => {
+                    ? filter.arrays.map((arr: any,index:number) => {
                         return (
-                          <div className="box_styles">
+                          <div className="box_styles" key={index}>
                             <div className="name">{arr.styles}</div>
                             <div className="count">112</div>
                           </div>

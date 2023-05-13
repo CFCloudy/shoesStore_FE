@@ -41,9 +41,7 @@ export const CommonProduct = (props: IPopsProduct) => {
       <div className="image_product">
         <Image
           preview={false}
-          // src="https://static.nike.com/a/images/q_auto:eco/t_product_v1/f_auto/dpr_1.3/w_467,c_limit/4f37fca8-6bce-43e7-ad07-f57ae3c13142/air-force-1-07-shoes-WrLlWX.png"
           src={data.images[0]}
-          //   className=""
         />
       </div>
       <div className="name_product" onClick={() => Router.push("/2")}>

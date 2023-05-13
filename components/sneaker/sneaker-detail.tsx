@@ -13,7 +13,7 @@ import {
 } from "./sneaker-pages-styled";
 import { FreeMode, Navigation, Thumbs, Scrollbar, EffectCube } from "swiper";
 import { useState } from "react";
-import { Col, Image, Row } from "antd";
+import { Col, Image, Row, message } from "antd";
 import { formatter } from "@/models/common";
 import { listProduct } from "../product/product";
 import { Confirm } from "../dialog_size";
@@ -111,7 +111,7 @@ export const SneakerDetail = () => {
       }
       newpr.push(obj)
     }
-    console.log(newpr)
+    // console.log(newpr)
   }
 
   generateProduct()
@@ -206,7 +206,17 @@ export const SneakerDetail = () => {
     
   }
 
-
+  const handleAddToCard=()=>{
+    if(chooseColor&&chooseSizes){
+      let productVariant=listProduct[0].variant.find((p:any)=>p.color==chooseColor&&p.size==chooseSizes)
+      message.success(`Bạn đã thêm sản phẩm ${productVariant?.sku} vào giỏ hàng thành công`)
+    }else if(chooseColor==""&&chooseSizes==""){
+      message.error(`Bạn chưa chọn màu sắc và kích cỡ sản phẩm `)
+    }
+    else if(chooseColor==""||chooseSizes==""){
+      message.error(`Bạn chưa chọn ${chooseColor==""?"màu sắc của sản phẩm":"kích cỡ của sản phẩm"}`)
+    }
+  }
 
   return (
     <ContainerSneaker>
@@ -356,7 +366,7 @@ export const SneakerDetail = () => {
                 >
                   Hướng dẫn chọn size
                 </p>
-                <ButtonBlack>Thêm vào giỏ hàng</ButtonBlack>
+                <ButtonBlack onClick={handleAddToCard}>Thêm vào giỏ hàng</ButtonBlack>
               </Swap_Product_Detail>
             </Col>
           </Row>

@@ -7,7 +7,7 @@ import {
   ShoppingCartOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { Button, Col, Drawer, DrawerProps, Input, Row, Space } from "antd";
+import { Button, Col, Drawer, DrawerProps, Input, Row, Space ,Image} from "antd";
 import Router from "next/router";
 import { Fragment, useState } from "react";
 import {
@@ -16,6 +16,8 @@ import {
   FooterPopupCart,
   WrapCartItemPopup,
 } from "./header-styled";
+import logo from "@/assets/logo-no-background_home.svg"
+
 import { MenuChild } from "./menu-child";
 import { data_category } from "../../../data/data_category";
 import { formatter } from "@/models/common";
@@ -49,7 +51,7 @@ export const Header = () => {
         <AlignLeftOutlined style={{ fontSize: "30px" }} />
       </div>
       <div className="logo" onClick={() => Router.push("/")}>
-        Shoes Store
+        <Image preview={false} src={logo.src} width={'130px'}/>
       </div>
       <div className="menu">
         <div className="leftMenu">
@@ -158,7 +160,7 @@ export const Header = () => {
           >
             X
           </Space>
-        }
+        }   
       >
         <div className="wrapp">
           <div className="item">
@@ -186,7 +188,7 @@ export const Header = () => {
                 </div>
               </div>
             </WrapCartItemPopup>
-            {/* <WrapCartItemPopup>
+            <WrapCartItemPopup>
               <div className="img">
                 <img
                   src="https://converse.ca/media/catalog/product/cache/2e72b5cbec682aae37213b8085d64166/m/5/m5039c_a.jpg"
@@ -233,7 +235,7 @@ export const Header = () => {
                   <DeleteOutlined />
                 </div>
               </div>
-            </WrapCartItemPopup> */}
+            </WrapCartItemPopup>
           </div>
           <FooterPopupCart>
             <div className="sum">

@@ -174,7 +174,7 @@ export const FooterPopupCart = styled.div`
   .sum {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
   }
   .btn {
     left: 40px;
@@ -189,10 +189,10 @@ export const DrawerCustom = styled(Drawer)`
   .wrapp {
     /* height: 100%; */
     @media (min-height: 480px) {
-      overflow-y: scroll;
-      max-height: 470px;
+      height: auto;
+      overflow: auto;
+      max-height: 700px;
     }
-
     .item {
     }
   }

@@ -17,6 +17,14 @@ export const WrappHomePages = styled.div`
     p {
       font-size: 21px;
     }
+    @media (max-width: 882px) {
+      h2{
+        font-size: 50px;
+      }
+      p {
+        font-size: 18px;
+      }
+    }
   }
   .visual_nav {
     .wrapp_visual {
