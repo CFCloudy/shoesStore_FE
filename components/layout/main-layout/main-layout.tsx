@@ -1,3 +1,5 @@
+"use client";
+
 import { LayoutProps } from "@/models/common";
 import { Footer } from "../footer/footer";
 import { Header } from "../header/header";
