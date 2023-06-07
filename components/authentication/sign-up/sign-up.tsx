@@ -1,44 +1,65 @@
 import { ButtonBlack } from "@/components/home-pages/home-pages-styled";
-import { Button, Form, Input } from "antd";
+import { Button, Form, Input, message } from "antd";
 import Router from "next/router";
 import { Fragment } from "react";
 import { WrapperAuthen } from "../auth-styled";
+import { useAppDispatch, useAppSelector } from "@/app/hook";
+import { selectUser, userRegister } from "@/features/user-slice";
+import { IRegisterPayload } from "@/models/user";
 
 export const SignUp = () => {
+  const dispatch = useAppDispatch();
+  const { loading } = useAppSelector(selectUser);
+
+  const handleSubmit = (values: any) => {
+    let payload: IRegisterPayload = { ...values };
+    dispatch(userRegister(payload))
+      .unwrap()
+      .then()
+      .then((res: any) => {
+        message.success("Succes");
+        Router.push("/auth/send-otp");
+      })
+      .catch((e: any) => {
+        message.error("Fails");
+      });
+  };
   return (
     <WrapperAuthen>
       <h2>Đăng ký bằng tài khoản Email của bạn</h2>
 
       <div className="form">
-        <Form layout="vertical">
-          <Form.Item label="Họ tên" 
-            name={'fullname'}
+        <Form layout="vertical" onFinish={handleSubmit}>
+          <Form.Item
+            label="Họ tên"
+            name={"Fullname"}
             rules={[
               {
-                required:true,
-                message:'Họ tên không được để trống'
+                required: true,
+                message: "Họ tên không được để trống",
               },
             ]}
           >
             <Input className="signin"></Input>
           </Form.Item>
-          <Form.Item label="Email"
-            name={'email'}
+          <Form.Item
+            label="Email"
+            name={"Email"}
             rules={[
               {
-                required:true,
-                message:'Email không được để trống!'
+                required: true,
+                message: "Email không được để trống!",
               },
               {
-                type:'email',
-                message:'Email bạn nhập không hợp lệ! Vui lòng thử lại.'
-              }
+                type: "email",
+                message: "Email bạn nhập không hợp lệ! Vui lòng thử lại.",
+              },
             ]}
           >
             <Input type="e" size={"large"} maxLength={20} className="signin" />
           </Form.Item>
           <Form.Item
-            name="passWord"
+            name="PassWord"
             label="Mật khẩu"
             rules={[
               { required: true, message: "Mật khẩu không được để trống" },
@@ -74,7 +95,7 @@ export const SignUp = () => {
           <Form.Item
             name="confirmPassWord"
             label="Xác nhận mật khẩu"
-            dependencies={["passWord"]}
+            dependencies={["Password"]}
             hasFeedback
             rules={[
               {
@@ -83,7 +104,7 @@ export const SignUp = () => {
               },
               ({ getFieldValue }) => ({
                 validator(_, value) {
-                  if (!value || getFieldValue("passWord") === value) {
+                  if (!value || getFieldValue("PassWord") === value) {
                     return Promise.resolve();
                   }
                   return Promise.reject(
@@ -95,8 +116,15 @@ export const SignUp = () => {
           >
             <Input type="e" size={"large"} maxLength={20} className="signin" />
           </Form.Item>
-          <ButtonBlack >Đăng ký</ButtonBlack>
-          <span className="forgot"  onClick={() => Router.push("/auth/forgot-password")}>Quên mật khẩu?</span>
+          <ButtonBlack htmlType="submit" loading={loading}>
+            Đăng ký
+          </ButtonBlack>
+          <span
+            className="forgot"
+            onClick={() => Router.push("/auth/forgot-password")}
+          >
+            Quên mật khẩu?
+          </span>
         </Form>
       </div>
       <br />

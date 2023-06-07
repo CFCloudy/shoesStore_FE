@@ -1,3 +1,4 @@
+import userSlice from "@/features/user-slice";
 import { Action, configureStore, ThunkAction } from "@reduxjs/toolkit";
 import {
   MiddlewareAPI,
@@ -5,7 +6,9 @@ import {
   Middleware,
 } from "@reduxjs/toolkit";
 
-const rootReducer = {};
+const rootReducer = {
+  user: userSlice,
+};
 export const store = configureStore({
   reducer: rootReducer,
 });

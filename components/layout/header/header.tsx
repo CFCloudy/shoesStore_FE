@@ -4,10 +4,22 @@ import {
   DeleteOutlined,
   DownOutlined,
   EditOutlined,
+  LogoutOutlined,
   ShoppingCartOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { Button, Col, Drawer, DrawerProps, Input, Row, Space ,Image} from "antd";
+import {
+  Button,
+  Col,
+  Drawer,
+  DrawerProps,
+  Input,
+  Row,
+  Space,
+  Image,
+  Dropdown,
+  Menu,
+} from "antd";
 import Router from "next/router";
 import { Fragment, useState } from "react";
 import {
@@ -15,13 +27,17 @@ import {
   DrawerCustom,
   FooterPopupCart,
   WrapCartItemPopup,
+  WrapUser,
 } from "./header-styled";
-import logo from "@/assets/logo-no-background_home.svg"
+import logo from "@/assets/logo-no-background_home.svg";
 
 import { MenuChild } from "./menu-child";
 import { data_category } from "../../../data/data_category";
 import { formatter } from "@/models/common";
 import { ButtonBlack } from "@/components/home-pages/home-pages-styled";
+type MenuItem = Required<MenuProps>["items"][number];
+import type { MenuProps } from "antd";
+
 export const Header = () => {
   const [open, setOpen] = useState(false);
   const [openCart, setOpenCart] = useState(false);
@@ -29,6 +45,51 @@ export const Header = () => {
 
   const [menu, setMenu] = useState<any>(data_category);
 
+  var items: MenuProps["items"] = [
+    {
+      key: "1",
+      label: (
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://www.antgroup.com"
+        >
+          1st menu item
+        </a>
+      ),
+    },
+    {
+      key: "2",
+      label: (
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://www.aliyun.com"
+        >
+          2nd menu item (disabled)
+        </a>
+      ),
+      disabled: true,
+    },
+    {
+      key: "3",
+      label: (
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://www.luohanacademy.com"
+        >
+          3rd menu item (disabled)
+        </a>
+      ),
+      disabled: true,
+    },
+    {
+      key: "4",
+      danger: true,
+      label: "a danger item",
+    },
+  ];
   const [isOpenMenu, setOpenMenu] = useState<string>("none");
   const [mainTiltle, setMainTitle] = useState<string>("");
 
@@ -51,7 +112,7 @@ export const Header = () => {
         <AlignLeftOutlined style={{ fontSize: "30px" }} />
       </div>
       <div className="logo" onClick={() => Router.push("/")}>
-        <Image preview={false} src={logo.src} width={'130px'}/>
+        <Image preview={false} src={logo.src} width={"130px"} />
       </div>
       <div className="menu">
         <div className="leftMenu">
@@ -110,7 +171,12 @@ export const Header = () => {
           <ul className="ul_rightMenu">
             <li onClick={() => Router.push("/auth/sign-in")}>Sign In</li>
             <li>
-              <UserOutlined style={{ fontSize: "20px" }} />
+              <Dropdown menu={menu}>
+                <WrapUser style={{ marginLeft: "10px" }}>
+                  {" "}
+                  <UserOutlined style={{ marginRight: "8px" }} />
+                </WrapUser>
+              </Dropdown>
             </li>
             <li className="shoppingcart">
               <ShoppingCartOutlined
@@ -160,7 +226,7 @@ export const Header = () => {
           >
             X
           </Space>
-        }   
+        }
       >
         <div className="wrapp">
           <div className="item">

@@ -1,20 +1,40 @@
 import { ButtonBlack } from "@/components/home-pages/home-pages-styled";
-import { Button, Form, Input } from "antd";
-import Router from "next/router";
+import { Button, Form, Input, message } from "antd";
+import Router, { useRouter } from "next/router";
 import { Fragment } from "react";
 import { WrapperAuthen } from "../auth-styled";
+import { useAppDispatch } from "@/app/hook";
+import { userSignin } from "@/features/user-slice";
+import { ILoginPayload } from "@/models/user";
+import { error } from "console";
 
 export const SignIn = () => {
+  const [form] = Form.useForm();
+  const router = useRouter();
+  const dispatch = useAppDispatch();
+
+  const handllerlogin = (data: any) => {
+    const payload: ILoginPayload = { ...data };
+
+    dispatch(userSignin(payload))
+      .unwrap()
+      .then()
+      .then((res: any) => {
+        message.success("Đăng nhập thành công");
+      })
+      .catch((error: any) => {});
+  };
+
   return (
     <WrapperAuthen>
       <h2>Bạn đã có tài khoản?</h2>
       <p>Nếu bạn có tài khoản, hay đăng nhập bằng địa chỉ email của bạn.</p>
       <div className="form">
-        <Form layout="vertical">
-          <Form.Item label="Email">
+        <Form layout="vertical" onFinish={handllerlogin}>
+          <Form.Item label="Email" name={"Email"}>
             <Input className="signin"></Input>
           </Form.Item>
-          <Form.Item label="Mật khẩu">
+          <Form.Item label="Mật khẩu" name={"Password"}>
             <Input
               type="password"
               size={"large"}
@@ -22,7 +42,7 @@ export const SignIn = () => {
               className="signin"
             />
           </Form.Item>
-          <ButtonBlack>Đăng nhập</ButtonBlack>
+          <ButtonBlack htmlType="submit">Đăng nhập</ButtonBlack>
           <span
             className="forgot"
             onClick={() => Router.push("/auth/forgot-password")}

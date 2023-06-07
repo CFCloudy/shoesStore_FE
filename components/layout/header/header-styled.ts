@@ -197,3 +197,9 @@ export const DrawerCustom = styled(Drawer)`
     }
   }
 `;
+export const WrapUser = styled.div`
+  font-size: 16px;
+  margin-right: 8px;
+  font-weight: 600;
+  cursor: pointer;
+`;
