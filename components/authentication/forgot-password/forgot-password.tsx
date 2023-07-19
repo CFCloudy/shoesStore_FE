@@ -3,21 +3,20 @@ import { Button, Form, Input } from "antd";
 import Router from "next/router";
 import { Fragment } from "react";
 import { WrapperAuthen } from "../auth-styled";
+import { useAppDispatch } from "@/app/hook";
 
 export const ForgotPassWord = () => {
-
-  const onSubmit=(value:any)=>{
-    Router.push("/auth/send-otp")
-  }
+  const dispatch = useAppDispatch();
+  const onSubmit = (value: any) => {
+    Router.push("/auth/send-otp");
+  };
 
   return (
     <WrapperAuthen>
       <h2>Quên mật khẩu?</h2>
       <p>Vui lòng nhập địa chỉ email bạn đã đăng ký để lấy lại mật khẩu.</p>
       <div className="form">
-        <Form layout="vertical"
-          onFinish={onSubmit}
-        >
+        <Form layout="vertical" onFinish={onSubmit}>
           <Form.Item
             label="Email"
             name={"email"}
@@ -31,9 +30,7 @@ export const ForgotPassWord = () => {
           >
             <Input className="signin"></Input>
           </Form.Item>
-          <ButtonBlack htmlType="submit">
-            Lấy lại mật khẩu
-          </ButtonBlack>
+          <ButtonBlack htmlType="submit">Lấy lại mật khẩu</ButtonBlack>
         </Form>
       </div>
     </WrapperAuthen>

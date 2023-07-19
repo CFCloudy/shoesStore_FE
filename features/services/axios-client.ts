@@ -6,7 +6,7 @@ import { store } from "../../app/store";
 import { userRefreshToken } from "../user-slice";
 // import { userRefreshToken } from "../user-slice";
 const storage =
-  typeof window !== "undefined" ? localStorage.getItem("zuka") : undefined;
+  typeof window !== "undefined" ? localStorage.getItem("u") : undefined;
 let AccessToken = "";
 let RefreshToken = "";
 if (storage) {
@@ -22,10 +22,11 @@ const axiosClient = axios.create({
   headers: {
     "Content-Type": "application/json",
     Authorization: `Bearer ${
-      storage ? JSON.parse(storage).Payload?.AccessToken : null
+      storage ? JSON.parse(storage).payload?.accessToken : null
     }`,
   },
 });
+
 // axiosClient.interceptors.request.use(
 //     function (config) {
 //         return config;

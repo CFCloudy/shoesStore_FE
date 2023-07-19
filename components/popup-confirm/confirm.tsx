@@ -1,12 +1,13 @@
 import { Button, Modal } from "antd";
 import React from "react";
+
+import { CloseCircleOutlined } from "@ant-design/icons";
 import {
-  ModelWrapper,
-  WrapperFooter,
   ButtonCancle,
   ButtonOk,
-} from "@/components/dialog_size/dialog_size_styled";
-import { CloseCircleOutlined } from "@ant-design/icons";
+  ModelWrapper,
+  WrapperFooter,
+} from "./PopupConfirmStyled";
 
 export interface IModalDelete {
   openModalConfirm: boolean;

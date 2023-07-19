@@ -167,14 +167,17 @@ export const WrapCartItemPopup = styled.div`
 
 export const FooterPopupCart = styled.div`
   bottom: 0 !important;
-  position: fixed;
+  position: absolute;
   height: 200px;
   background: #f7f7f7;
   width: 100%;
   .sum {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
+    margin: 15px 20px !important;
+    font-weight: 600;
+    font-size: 16px;
   }
   .btn {
     left: 40px;
@@ -194,6 +197,8 @@ export const DrawerCustom = styled(Drawer)`
       max-height: 700px;
     }
     .item {
+      overflow: auto;
+      height: 520px;
     }
   }
 `;

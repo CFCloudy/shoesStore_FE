@@ -3,8 +3,8 @@ import { Button, Form, Input, message } from "antd";
 import Router, { useRouter } from "next/router";
 import { Fragment } from "react";
 import { WrapperAuthen } from "../auth-styled";
-import { useAppDispatch } from "@/app/hook";
-import { userSignin } from "@/features/user-slice";
+import { useAppDispatch, useAppSelector } from "@/app/hook";
+import { selectUser, userSignin } from "@/features/user-slice";
 import { ILoginPayload } from "@/models/user";
 import { error } from "console";
 
@@ -12,7 +12,7 @@ export const SignIn = () => {
   const [form] = Form.useForm();
   const router = useRouter();
   const dispatch = useAppDispatch();
-
+  const { loading } = useAppSelector(selectUser);
   const handllerlogin = (data: any) => {
     const payload: ILoginPayload = { ...data };
 
@@ -20,9 +20,12 @@ export const SignIn = () => {
       .unwrap()
       .then()
       .then((res: any) => {
+        Router.push("/");
         message.success("Đăng nhập thành công");
       })
-      .catch((error: any) => {});
+      .catch((error: any) => {
+        message.error(error.message);
+      });
   };
 
   return (
@@ -42,7 +45,9 @@ export const SignIn = () => {
               className="signin"
             />
           </Form.Item>
-          <ButtonBlack htmlType="submit">Đăng nhập</ButtonBlack>
+          <ButtonBlack htmlType="submit" loading={loading}>
+            Đăng nhập
+          </ButtonBlack>
           <span
             className="forgot"
             onClick={() => Router.push("/auth/forgot-password")}

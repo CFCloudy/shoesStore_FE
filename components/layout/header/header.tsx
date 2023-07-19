@@ -1,3 +1,5 @@
+"use client";
+
 import {
   AlignLeftOutlined,
   AlignRightOutlined,
@@ -19,6 +21,7 @@ import {
   Image,
   Dropdown,
   Menu,
+  message,
 } from "antd";
 import Router from "next/router";
 import { Fragment, useState } from "react";
@@ -35,66 +38,25 @@ import { MenuChild } from "./menu-child";
 import { data_category } from "../../../data/data_category";
 import { formatter } from "@/models/common";
 import { ButtonBlack } from "@/components/home-pages/home-pages-styled";
-type MenuItem = Required<MenuProps>["items"][number];
 import type { MenuProps } from "antd";
+import { useAppDispatch, useAppSelector } from "@/app/hook";
+import { selectUser, userLogout } from "@/features/user-slice";
+import { ILogoutPayload } from "@/models/user";
 
 export const Header = () => {
   const [open, setOpen] = useState(false);
   const [openCart, setOpenCart] = useState(false);
   const [placement, setPlacement] = useState<DrawerProps["placement"]>("left");
-
+  const { loginInfo } = useAppSelector(selectUser);
   const [menu, setMenu] = useState<any>(data_category);
 
-  var items: MenuProps["items"] = [
-    {
-      key: "1",
-      label: (
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href="https://www.antgroup.com"
-        >
-          1st menu item
-        </a>
-      ),
-    },
-    {
-      key: "2",
-      label: (
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href="https://www.aliyun.com"
-        >
-          2nd menu item (disabled)
-        </a>
-      ),
-      disabled: true,
-    },
-    {
-      key: "3",
-      label: (
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href="https://www.luohanacademy.com"
-        >
-          3rd menu item (disabled)
-        </a>
-      ),
-      disabled: true,
-    },
-    {
-      key: "4",
-      danger: true,
-      label: "a danger item",
-    },
-  ];
   const [isOpenMenu, setOpenMenu] = useState<string>("none");
   const [mainTiltle, setMainTitle] = useState<string>("");
-
-  const handleOpenMenu = () => {
-    setOpenMenu("block");
+  const dispatch = useAppDispatch();
+  const storage =
+    typeof window !== "undefined" ? localStorage.getItem("u") : undefined;
+  const handleOpenMenu = (id: any) => {
+    if (id == "Nam1") setOpenMenu("block");
   };
   const showDrawer = () => {
     setOpen(true);
@@ -105,6 +67,51 @@ export const Header = () => {
   const onCloseCart = () => {
     setOpenCart(false);
   };
+
+  const logout = () => {
+    let payload: ILogoutPayload = {
+      id: loginInfo.payload.id,
+    };
+    dispatch(userLogout(payload))
+      .unwrap()
+      .then()
+      .then((res: any) => {
+        message.success("Đăng xuất thành công");
+      })
+      .catch((e) => {
+        message.error("Đăng xuất thất bại");
+      });
+  };
+  const items: MenuProps["items"] = [
+    {
+      key: "1",
+      label: (
+        <div onClick={() => Router.push("/profiles")}>
+          <UserOutlined
+            style={{ marginRight: "8px", color: "black", fontWeight: "600" }}
+          ></UserOutlined>
+          Tài khoản của tôi
+        </div>
+      ),
+    },
+    {
+      key: "2",
+      label: (
+        <a target="_blank" rel="noopener noreferrer">
+          Giỏ hành của tôi
+        </a>
+      ),
+    },
+    {
+      key: "3",
+      label: (
+        <p onClick={logout}>
+          <LogoutOutlined style={{ marginRight: "8px" }}></LogoutOutlined> Đăng
+          xuất
+        </p>
+      ),
+    },
+  ];
   const [idchoose, setId] = useState<number>(0);
   return (
     <ContainerHeader>
@@ -132,7 +139,6 @@ export const Header = () => {
                 className={idchoose === x.id ? "hover" : "resthover"}
                 onMouseEnter={() => {
                   let newMenu = [...menu];
-                  console.log("object", newMenu);
                   let index: number = newMenu.findIndex((c) => c.id === x.id);
                   if (index > -1) {
                     let choo = newMenu[index];
@@ -150,7 +156,7 @@ export const Header = () => {
                         "#867b7b";
                     }
                     setMenu(newMenu);
-                    handleOpenMenu();
+                    handleOpenMenu(x.id);
                     setMainTitle(x.name);
                   }
                 }}
@@ -169,14 +175,24 @@ export const Header = () => {
         </div>
         <div className="rightMenu">
           <ul className="ul_rightMenu">
-            <li onClick={() => Router.push("/auth/sign-in")}>Sign In</li>
+            {storage ? null : (
+              <li onClick={() => Router.push("/auth/sign-in")}>Sign In</li>
+            )}
             <li>
-              <Dropdown menu={menu}>
-                <WrapUser style={{ marginLeft: "10px" }}>
-                  {" "}
-                  <UserOutlined style={{ marginRight: "8px" }} />
-                </WrapUser>
-              </Dropdown>
+              {storage ? (
+                <Dropdown menu={{ items }} placement="bottom" arrow>
+                  <WrapUser style={{ marginLeft: "10px" }}>
+                    {" "}
+                    {/* {storage && loginInfo !== undefined
+                    ? loginInfo.payload.fullName
+                    : ""} */}
+                    <ul>
+                      <UserOutlined style={{ marginRight: "8px" }} />
+                      {storage ? loginInfo.payload.fullName : ""}
+                    </ul>
+                  </WrapUser>
+                </Dropdown>
+              ) : null}
             </li>
             <li className="shoppingcart">
               <ShoppingCartOutlined
@@ -241,11 +257,11 @@ export const Header = () => {
                 <div className="title">
                   TURBODRK Chuck 70 Low Top in Silver/Egret/Black
                 </div>
-                <span>
-                  Chi tiết <DownOutlined />
-                </span>
-                <div>Màu sắc</div>
-                <div>Kích thước</div>
+                <details>
+                  <summary>Chi tiết</summary>
+                  <p>Màu sắc</p>
+                  <p>Kích thước</p>
+                </details>
                 <div className="price">{formatter.format(1000000)}</div>
 
                 <div className="action">
@@ -265,35 +281,11 @@ export const Header = () => {
                 <div className="title">
                   TURBODRK Chuck 70 Low Top in Silver/Egret/Black
                 </div>
-                <span>
-                  Chi tiết <DownOutlined />
-                </span>
-                <div>Màu sắc</div>
-                <div>Kích thước</div>
-                <div className="price">{formatter.format(1000000)}</div>
-
-                <div className="action">
-                  <EditOutlined />
-                  <DeleteOutlined />
-                </div>
-              </div>
-            </WrapCartItemPopup>
-            <WrapCartItemPopup>
-              <div className="img">
-                <img
-                  src="https://converse.ca/media/catalog/product/cache/2e72b5cbec682aae37213b8085d64166/m/5/m5039c_a.jpg"
-                  alt=""
-                />
-              </div>
-              <div className="right_content">
-                <div className="title">
-                  TURBODRK Chuck 70 Low Top in Silver/Egret/Black
-                </div>
-                <span>
-                  Chi tiết <DownOutlined />
-                </span>
-                <div>Màu sắc</div>
-                <div>Kích thước</div>
+                <details>
+                  <summary>Chi tiết</summary>
+                  <p>Màu sắc</p>
+                  <p>Kích thước</p>
+                </details>
                 <div className="price">{formatter.format(1000000)}</div>
 
                 <div className="action">
@@ -309,7 +301,12 @@ export const Header = () => {
               <div className="price">{formatter.format(1000000)}</div>
             </div>
             <div className="btn">
-              <ButtonBlack style={{ padding: "10px 120px" }}>
+              <ButtonBlack
+                style={{
+                  padding: "10px 120px",
+                }}
+                onClick={() => Router.push("/cart")}
+              >
                 Thanh toán
               </ButtonBlack>
             </div>

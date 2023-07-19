@@ -54,7 +54,6 @@ export const MenuChild = (props: IMenuChild) => {
   const { isOpen, onMouseLeave, mainTitle } = props;
 
   const data = data_category.find((x: any) => x.name == mainTitle);
-  console.log("object", mainTitle);
   return (
     <ContainerMenuChild
       style={{ display: `${isOpen}` }}
@@ -80,67 +79,6 @@ export const MenuChild = (props: IMenuChild) => {
             </Col>
           );
         })}
-
-        {/* {child.map((x: any, index: number) => (
-          <Col key={index} span={4} className="wrapp_col">
-            <WrapperChild>
-              <div className="title">{x.title}</div>
-              <ul>
-                {x.mnchil.map((c: any) => (
-                  <li key={c.id}>{c.content}</li>
-                ))}
-              </ul>
-            </WrapperChild>
-          </Col>
-        ))}
-        {child.map((x: any, index: number) => (
-          <Col key={index} span={4} className="wrapp_col">
-            <WrapperChild>
-              <div className="title">{x.title}</div>
-              <ul>
-                {x.mnchil.map((c: any) => (
-                  <li key={c.id}>{c.content}</li>
-                ))}
-              </ul>
-            </WrapperChild>
-          </Col>
-        ))}
-        {child.map((x: any, index: number) => (
-          <Col key={index} span={5} className="wrapp_col">
-            <WrapperChild>
-              <div className="title">{x.title}</div>
-              <ul>
-                {x.mnchil.map((c: any) => (
-                  <li key={c.id}>{c.content}</li>
-                ))}
-              </ul>
-            </WrapperChild>
-          </Col>
-        ))}
-        {child.map((x: any, index: number) => (
-          <Col key={index} span={4} className="wrapp_col">
-            <WrapperChild>
-              <div className="title">{x.title}</div>
-              <ul>
-                {x.mnchil.map((c: any) => (
-                  <li key={c.id}>{c.content}</li>
-                ))}
-              </ul>
-            </WrapperChild>
-          </Col>
-        ))}
-        {child.map((x: any, index: number) => (
-          <Col key={index} span={4} className="wrapp_col">
-            <WrapperChild>
-              <div className="title">{x.title}</div>
-              <ul>
-                {x.mnchil.map((c: any) => (
-                  <li key={c.id}>{c.content}</li>
-                ))}
-              </ul>
-            </WrapperChild>
-          </Col>
-        ))} */}
       </Row>
     </ContainerMenuChild>
   );

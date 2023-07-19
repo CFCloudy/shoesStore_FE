@@ -78,8 +78,13 @@ export const SendOTP = () => {
           </Form.Item>
           <p>
             Bạn không nhận được mã OTP?{" "}
-            <Button type="link" onClick={handleResendOTP}>
-              Gửi lại
+            <Button
+              type="link"
+              onClick={handleResendOTP}
+              disabled={initSecond > 0}
+            >
+              Gửi lại {initSecond == 0 ? "" : "(" + initSecond}
+              {initSecond == 0 ? "" : "s)"}
             </Button>
           </p>
           <br />

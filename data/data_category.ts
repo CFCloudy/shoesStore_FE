@@ -1,77 +1,69 @@
 export const data_category = [
   {
     id: "Nam1",
-    name: "Nam",
+    name: "Giày thể thao",
     color: "#000",
 
     children_category: [
       {
         id: "c_nam1",
         id_parent_lv1: "Nam1",
-        name: "Giày",
+        name: "Hãng",
         sub_sub_category: [
           {
             id: 111,
-            name: "Giày thể thao",
+            name: "Nike",
           },
           {
             id: 112,
-            name: "Giày cổ cao",
+            name: "Adidas",
           },
           {
             id: 113,
-            name: "Giày cổ thấp",
+            name: "Puma",
           },
           {
             id: 114,
-            name: "Giày thể thao",
+            name: "New Balance",
           },
           {
             id: 115,
-            name: "Giày chạy bộ",
-          },
-          {
-            id: 116,
-            name: "Giày leo núi",
-          },
-          {
-            id: 117,
-            name: "Giày bóng rổ",
+            name: "Converse",
           },
         ],
       },
       {
         id: "c_nam2",
         id_parent_lv1: "Nam1",
-        name: "Phụ kiện",
+        name: "Phong cách",
         sub_sub_category: [
           {
             id: 222,
-            name: "Túi",
+            name: "Sneakers",
           },
           {
             id: 223,
-            name: "Tất",
+            name: "Runnings shoes",
           },
           {
             id: 224,
-            name: "Mũ lưỡi trai/ đội đầu",
+            name: "Basketball shoes",
           },
           {
             id: 225,
-            name: "Găng tay",
+            name: "Football shoes",
           },
           {
             id: 226,
-            name: "Bóng",
+            name: "Tennis shoes",
           },
           {
             id: 227,
-            name: "Khẩu trang",
+            name: "Training shoes:",
           },
           {
             id: 228,
-            name: "Nẹp ống chân & băng buộc",
+            name: "Walking shoes",
           },
         ],
       },
@@ -79,7 +71,7 @@ export const data_category = [
   },
   {
     id: "Nữ",
-    name: "Nữ",
+    name: "Tin tức",
     color: "#000",
     children_category: [
       {
@@ -156,7 +148,13 @@ export const data_category = [
   },
   {
     id: "Children",
-    name: "Trẻ em",
+    name: "Về chúng tôi",
+    color: "#000",
+    children_category: [],
+  },
+  {
+    id: "lienhe",
+    name: "Liên hệ",
     color: "#000",
     children_category: [
       {
