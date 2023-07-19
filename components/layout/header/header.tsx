@@ -24,7 +24,7 @@ import {
   message,
 } from "antd";
 import Router from "next/router";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import {
   ContainerHeader,
   DrawerCustom,
@@ -40,16 +40,23 @@ import { formatter } from "@/models/common";
 import { ButtonBlack } from "@/components/home-pages/home-pages-styled";
 import type { MenuProps } from "antd";
 import { useAppDispatch, useAppSelector } from "@/app/hook";
-import { selectUser, userLogout } from "@/features/user-slice";
+import { selectUser, updateStorageValue, userLogout } from "@/features/user-slice";
 import { ILogoutPayload } from "@/models/user";
+import { ICartResponse } from "@/components/sneaker/sneaker-detail";
 
+
+const cartstorage=
+    typeof window !== "undefined" ? localStorage.getItem("cart") : undefined;
+    const cart2= cartstorage
+   ? (JSON.parse(cartstorage) as ICartResponse)
+   : ({} as ICartResponse);
 export const Header = () => {
   const [open, setOpen] = useState(false);
   const [openCart, setOpenCart] = useState(false);
   const [placement, setPlacement] = useState<DrawerProps["placement"]>("left");
   const { loginInfo } = useAppSelector(selectUser);
   const [menu, setMenu] = useState<any>(data_category);
-
+  const [cart,setCart]=useState<ICartResponse>();
   const [isOpenMenu, setOpenMenu] = useState<string>("none");
   const [mainTiltle, setMainTitle] = useState<string>("");
   const dispatch = useAppDispatch();
@@ -67,6 +74,16 @@ export const Header = () => {
   const onCloseCart = () => {
     setOpenCart(false);
   };
+
+  const getCart=()=>{
+    const cartstorage3=
+    typeof window !== "undefined" ? localStorage.getItem("cart") : undefined;
+    const cart24= cartstorage3
+   ? (JSON.parse(cartstorage3) as ICartResponse)
+   : ({} as ICartResponse);
+   setCart(cart24)
+   console.log(cart24)
+  }
 
   const logout = () => {
     let payload: ILogoutPayload = {
@@ -113,6 +130,13 @@ export const Header = () => {
     },
   ];
   const [idchoose, setId] = useState<number>(0);
+
+  const handleDeleteItem=(id:number)=>{
+    if(cart){
+     cart.items=cart?.items.filter(x=>x.productVariantId!=id)
+     localStorage.setItem("cart", JSON.stringify(cart));
+    }
+  }
   return (
     <ContainerHeader>
       <div className="hideMenu" onClick={showDrawer}>
@@ -198,7 +222,9 @@ export const Header = () => {
               <ShoppingCartOutlined
                 style={{ fontSize: "20px" }}
                 className="iconShopingcart"
-                onClick={() => setOpenCart(true)}
+                onClick={() => {setOpenCart(true)
+                  getCart()
+                }}
               />
             </li>
             <li>
@@ -246,11 +272,15 @@ export const Header = () => {
       >
         <div className="wrapp">
           <div className="item">
-            <WrapCartItemPopup>
+            {cart&&cart2&&cart2?.cartSessionId&&cart2?.items.length>0?
+            cart.items.map((item:any)=>(
+               <WrapCartItemPopup>
               <div className="img">
                 <img
-                  src="https://converse.ca/media/catalog/product/cache/2e72b5cbec682aae37213b8085d64166/m/5/m5039c_a.jpg"
+                  src={item.img}
                   alt=""
+                  width={'110px'}
+                  height={'110px'}
                 />
               </div>
               <div className="right_content">
@@ -266,34 +296,12 @@ export const Header = () => {
 
                 <div className="action">
                   <EditOutlined />
-                  <DeleteOutlined />
+                  <DeleteOutlined onClick={()=>handleDeleteItem(item.productVariantId)}/>
                 </div>
               </div>
             </WrapCartItemPopup>
-            <WrapCartItemPopup>
-              <div className="img">
-                <img
-                  src="https://converse.ca/media/catalog/product/cache/2e72b5cbec682aae37213b8085d64166/m/5/m5039c_a.jpg"
-                  alt=""
-                />
-              </div>
-              <div className="right_content">
-                <div className="title">
-                  TURBODRK Chuck 70 Low Top in Silver/Egret/Black
-                </div>
-                <details>
-                  <summary>Chi tiết</summary>
-                  <p>Màu sắc</p>
-                  <p>Kích thước</p>
-                </details>
-                <div className="price">{formatter.format(1000000)}</div>
-
-                <div className="action">
-                  <EditOutlined />
-                  <DeleteOutlined />
-                </div>
-              </div>
-            </WrapCartItemPopup>
+            ))
+            :''}       
           </div>
           <FooterPopupCart>
             <div className="sum">

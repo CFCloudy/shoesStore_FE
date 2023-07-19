@@ -296,7 +296,7 @@ export const Cart = () => {
               <div className="title">Tổng thanh toán</div>
               <div style={{ color: "red", fontSize: "18px" }}>{sum}</div>
             </CheckOut>
-            {Object.entries(loginInfo).length > 0 ? (
+            {Object.entries(loginInfo).length == 0 ? (
               <div>
                 <div style={{ display: "flex" }}>
                   <div>

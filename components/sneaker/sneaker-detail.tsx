@@ -19,6 +19,25 @@ import { listProduct } from "../product/product";
 import { Confirm } from "../dialog_size";
 import { ButtonBlack } from "../home-pages/home-pages-styled";
 import { CSSProperties } from "styled-components";
+import Router from "next/router";
+import { useAppDispatch } from "@/app/hook";
+import { updateStorageValue } from "@/features/user-slice";
+
+
+export interface IAddToCart {
+  cartToken?: string;
+  userId?: string;
+  productVariantId: number;
+  price: number;
+  quantity: number;
+  img?:string
+}
+
+export interface ICartResponse {
+  cartSessionId: string;
+  total: number;
+  items: IAddToCart[]
+}
 export const SneakerDetail = () => {
   const [thumbsSwiper, setThumbsSwiper] = useState<any>(null);
   const [isConfirm, setIsConfirm] = useState<boolean>(false);
@@ -88,7 +107,6 @@ export const SneakerDetail = () => {
     "M 15.5 / W 16",
     "M 16 / W 16.5",
   ]
-
   const generateProduct=()=>{
     let pr=[];
     for(let i=1;i<=25;i++){
@@ -111,10 +129,7 @@ export const SneakerDetail = () => {
       }
       newpr.push(obj)
     }
-    // console.log(newpr)
   }
-
-  generateProduct()
 
   const checkColor=(value:String)=>{
     let checkSizes=listProduct[0].variant.find((p:any)=>p.color==value&&p.size==chooseSizes)
@@ -160,7 +175,6 @@ export const SneakerDetail = () => {
     
   }
 
-  
   const checkSize=(value:String)=>{
     let checkSizes=listProduct[0].variant.find((p:any)=>p.size==value&&p.color==chooseColor)
     if(chooseColor=="") {
@@ -205,10 +219,44 @@ export const SneakerDetail = () => {
     }
     
   }
-
+  const dispatch=useAppDispatch()
   const handleAddToCard=()=>{
+    const cartstorage=
+    typeof window !== "undefined" ? localStorage.getItem("cart") : undefined;
+   var cart= cartstorage
+   ? (JSON.parse(cartstorage) as ICartResponse)
+   : ({} as ICartResponse);
+    
     if(chooseColor&&chooseSizes){
       let productVariant=listProduct[0].variant.find((p:any)=>p.color==chooseColor&&p.size==chooseSizes)
+      if(productVariant){
+        let payload: IAddToCart = {
+          quantity: 1,
+          price: productVariant.prices,
+          productVariantId: productVariant.id,
+          img:listProduct.find(x=>x.id==Number(Router.query.id))?.available_colors[indexImg].src[0]
+        };
+        
+        if(cart.cartSessionId){
+          var it=cart.items.find(x=>x.productVariantId==payload.productVariantId)
+          if(it){
+            it.quantity=it.quantity+1;
+          }else{
+            cart.items=[...cart.items,payload]
+
+          }
+        }else{
+          cart.items=[payload]
+        cart.cartSessionId='001',
+        cart.total=payload.price
+        }
+        if (typeof window !== "undefined") {
+          localStorage.setItem("cart", JSON.stringify(cart));
+        }
+        // dispatch(updateStorageValue(cart))
+      }
+     
+
       message.success(`Bạn đã thêm sản phẩm ${productVariant?.sku} vào giỏ hàng thành công`)
     }else if(chooseColor==""&&chooseSizes==""){
       message.error(`Bạn chưa chọn màu sắc và kích cỡ sản phẩm `)
@@ -216,11 +264,13 @@ export const SneakerDetail = () => {
     else if(chooseColor==""||chooseSizes==""){
       message.error(`Bạn chưa chọn ${chooseColor==""?"màu sắc của sản phẩm":"kích cỡ của sản phẩm"}`)
     }
+
+    
   }
 
   return (
     <ContainerSneaker>
-      {listProduct.map((product: any,index:number) => {
+      {listProduct.filter(x=>x.id==Number(Router.query.id)).map((product: any,index:number) => {
         return (
           <Row gutter={[40, 20]} key={index}>
             <Col xs={24} md={24} xxl={15} lg={15}>

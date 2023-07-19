@@ -27,12 +27,22 @@ export const CheckOut = () => {
           },
           {
             title: "Thanh toán",
+            // disabled:true
           },
           {
             title: "Hoàn thành đơn hàng",
+            disabled:true
           },
         ]}
       />
+      {current==1?
+      <div className="info">
+        
+      </div>:''}
+      {current==2?<div className="payment">
+        <div className="">Thanh toán khi nhận hàng</div>
+        <div className="">Chuyển khoản</div>
+      </div>:''}
     </WrapperProfile>
   );
 };

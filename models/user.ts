@@ -1,3 +1,5 @@
+import { ICartResponse } from "@/components/sneaker/sneaker-detail";
+
 export interface IInitStateUser {
   loading: boolean;
   error: boolean;
@@ -6,6 +8,7 @@ export interface IInitStateUser {
   loginInfo: ILoginResponse;
   loadingAdress: boolean;
   loadingDeleteAdress: boolean;
+  cart:ICartResponse
 }
 
 export interface ILoginPayload {
