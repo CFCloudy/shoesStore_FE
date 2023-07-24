@@ -87,22 +87,3 @@ a {
     width: 200px;
     /* Set the width of the dropdown menu */
 }
-
-.custom-steps .ant-steps-item-process .ant-steps-item-icon {
-    background-color: #ff0000 !important;
-    /* Custom color for active  step */
-}
-
-.custom-steps .ant-steps-item-process .ant-steps-item-title {
-    color: #ff0000 !important;
-    background-color: #ff0000 !important;
-    /* Custom color for active step title */
-}
-
-.ant-steps-item .ant-steps-item-process .ant-steps-item-active {
-    background-color: #ff0000 !important;
-}
-
-.ant-steps-item .ant-steps-item-finish {
-    background-color: #ff0000 !important;
-}

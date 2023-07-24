@@ -22,6 +22,7 @@ import {
   Dropdown,
   Menu,
   message,
+  Badge,
 } from "antd";
 import Router from "next/router";
 import { Fragment, useEffect, useState } from "react";
@@ -40,23 +41,26 @@ import { formatter } from "@/models/common";
 import { ButtonBlack } from "@/components/home-pages/home-pages-styled";
 import type { MenuProps } from "antd";
 import { useAppDispatch, useAppSelector } from "@/app/hook";
-import { selectUser, updateStorageValue, userLogout } from "@/features/user-slice";
+import {
+  selectUser,
+  updateStorageValue,
+  userLogout,
+} from "@/features/user-slice";
 import { ILogoutPayload } from "@/models/user";
 import { ICartResponse } from "@/components/sneaker/sneaker-detail";
 
-
-const cartstorage=
-    typeof window !== "undefined" ? localStorage.getItem("cart") : undefined;
-    const cart2= cartstorage
-   ? (JSON.parse(cartstorage) as ICartResponse)
-   : ({} as ICartResponse);
+const cartstorage =
+  typeof window !== "undefined" ? localStorage.getItem("cart") : undefined;
+const cart2 = cartstorage
+  ? (JSON.parse(cartstorage) as ICartResponse)
+  : ({} as ICartResponse);
 export const Header = () => {
   const [open, setOpen] = useState(false);
   const [openCart, setOpenCart] = useState(false);
   const [placement, setPlacement] = useState<DrawerProps["placement"]>("left");
   const { loginInfo } = useAppSelector(selectUser);
   const [menu, setMenu] = useState<any>(data_category);
-  const [cart,setCart]=useState<ICartResponse>();
+  const [cart, setCart] = useState<ICartResponse>();
   const [isOpenMenu, setOpenMenu] = useState<string>("none");
   const [mainTiltle, setMainTitle] = useState<string>("");
   const dispatch = useAppDispatch();
@@ -75,15 +79,15 @@ export const Header = () => {
     setOpenCart(false);
   };
 
-  const getCart=()=>{
-    const cartstorage3=
-    typeof window !== "undefined" ? localStorage.getItem("cart") : undefined;
-    const cart24= cartstorage3
-   ? (JSON.parse(cartstorage3) as ICartResponse)
-   : ({} as ICartResponse);
-   setCart(cart24)
-   console.log(cart24)
-  }
+  const getCart = () => {
+    const cartstorage3 =
+      typeof window !== "undefined" ? localStorage.getItem("cart") : undefined;
+    const cart24 = cartstorage3
+      ? (JSON.parse(cartstorage3) as ICartResponse)
+      : ({} as ICartResponse);
+    setCart(cart24);
+    console.log(cart24);
+  };
 
   const logout = () => {
     let payload: ILogoutPayload = {
@@ -131,12 +135,12 @@ export const Header = () => {
   ];
   const [idchoose, setId] = useState<number>(0);
 
-  const handleDeleteItem=(id:number)=>{
-    if(cart){
-     cart.items=cart?.items.filter(x=>x.productVariantId!=id)
-     localStorage.setItem("cart", JSON.stringify(cart));
+  const handleDeleteItem = (id: number) => {
+    if (cart) {
+      cart.items = cart?.items.filter((x) => x.productVariantId != id);
+      localStorage.setItem("cart", JSON.stringify(cart));
     }
-  }
+  };
   return (
     <ContainerHeader>
       <div className="hideMenu" onClick={showDrawer}>
@@ -219,13 +223,22 @@ export const Header = () => {
               ) : null}
             </li>
             <li className="shoppingcart">
-              <ShoppingCartOutlined
-                style={{ fontSize: "20px" }}
-                className="iconShopingcart"
-                onClick={() => {setOpenCart(true)
-                  getCart()
-                }}
-              />
+              <Badge
+                count={
+                  Object.entries(cart2).length > 0 ? cart2.items.length : 0
+                }
+                size="small"
+                showZero
+              >
+                <ShoppingCartOutlined
+                  style={{ fontSize: "20px" }}
+                  className="iconShopingcart"
+                  onClick={() => {
+                    setOpenCart(true);
+                    getCart();
+                  }}
+                />
+              </Badge>
             </li>
             <li>
               <Input
@@ -272,41 +285,58 @@ export const Header = () => {
       >
         <div className="wrapp">
           <div className="item">
-            {cart&&cart2&&cart2?.cartSessionId&&cart2?.items.length>0?
-            cart.items.map((item:any)=>(
-               <WrapCartItemPopup>
-              <div className="img">
-                <img
-                  src={item.img}
-                  alt=""
-                  width={'110px'}
-                  height={'110px'}
-                />
-              </div>
-              <div className="right_content">
-                <div className="title">
-                  TURBODRK Chuck 70 Low Top in Silver/Egret/Black
-                </div>
-                <details>
-                  <summary>Chi tiết</summary>
-                  <p>Màu sắc</p>
-                  <p>Kích thước</p>
-                </details>
-                <div className="price">{formatter.format(1000000)}</div>
+            {cart && cart2 && cart2?.cartSessionId && cart2?.items.length > 0
+              ? cart.items.map((item: any) => (
+                  <WrapCartItemPopup>
+                    <div className="img">
+                      <img
+                        src={item.img}
+                        alt=""
+                        width={"110px"}
+                        height={"110px"}
+                      />
+                    </div>
+                    <div className="right_content">
+                      <div className="title">
+                        TURBODRK Chuck 70 Low Top in Silver/Egret/Black
+                      </div>
+                      <details>
+                        <summary>Chi tiết</summary>
+                        <p>Màu sắc: {` ${item.color}`}</p>
+                        <p>Kích thước: {` ${item.size}`}</p>
+                      </details>
+                      <div className="price">
+                        {formatter.format(item.price)}
+                      </div>
 
-                <div className="action">
-                  <EditOutlined />
-                  <DeleteOutlined onClick={()=>handleDeleteItem(item.productVariantId)}/>
-                </div>
-              </div>
-            </WrapCartItemPopup>
-            ))
-            :''}       
+                      <div className="action">
+                        <EditOutlined />
+                        <DeleteOutlined
+                          onClick={() =>
+                            handleDeleteItem(item.productVariantId)
+                          }
+                        />
+                      </div>
+                    </div>
+                  </WrapCartItemPopup>
+                ))
+              : ""}
           </div>
           <FooterPopupCart>
             <div className="sum">
               <div className="title">Tổng cộng</div>
-              <div className="price">{formatter.format(1000000)}</div>
+              <div className="price">
+                {cart && cart.items
+                  ? formatter.format(
+                      cart.items.reduce(
+                        (accumulator: number, currentValue: any) => {
+                          return accumulator + currentValue.price;
+                        },
+                        0
+                      )
+                    )
+                  : formatter.format(0)}
+              </div>
             </div>
             <div className="btn">
               <ButtonBlack

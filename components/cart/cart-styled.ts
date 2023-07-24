@@ -35,6 +35,12 @@ export const BoxBody = styled.div`
       width: 1000 px;
     }
   }
+  .wpbox {
+    padding: 10px;
+    border: 1px solid black;
+    margin: 10px 0;
+    line-height: 16px;
+  }
 `;
 export const ContenRight = styled.div`
   color: black;
@@ -275,11 +281,11 @@ export const StepsCustom = styled(Steps)`
   }
 
   .ant-steps-item .ant-steps-item-process .ant-steps-item-active {
-    background-color: #ff0000 !important;
+    /* background-color: #ff0000 !important; */
   }
 
   .ant-steps-item-finish {
-    background-color: #ff0000 !important;
-    font-size: 90px !important;
+    /* background-color: #ff0000 !important; */
+    /* font-size: 90px !important; */
   }
 `;

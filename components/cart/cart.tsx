@@ -23,10 +23,16 @@ import {
   WrapperDiscountRigth,
   WrapperVoucher,
 } from "./cart-styled";
+
+import {
+  getListAdress,
+  removeAddress,
+  updateAddress,
+} from "@/features/user-slice";
 import { RegexValidation, formatter } from "@/models/common";
 import { DeleteOutlined, TransactionOutlined } from "@ant-design/icons";
-import { useState } from "react";
-import { useAppSelector } from "@/app/hook";
+import { useEffect, useState } from "react";
+import { useAppDispatch, useAppSelector } from "@/app/hook";
 import { selectUser } from "@/features/user-slice";
 import Router from "next/router";
 import IconVoucher from "@/assets/teenyicons_discount-outline.svg";
@@ -34,6 +40,13 @@ import { ButtonBlack } from "../home-pages/home-pages-styled";
 import { IDiscount, data_voucher } from "@/data/data_voucher";
 import { Confirm } from "../popup-confirm/confirm";
 import moment from "moment";
+import { ICartResponse } from "../sneaker/sneaker-detail";
+const cartstorage =
+  typeof window !== "undefined" ? localStorage.getItem("cart") : undefined;
+const cart2 = cartstorage
+  ? (JSON.parse(cartstorage) as ICartResponse)
+  : ({} as ICartResponse);
+
 export const Cart = () => {
   const [form] = Form.useForm();
   const [isConfirm, setIsConfirm] = useState<boolean>(false);
@@ -51,7 +64,8 @@ export const Cart = () => {
   const [dataAdress, setDataAddress] = useState<any>();
   const { loginInfo } = useAppSelector(selectUser);
   const [chooseAddress, setChooseAdress] = useState<any>();
-  let sum = 120000;
+  const [currentPage, setCurrentPage] = useState(1);
+  let sum = 0;
 
   const handleUseVoucher = () => {
     let resule = data_voucher.find((x) => x.nameVoucher === nameVoucher);
@@ -121,6 +135,7 @@ export const Cart = () => {
       return `Còn ${time.hours()} giờ`;
     }
   };
+  const dispatch = useAppDispatch();
 
   const onchangeRadio = (e: RadioChangeEvent) => {
     setSelectedRadio(e.target.value);
@@ -131,6 +146,127 @@ export const Cart = () => {
     setValueVoucher(0);
   };
 
+  useEffect(() => {
+    if (Object.entries(loginInfo).length > 0) {
+      let payload = {
+        sorting: "ok",
+        userId: loginInfo.payload.profilesID,
+        skipCount:
+          currentPage == 1
+            ? 0
+            : currentPage == 2
+            ? 3
+            : currentPage == 3
+            ? 6
+            : 9,
+        maxResultCount: 10,
+      };
+      dispatch(getListAdress(payload))
+        .unwrap()
+        .then()
+        .then((res: any) => {
+          let newData: any = [];
+          for (let i = 0; i < res.payload.length; i++) {
+            res.payload[i] = {
+              ...res.payload[i],
+              city: res.payload[i].city.split("|").slice(-1)[0],
+              ward: res.payload[i].ward.split("|").slice(-1)[0],
+              district: res.payload[i].district.split("|").slice(-1)[0],
+            };
+            newData.push(res.payload[i]);
+          }
+          setDataAddress(
+            newData.sort(
+              (a: any, b: any) => Number(b.isDefault) - Number(a.isDefault)
+            )
+          );
+          setDataAddress(
+            newData.sort(
+              (a: any, b: any) => Number(b.isDefault) - Number(a.isDefault)
+            )
+          );
+          if (newData) {
+            setChooseAdress(
+              newData.sort(
+                (a: any, b: any) => Number(b.isDefault) - Number(a.isDefault)
+              )[0]
+            );
+          }
+          // setData(res.payload);
+        });
+    }
+  }, []);
+
+  const handleUpdateQuantity = (e: any, name: any) => {
+    // console.log(e);
+    // e.preventDefault();
+    // let lstProduct: any = [...cartshopping.items];
+    // let index: number = lstProduct.findIndex(
+    //   (x: any) => x.cartSessionDetailId === name
+    // );
+    // if (index > -1) {
+    //   let quantitynew = lstProduct[index];
+    //   quantitynew = { ...quantitynew, quantity: Number(e.target.value) };
+    //   lstProduct[index] = quantitynew;
+    //   setDataCart({ ...dataCart, items: [...lstProduct] });
+    //   let payload: IUpdateQuantity = {
+    //     itemId: name,
+    //     quantity: e.target.value,
+    //   };
+    //   // dispatch(updateQuantityProduct(payload))
+    //   //   .unwrap()
+    //   //   .then()
+    //   //   .then((res: any) => {
+    //   //     let payload2: IGetListOder = {
+    //   //       userId: cartshopping.cartSessionId,
+    //   //     };
+    //   //     dispatch(getCartById(payload2))
+    //   //       .unwrap()
+    //   //       .then()
+    //   //       .then((res: any) => {
+    //   //         setDataCart(res);
+    //   //       });
+    //   //   });
+    // }
+  };
+
+  function formatNumber(number: number) {
+    if (number >= 1000) {
+      const suffixes = ["", "k", "k", "t"];
+      const suffixNum = Math.floor(("" + number).length / 4);
+      let shortNumber: any = parseFloat(
+        (suffixNum !== 0
+          ? number / Math.pow(1000, suffixNum)
+          : number
+        ).toPrecision(2)
+      );
+      return shortNumber + suffixes[suffixNum];
+    }
+    return number.toString();
+  }
+  const [cart, setCart] = useState<ICartResponse>();
+  const getCart = () => {
+    const cartstorage3 =
+      typeof window !== "undefined" ? localStorage.getItem("cart") : undefined;
+    const cart24 = cartstorage3
+      ? (JSON.parse(cartstorage3) as ICartResponse)
+      : ({} as ICartResponse);
+    setCart(cart24);
+  };
+  if (cart && cart.items) {
+    cart.items.forEach((item) => {
+      sum += item.price * item.quantity;
+    });
+  }
+  useEffect(() => {
+    getCart();
+    if (cart && cart.items) {
+      cart.items.forEach((item) => {
+        sum += item.price * item.quantity;
+      });
+    }
+  }, []);
+
   return (
     <WrapperProfile>
       <Row gutter={[20, 20]}>
@@ -140,69 +276,82 @@ export const Cart = () => {
               <div>Giỏ hàng của bạn</div>
             </BoxHeader>
             <BoxBody>
-              {product.map((cart: any) => (
-                <CartItem>
-                  <Row gutter={[10, 10]}>
-                    <Col span={8}>
-                      <Image
-                        preview={false}
-                        src={cart.src}
-                        alt=""
-                        width={"240px"}
-                        height={"240px"}
-                      />
-                    </Col>
-                    <Col span={16}>
-                      <div className="detail">
-                        <Space direction="vertical">
-                          <div
-                            style={{
-                              textTransform: "uppercase",
-                              fontSize: "16px",
-                              fontWeight: 500,
-                              width: "260px",
-                            }}
-                          >
-                            {cart.Productname}
-                          </div>
-                          <div style={{ fontWeight: "500" }}>
-                            {formatter.format(cart.price)}
-                          </div>
-                          <div>Kích cỡ</div>
-                          <Input
-                            type="number"
-                            // onKeyUp={(e) => {
-                            //   handleUpdateQuantity(e, cart.cartSessionDetailId);
-                            // }}
-                            className="quantity"
-                            min={1}
-                            value={cart.quantity}
-                            // onChange={(e) => {
-                            //   handleUpdateQuantity(e, cart.cartSessionDetailId);
-                            // }}
-                          />
-                        </Space>
-                        <div>
-                          <div style={{ fontWeight: "500", marginTop: "10px" }}>
-                            {formatter.format(
-                              Number(cart.price) * Number(cart.quantity)
-                            )}
-                            <DeleteOutlined
+              {cart &&
+                cart2 &&
+                cart2?.cartSessionId &&
+                cart2?.items.length > 0 &&
+                cart.items.map((cart: any) => (
+                  <CartItem>
+                    <Row gutter={[10, 10]}>
+                      <Col span={8}>
+                        <Image
+                          preview={false}
+                          src={cart.img}
+                          alt=""
+                          width={"240px"}
+                          height={"240px"}
+                        />
+                      </Col>
+                      <Col span={16}>
+                        <div className="detail">
+                          <Space direction="vertical">
+                            <div
                               style={{
-                                cursor: "pointer",
-                                marginLeft: "10px",
+                                textTransform: "uppercase",
+                                fontSize: "16px",
+                                fontWeight: 500,
+                                width: "260px",
                               }}
-                              // onClick={() => {
-                              //   removeItemFromCart(cart.cartSessionDetailId);
-                              // }}
+                            >
+                              {cart.Productname}
+                            </div>
+                            <div style={{ fontWeight: "500" }}>
+                              {formatter.format(cart.price)}
+                            </div>
+                            <div>Kích cỡ: {cart.size}</div>
+                            <div>Màu sắc: {cart.color}</div>
+                            <Input
+                              type="number"
+                              onKeyUp={(e) => {
+                                handleUpdateQuantity(
+                                  e,
+                                  cart.cartSessionDetailId
+                                );
+                              }}
+                              className="quantity"
+                              min={1}
+                              value={cart.quantity}
+                              onChange={(e) => {
+                                handleUpdateQuantity(
+                                  e,
+                                  cart.cartSessionDetailId
+                                );
+                              }}
                             />
+                          </Space>
+                          <div>
+                            <div
+                              style={{ fontWeight: "500", marginTop: "10px" }}
+                            >
+                              {formatter.format(
+                                Number(cart.price) * Number(cart.quantity)
+                              )}
+                              <DeleteOutlined
+                                style={{
+                                  cursor: "pointer",
+                                  marginLeft: "10px",
+                                }}
+                                // onClick={() => {
+                                //   removeItemFromCart(cart.cartSessionDetailId);
+                                // }}
+                              />
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </Col>
-                  </Row>
-                </CartItem>
-              ))}
+                      </Col>
+                    </Row>
+                  </CartItem>
+                ))}
             </BoxBody>
           </Box>
           <Button
@@ -220,7 +369,7 @@ export const Cart = () => {
             <CheckOut>
               <div>Tổng tiền</div>
               {/* <div>{Object.entries(dataCart).length > 0 ? sum : ""}</div> */}
-              <div>{sum}</div>
+              <div>{formatter.format(sum)}</div>
             </CheckOut>
             <CheckOut>
               <div>Phí ship</div>
@@ -278,13 +427,19 @@ export const Cart = () => {
               <div>Tổng tiền hàng</div>
               <div>
                 {" "}
-                {Object.entries(dataCart).length > 0 ? sum + 20000 : ""}
+                {Object.entries(cart2).length > 0
+                  ? formatter.format(sum + 20000)
+                  : ""}
               </div>
             </CheckOut>
             <CheckOut>
               <div>Giảm giá</div>
               <div className="deal">
-                <div>{valueVoucher ? -valueVoucher : valueVoucher}</div>
+                <div>
+                  {valueVoucher
+                    ? "-" + formatter.format(valueVoucher)
+                    : formatter.format(valueVoucher)}
+                </div>
                 {valueVoucher > 0 ? (
                   <div className="main1" onClick={handleDontUse}>
                     Không sử dụng
@@ -294,9 +449,11 @@ export const Cart = () => {
             </CheckOut>
             <CheckOut>
               <div className="title">Tổng thanh toán</div>
-              <div style={{ color: "red", fontSize: "18px" }}>{sum}</div>
+              <div style={{ color: "red", fontSize: "18px" }}>
+                {formatter.format(sum + ship - valueVoucher)}
+              </div>
             </CheckOut>
-            {Object.entries(loginInfo).length == 0 ? (
+            {Object.entries(loginInfo).length > 0 ? (
               <div>
                 <div style={{ display: "flex" }}>
                   <div>
@@ -314,7 +471,7 @@ export const Cart = () => {
                                 {chooseAddress.name} |{" "}
                                 {chooseAddress.phoneNumber}
                               </div>
-                              <div>{`${chooseAddress.addressDetail}, ${chooseAddress.wardCommune},${chooseAddress.province}, ${chooseAddress.cityDistrict}`}</div>
+                              <div>{`${chooseAddress.addressDetail}, ${chooseAddress.ward},${chooseAddress.district}, ${chooseAddress.city}`}</div>
                               <div>Địa chỉ nhận hàng</div>
                             </div>
                             <div
@@ -334,7 +491,7 @@ export const Cart = () => {
                                 }}
                                 onClick={() => {
                                   setNumberOpen(2);
-                                  // setIsConfirm(true);
+                                  setIsConfirm(true);
                                 }}
                               >{`>`}</div>
                             </div>
@@ -492,7 +649,7 @@ export const Cart = () => {
                               )}
                               {res.maxValue ? (
                                 <div className="main1">
-                                  Tối đa {String(res.maxValue).slice(0, 3)}k
+                                  Tối đa {formatNumber(res.maxValue)}
                                 </div>
                               ) : null}
                             </Space>
@@ -552,7 +709,7 @@ export const Cart = () => {
                             <div>
                               {x.name} | {x.phoneNumber}
                             </div>
-                            <div>{`${x.addressDetail}, ${x.wardCommune},${x.province}, ${x.cityDistrict}`}</div>
+                            <div>{`${x.addressDetail}, ${x.ward},${x.district}, ${x.city}`}</div>
                             <div>Địa chỉ nhận hàng</div>
                           </div>
                           <div
@@ -576,7 +733,7 @@ export const Cart = () => {
                             >
                               <Button type="link"> Sửa</Button>
                             </div>
-                            {x.userAddressId == chooseAddress.userAddressId ? (
+                            {x.id == chooseAddress?.id ? (
                               <div
                                 style={{
                                   position: "absolute",

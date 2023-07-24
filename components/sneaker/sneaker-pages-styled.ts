@@ -152,6 +152,15 @@ export const ContainerSneaker = styled.div`
           left: calc(100% - 100px);
         }
       }
+      .filterBox {
+        display: flex;
+        gap: 15px;
+        padding: 4px;
+        width: max-content;
+        background-color: #f7f7f7;
+        text-transform: uppercase;
+        margin: 8px 0;
+      }
       .filter_option {
         padding: 18px 0;
         border-bottom: 0.0625rem solid #e5e5e5;

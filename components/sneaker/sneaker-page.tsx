@@ -1,6 +1,7 @@
 import { data_filter } from "@/data/data_filter";
 import {
   CaretDownOutlined,
+  CloseOutlined,
   CloseSquareOutlined,
   DownOutlined,
   FilterOutlined,
@@ -22,6 +23,21 @@ import { Fragment, useEffect, useState } from "react";
 import { CommonProduct, listProduct } from "../product/product";
 import { ContainerSneaker, Container_Filter } from "./sneaker-pages-styled";
 import { Paging } from "../paging/paging";
+import { useAppDispatch } from "@/app/hook";
+import {
+  getListBrands,
+  getListColors,
+  getListFeature,
+  getListSize,
+  getListStyles,
+} from "@/features/product-slice";
+import {
+  IBrandsResponse,
+  IColorsResponse,
+  IFeaturesResponse,
+  ISizesResponse,
+  IStylesResponse,
+} from "@/models/product";
 
 export const Sneaker = () => {
   const [hideFilter, setHideFilter] = useState<boolean>(true);
@@ -33,19 +49,28 @@ export const Sneaker = () => {
   const [open, setOpen] = useState(false);
   const [listId, setListId] = useState<any>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [startIndex,setStartIndex]=useState<number>(0)
-  const [endIndex,setEndIndex]=useState<number>(20)
+  const [startIndex, setStartIndex] = useState<number>(0);
+  const [endIndex, setEndIndex] = useState<number>(20);
+  const [filter, setFilter] = useState<any>([]);
+  const [dataColors, setDataColors] = useState<IColorsResponse[]>([]);
+  const [dataStyles, setDataStyles] = useState<IStylesResponse[]>([]);
+  const [dataSizes, setDataSizes] = useState<ISizesResponse[]>([]);
+  const [dataBrands, setDataBrands] = useState<IBrandsResponse[]>([]);
+  const [dataFeature, setDataFeatures] = useState<IFeaturesResponse[]>([]);
+  // const [dataColors, setDataColors] = useState<IColorsResponse[]>([]);
+  const [daataFilter, setDataFilter] = useState<any>();
+  const dispatch = useAppDispatch();
+
   const totalItems = 100;
   const itemsPerPage = 10;
 
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
     const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage; 
-    setStartIndex(startIndex)
-    setEndIndex(endIndex)
+    const endIndex = startIndex + itemsPerPage;
+    setStartIndex(startIndex);
+    setEndIndex(endIndex);
   };
-
 
   useEffect(() => {
     function handleResize() {
@@ -77,6 +102,53 @@ export const Sneaker = () => {
     });
   }
 
+  useEffect(() => {
+    dispatch(getListColors())
+      .unwrap()
+      .then()
+      .then((res: any) => {
+        setDataColors(res);
+      })
+      .catch((er: any) => {});
+  }, []);
+
+  useEffect(() => {
+    dispatch(getListStyles())
+      .unwrap()
+      .then()
+      .then((res: any) => {
+        setDataStyles(res);
+      })
+      .catch((er: any) => {});
+  }, []);
+  useEffect(() => {
+    dispatch(getListSize())
+      .unwrap()
+      .then()
+      .then((res: any) => {
+        setDataSizes(res);
+      })
+      .catch((er: any) => {});
+  }, []);
+  useEffect(() => {
+    dispatch(getListFeature())
+      .unwrap()
+      .then()
+      .then((res: any) => {
+        setDataFeatures(res);
+      })
+      .catch((er: any) => {});
+  }, []);
+  useEffect(() => {
+    dispatch(getListBrands())
+      .unwrap()
+      .then()
+      .then((res: any) => {
+        setDataBrands(res);
+      })
+      .catch((er: any) => {});
+  }, []);
+
   const handleChooseId = (id: any) => {
     if (listId.length >= 0 && listId.find((x: any) => x == id)) {
       setListId(listId.filter((x: any) => x !== id));
@@ -91,6 +163,19 @@ export const Sneaker = () => {
   const onClose = () => {
     setOpen(false);
   };
+
+  const handleFilter = (category: any) => {
+    if (filter.length == 0) {
+      filter.push(category);
+    } else {
+      if (filter.find((x: any) => x.id == category.id)) {
+        setFilter(filter.filter((x: any) => x.id !== category.id));
+      } else {
+        setFilter([...filter, category]);
+      }
+    }
+  };
+  console.log(filter);
   const handleHideSideBar = () => {};
   return (
     <ContainerSneaker>
@@ -149,6 +234,108 @@ export const Sneaker = () => {
           className="column_sidebar"
           style={{ display: `${hideSidebar ? "block" : "none"}` }}
         >
+          {filter &&
+            filter.length > 0 &&
+            filter.map((f: any, index: number) => (
+              <div className="filterBox" key={index}>
+                <div>
+                  {f.size
+                    ? "Kích cỡ :"
+                    : f.styles
+                    ? "Phong cách: "
+                    : "Màu sắc :"}
+                  {f.size ? f.size : f.styles ? f.styles : f.color}
+                </div>
+                <div
+                  style={{ cursor: "pointer" }}
+                  onClick={() => handleFilter(f)}
+                >
+                  <CloseOutlined />
+                </div>
+              </div>
+            ))}
+
+          <div
+            className="filter_option"
+            // style={{ padding: "0 0px 18px 0px" }}
+            key={filter.id}
+          >
+            <div className="wrapp">
+              <div className="text">Màu sắc</div>
+              <div className="icon" onClick={() => handleChooseId(filter.id)}>
+                {listId.length > 0 &&
+                listId.find((x: any) => x == filter.id) ? (
+                  <MinusOutlined />
+                ) : (
+                  <PlusOutlined />
+                )}
+              </div>
+            </div>
+            <div
+              className="wrapp_color"
+              style={
+                {
+                  // display: `${
+                  //   listId.length > 0 && listId.find((x: any) => x == filter.id)
+                  //     ? ""
+                  //     : "none"
+                  // }`,
+                }
+              }
+            >
+              {dataColors &&
+                dataColors.map((filter: any) => (
+                  <Tooltip title={filter.colorName}>
+                    <div
+                      onClick={() => handleFilter(filter)}
+                      className="box_color"
+                      // style={{ background: `rgba(${arr.rgba})` }}
+                    ></div>
+                  </Tooltip>
+                ))}
+            </div>
+          </div>
+          <div
+            className="filter_option"
+            // style={{ padding: "0 0px 18px 0px" }}
+            key={filter.id}
+          >
+            <div className="wrapp">
+              <div className="text">Màu sắc</div>
+              <div className="icon" onClick={() => handleChooseId(filter.id)}>
+                {listId.length > 0 &&
+                listId.find((x: any) => x == filter.id) ? (
+                  <MinusOutlined />
+                ) : (
+                  <PlusOutlined />
+                )}
+              </div>
+            </div>
+            <div
+              className="wrapp_color"
+              style={
+                {
+                  // display: `${
+                  //   listId.length > 0 && listId.find((x: any) => x == filter.id)
+                  //     ? ""
+                  //     : "none"
+                  // }`,
+                }
+              }
+            >
+              {dataBrands &&
+                dataColors.map((filter: any) => (
+                  <div
+                    className="box_styles"
+                    // key={index}
+                    onClick={() => handleFilter(filter)}
+                  >
+                    <div className="name">{filter.brandsName}</div>
+                    <div className="count">112</div>
+                  </div>
+                ))}
+            </div>
+          </div>
           {data_filter.map((filter: any) => {
             return (
               <div
@@ -182,10 +369,11 @@ export const Sneaker = () => {
                   }}
                 >
                   {filter.name === "Màu sắc"
-                    ? filter.arrays.map((arr: any,index:number) => {
+                    ? filter.arrays.map((arr: any, index: number) => {
                         return (
                           <Tooltip title={arr.color} key={index}>
                             <div
+                              onClick={() => handleFilter(arr)}
                               className="box_color"
                               style={{ background: `rgba(${arr.rgba})` }}
                             ></div>
@@ -193,13 +381,25 @@ export const Sneaker = () => {
                         );
                       })
                     : filter.name === "Kích cỡ"
-                    ? filter.arrays.map((arr: any,index:number) => {
-                        return <div className="box_size" key={index}>{arr.size}</div>;
+                    ? filter.arrays.map((arr: any, index: number) => {
+                        return (
+                          <div
+                            className="box_size"
+                            key={index}
+                            onClick={() => handleFilter(arr)}
+                          >
+                            {arr.size}
+                          </div>
+                        );
                       })
                     : filter.name === "Phong cách"
-                    ? filter.arrays.map((arr: any,index:number) => {
+                    ? filter.arrays.map((arr: any, index: number) => {
                         return (
-                          <div className="box_styles" key={index}>
+                          <div
+                            className="box_styles"
+                            key={index}
+                            onClick={() => handleFilter(arr)}
+                          >
                             <div className="name">{arr.styles}</div>
                             <div className="count">112</div>
                           </div>
@@ -218,7 +418,7 @@ export const Sneaker = () => {
           }}
         >
           <Row gutter={[20, 20]}>
-            {listProduct.map((x,index:number) => {
+            {listProduct.map((x, index: number) => {
               return (
                 <Col
                   xs={!hideSidebar ? 12 : 24}
@@ -232,17 +432,18 @@ export const Sneaker = () => {
               );
             })}
           </Row>
-          <Pagination defaultCurrent={1} style={{
-            display:"flex",
-            alignItems:'center',
-            justifyContent:'center'
-          }}
-          current={currentPage}
-          pageSize={itemsPerPage}
-          total={totalItems}
-          onChange={handlePageChange}
+          <Pagination
+            defaultCurrent={1}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            current={currentPage}
+            pageSize={itemsPerPage}
+            total={totalItems}
+            onChange={handlePageChange}
           />
-
         </div>
       </div>
       <Drawer
@@ -294,7 +495,7 @@ export const Sneaker = () => {
                   }}
                 >
                   {filter.name === "Màu sắc"
-                    ? filter.arrays.map((arr: any,index:number) => {
+                    ? filter.arrays.map((arr: any, index: number) => {
                         return (
                           <Tooltip title={arr.color} key={index}>
                             <div
@@ -305,11 +506,15 @@ export const Sneaker = () => {
                         );
                       })
                     : filter.name === "Kích cỡ"
-                    ? filter.arrays.map((arr: any,index:number) => {
-                        return <div className="box_size" key={index}>{arr.size}</div>;
+                    ? filter.arrays.map((arr: any, index: number) => {
+                        return (
+                          <div className="box_size" key={index}>
+                            {arr.size}
+                          </div>
+                        );
                       })
                     : filter.name === "Phong cách"
-                    ? filter.arrays.map((arr: any,index:number) => {
+                    ? filter.arrays.map((arr: any, index: number) => {
                         return (
                           <div className="box_styles" key={index}>
                             <div className="name">{arr.styles}</div>

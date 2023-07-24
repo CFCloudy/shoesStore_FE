@@ -1,10 +1,11 @@
-import { Steps } from "antd";
+import { Col, Row, Steps } from "antd";
 import { WrapperProfile } from "../profiles-user/profiles-tyled";
 import { useState } from "react";
 import { Cart } from "./cart";
+import { Box, BoxBody, BoxHeader, StepsCustom } from "./cart-styled";
 
 export const CheckOut = () => {
-  const [current, setCurrent] = useState(0);
+  const [current, setCurrent] = useState(1);
 
   const onChange = (value: number) => {
     console.log("onChange:", value);
@@ -14,7 +15,7 @@ export const CheckOut = () => {
   const description = "ok";
   return (
     <WrapperProfile>
-      <Steps
+      <StepsCustom
         current={current}
         onChange={onChange}
         style={{ width: "60%" }}
@@ -23,26 +24,36 @@ export const CheckOut = () => {
             title: "Giỏ hàng",
           },
           {
-            title: "Giao hàng",
-          },
-          {
             title: "Thanh toán",
-            // disabled:true
           },
           {
             title: "Hoàn thành đơn hàng",
-            disabled:true
           },
         ]}
       />
-      {current==1?
-      <div className="info">
-        
-      </div>:''}
-      {current==2?<div className="payment">
-        <div className="">Thanh toán khi nhận hàng</div>
-        <div className="">Chuyển khoản</div>
-      </div>:''}
+      {current == 1 ? (
+        <div>
+          <Row gutter={[20, 20]}>
+            <Col span={16}>
+              <Box>
+                <BoxHeader>
+                  <div>2. Thanh toán</div>
+                </BoxHeader>
+                <BoxBody>
+                  <div className="wpbox">
+                    <div className="title">Thanh toán khi nhận hàng</div>
+                    <p>
+                      Phí thu hộ: 0đ . ƯU đãi về phí vận chuyển (nếu có) áp dụng
+                      cả với phí thu hộ.
+                    </p>
+                  </div>
+                  <div className="wpbox">Thanh toán bằng thẻ</div>
+                </BoxBody>
+              </Box>
+            </Col>
+          </Row>
+        </div>
+      ) : null}
     </WrapperProfile>
   );
 };
