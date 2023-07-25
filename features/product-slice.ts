@@ -1,7 +1,7 @@
 import { RootState, store } from "@/app/store";
 import { createSlice, createAsyncThunk, createAction } from "@reduxjs/toolkit";
 import productApi from "./services/product-api";
-import { IInitStateProduct } from "@/models/product";
+import { IFilterData, IInitStateProduct } from "@/models/product";
 
 export const getListColors = createAsyncThunk("getListColors", async () => {
   try {
@@ -57,6 +57,21 @@ export const getListBrands = createAsyncThunk("getListSize", async () => {
   }
 });
 
+export const getListProduct = createAsyncThunk(
+  "getListProduct",
+  async (payload: IFilterData, { rejectWithValue }) => {
+    try {
+      const response = await productApi.getListProduct(payload);
+      return response.data;
+    } catch (err: any) {
+      if (!err.response) {
+        throw err.response;
+      }
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
 const initState: IInitStateProduct = {
   error: false,
   loading: false,
@@ -75,6 +90,16 @@ const productSlice = createSlice({
         state.loading = false;
       })
       .addCase(getListColors.rejected, (state, { error }) => {
+        state.error = false;
+        state.loading = false;
+      })
+      .addCase(getListProduct.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getListProduct.fulfilled, (state, { payload }) => {
+        state.loading = false;
+      })
+      .addCase(getListProduct.rejected, (state, { error }) => {
         state.error = false;
         state.loading = false;
       });

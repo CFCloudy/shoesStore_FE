@@ -11,6 +11,7 @@ import {
   IUpdateAddress,
 } from "@/models/user";
 import axiosClient from "./axios-client";
+import { IFilterData } from "@/models/product";
 
 class ProductApi {
   getListColor() {
@@ -46,6 +47,13 @@ class ProductApi {
       method: "get",
       url: "/api/StyleControllerAPI",
       // params: ,
+    });
+  }
+  getListProduct(payload:IFilterData) {
+    return axiosClient({
+      method: "post",
+      url: "/api/StyleControllerAPI",
+      data:payload
     });
   }
 }

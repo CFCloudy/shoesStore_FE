@@ -28,6 +28,7 @@ import {
   getListBrands,
   getListColors,
   getListFeature,
+  getListProduct,
   getListSize,
   getListStyles,
 } from "@/features/product-slice";
@@ -35,6 +36,7 @@ import {
   IBrandsResponse,
   IColorsResponse,
   IFeaturesResponse,
+  IFilterData,
   ISizesResponse,
   IStylesResponse,
 } from "@/models/product";
@@ -59,6 +61,7 @@ export const Sneaker = () => {
   const [dataFeature, setDataFeatures] = useState<IFeaturesResponse[]>([]);
   // const [dataColors, setDataColors] = useState<IColorsResponse[]>([]);
   const [daataFilter, setDataFilter] = useState<any>();
+  const [payloadFilter, setPayloadFilter] = useState<IFilterData>();
   const dispatch = useAppDispatch();
 
   const totalItems = 100;
@@ -71,6 +74,13 @@ export const Sneaker = () => {
     setStartIndex(startIndex);
     setEndIndex(endIndex);
   };
+  useEffect(()=>{
+    fectchDataAsyn(payloadFilter)
+  },[])
+  const fectchDataAsyn=async (filter:any)=>{
+    dispatch(getListProduct(filter)).unwrap().then().then((res:any)=>{
+    console.log(res)})
+  }
 
   useEffect(() => {
     function handleResize() {
@@ -166,7 +176,7 @@ export const Sneaker = () => {
 
   const handleFilter = (category: any) => {
     if (filter.length == 0) {
-      filter.push(category);
+      setFilter([category])
     } else {
       if (filter.find((x: any) => x.id == category.id)) {
         setFilter(filter.filter((x: any) => x.id !== category.id));
@@ -175,7 +185,29 @@ export const Sneaker = () => {
       }
     }
   };
-  console.log(filter);
+
+  useEffect(()=>{
+    const data_filter = [
+      {
+        id: 1,
+        name: "Phong cách",
+        arrays: dataStyles
+      },
+      {
+        id: 2,
+        name: "Màu sắc",
+        arrays: dataColors
+      },
+      {
+        id: 3,
+        name: "Kích cỡ",
+        arrays: dataSizes
+      },
+    ];
+    setDataFilter(data_filter)
+  },[dataBrands,dataColors,dataFeature,dataSizes,dataStyles])
+
+  console.log("daataFilter",daataFilter);
   const handleHideSideBar = () => {};
   return (
     <ContainerSneaker>
@@ -239,12 +271,12 @@ export const Sneaker = () => {
             filter.map((f: any, index: number) => (
               <div className="filterBox" key={index}>
                 <div>
-                  {f.size
+                  {f.size1
                     ? "Kích cỡ :"
-                    : f.styles
+                    : f.styleName
                     ? "Phong cách: "
                     : "Màu sắc :"}
-                  {f.size ? f.size : f.styles ? f.styles : f.color}
+                  {f.size1 ? f.size1 : f.styleName ? f.styleName : f.colorName}
                 </div>
                 <div
                   style={{ cursor: "pointer" }}
@@ -255,88 +287,9 @@ export const Sneaker = () => {
               </div>
             ))}
 
-          <div
-            className="filter_option"
-            // style={{ padding: "0 0px 18px 0px" }}
-            key={filter.id}
-          >
-            <div className="wrapp">
-              <div className="text">Màu sắc</div>
-              <div className="icon" onClick={() => handleChooseId(filter.id)}>
-                {listId.length > 0 &&
-                listId.find((x: any) => x == filter.id) ? (
-                  <MinusOutlined />
-                ) : (
-                  <PlusOutlined />
-                )}
-              </div>
-            </div>
-            <div
-              className="wrapp_color"
-              style={
-                {
-                  // display: `${
-                  //   listId.length > 0 && listId.find((x: any) => x == filter.id)
-                  //     ? ""
-                  //     : "none"
-                  // }`,
-                }
-              }
-            >
-              {dataColors &&
-                dataColors.map((filter: any) => (
-                  <Tooltip title={filter.colorName}>
-                    <div
-                      onClick={() => handleFilter(filter)}
-                      className="box_color"
-                      // style={{ background: `rgba(${arr.rgba})` }}
-                    ></div>
-                  </Tooltip>
-                ))}
-            </div>
-          </div>
-          <div
-            className="filter_option"
-            // style={{ padding: "0 0px 18px 0px" }}
-            key={filter.id}
-          >
-            <div className="wrapp">
-              <div className="text">Màu sắc</div>
-              <div className="icon" onClick={() => handleChooseId(filter.id)}>
-                {listId.length > 0 &&
-                listId.find((x: any) => x == filter.id) ? (
-                  <MinusOutlined />
-                ) : (
-                  <PlusOutlined />
-                )}
-              </div>
-            </div>
-            <div
-              className="wrapp_color"
-              style={
-                {
-                  // display: `${
-                  //   listId.length > 0 && listId.find((x: any) => x == filter.id)
-                  //     ? ""
-                  //     : "none"
-                  // }`,
-                }
-              }
-            >
-              {dataBrands &&
-                dataColors.map((filter: any) => (
-                  <div
-                    className="box_styles"
-                    // key={index}
-                    onClick={() => handleFilter(filter)}
-                  >
-                    <div className="name">{filter.brandsName}</div>
-                    <div className="count">112</div>
-                  </div>
-                ))}
-            </div>
-          </div>
-          {data_filter.map((filter: any) => {
+          
+          
+          {daataFilter&&daataFilter.map((filter: any) => {
             return (
               <div
                 className="filter_option"
@@ -388,7 +341,7 @@ export const Sneaker = () => {
                             key={index}
                             onClick={() => handleFilter(arr)}
                           >
-                            {arr.size}
+                            {arr.size1}
                           </div>
                         );
                       })
@@ -400,7 +353,7 @@ export const Sneaker = () => {
                             key={index}
                             onClick={() => handleFilter(arr)}
                           >
-                            <div className="name">{arr.styles}</div>
+                            <div className="name">{arr.styleName}</div>
                             <div className="count">112</div>
                           </div>
                         );

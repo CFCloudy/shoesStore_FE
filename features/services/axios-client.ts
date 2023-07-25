@@ -18,7 +18,7 @@ if (storage) {
 }
 
 const axiosClient = axios.create({
-  baseURL: "https://localhost:44311",
+  baseURL: "https://localhost:7035",
   headers: {
     "Content-Type": "application/json",
     Authorization: `Bearer ${

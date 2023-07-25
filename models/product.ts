@@ -30,3 +30,26 @@ export interface IInitStateProduct {
   error: boolean;
   loading: boolean;
 }
+
+export interface IFilterData {
+  brandDTOs?:[
+    {
+      id:number,
+      brandName:string
+    }
+  ],
+  featureDTOs?:[
+    {
+      id:number,
+      featureName:string
+    }
+  ],
+  styleDTOs?:[
+    {
+      id:number,
+      styleName:string
+    }
+  ],
+  isDecrease:boolean,
+  isAscending:boolean
+}
