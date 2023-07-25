@@ -12,7 +12,7 @@ import {
   Swap_Product_Detail,
 } from "./sneaker-pages-styled";
 import { FreeMode, Navigation, Thumbs, Scrollbar, EffectCube } from "swiper";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Col, Image, Row, message } from "antd";
 import { formatter } from "@/models/common";
 import { listProduct } from "../product/product";
@@ -22,6 +22,7 @@ import { CSSProperties } from "styled-components";
 import Router from "next/router";
 import { useAppDispatch } from "@/app/hook";
 import { updateStorageValue } from "@/features/user-slice";
+import { getProductDetail } from "@/features/product-slice";
 
 export interface IAddToCart {
   cartToken?: string;
@@ -51,6 +52,7 @@ export const SneakerDetail = () => {
   const [chooseSizes, setChooseSizes] = useState<String>("");
   const [indexImg, setIndexImg] = useState<any>(0);
   const [price, setPrice] = useState<number>(0);
+  const [data, setData] = useState<any>();
   const onChooseOption = (
     type: String,
     value: any,
@@ -59,9 +61,7 @@ export const SneakerDetail = () => {
   ) => {
     if (type == "Color") {
       setIndexImg(index);
-      let checkColor = listProduct[0].variant.find(
-        (p: any) => p.color == value
-      );
+      let checkColor = data.shoesVariantDTOs.find((p: any) => p.color == value);
       if (checkColor) {
         if (isActiveColor && chooseColor == value) {
           setIsActiveColor(false);
@@ -76,7 +76,7 @@ export const SneakerDetail = () => {
         }
       }
     } else if (type == "Size") {
-      let checkSize = listProduct[0].variant.find((p: any) => p.size == value);
+      let checkSize = data.shoesVariantDTOs.find((p: any) => p.size == value);
       if (checkSize) {
         if (isActiveSize && chooseSizes == value) {
           setIdSizeChooes(0);
@@ -117,6 +117,17 @@ export const SneakerDetail = () => {
     "M 15.5 / W 16",
     "M 16 / W 16.5",
   ];
+
+  useEffect(() => {
+    dispatch(getProductDetail(Number(Router.query.id)))
+      .unwrap()
+      .then()
+      .then((res: any) => {
+        res.shoesVariantDTOs[0].quantity = 9;
+        setData(res);
+      });
+  }, []);
+
   const generateProduct = () => {
     let pr = [];
     for (let i = 1; i <= 25; i++) {
@@ -142,7 +153,7 @@ export const SneakerDetail = () => {
   };
 
   const checkColor = (value: String) => {
-    let checkSizes = listProduct[0].variant.find(
+    let checkSizes = data.shoesVariantDTOs.find(
       (p: any) => p.color == value && p.size == chooseSizes
     );
     if (chooseSizes == "") {
@@ -285,191 +296,175 @@ export const SneakerDetail = () => {
       );
     }
   };
-
+  console.log(listProduct);
   return (
     <ContainerSneaker>
-      {listProduct
-        .filter((x) => x.id == Number(Router.query.id))
-        .map((product: any, index: number) => {
-          return (
-            <Row gutter={[40, 20]} key={index}>
-              <Col xs={24} md={24} xxl={15} lg={15}>
-                <Swiper
-                  style={
-                    {
-                      "--swiper-navigation-color": "#fff",
-                      "--swiper-pagination-color": "#fff",
-                    } as CSSProperties
-                  }
-                  scrollbar={{
-                    hide: true,
-                  }}
-                  spaceBetween={10}
-                  navigation={true}
-                  thumbs={{
-                    swiper:
-                      thumbsSwiper && !thumbsSwiper.destroyed
-                        ? thumbsSwiper
-                        : null,
-                  }}
-                  modules={[FreeMode, Navigation, Thumbs, Scrollbar]}
-                  className="mySwiper2"
-                >
-                  {product.available_colors[indexImg].src.map((img: any) => {
-                    return (
-                      <SwiperSlide>
-                        <img src={img} />
-                      </SwiperSlide>
-                    );
-                  })}
-                </Swiper>
-                <Swiper
-                  onSwiper={setThumbsSwiper}
-                  spaceBetween={10}
-                  grabCursor={true}
-                  slidesPerView={4}
-                  freeMode={true}
-                  watchSlidesProgress={true}
-                  modules={[FreeMode, Navigation, Thumbs, Scrollbar]}
-                  scrollbar={{
-                    hide: true,
-                  }}
-                  className="mySwiper"
-                >
-                  {product.available_colors[indexImg].src.map((img: any) => {
-                    return (
-                      <SwiperSlide>
-                        <img src={img} />
-                      </SwiperSlide>
-                    );
-                  })}
-                </Swiper>
-              </Col>
-              <Col xs={24} md={24} xxl={9} lg={9}>
-                <Swap_Product_Detail>
-                  <div className="name">{product.name}</div>
-                  <div className="price">
-                    {formatter.format(
-                      price == 0 ? product.selling_price : price
-                    )}
-                  </div>
-                  <div className="decription">
-                    The Converse All Star Chuck ’70 is our re-crafted sneaker
-                    that uses modern details to cele
-                  </div>
-                  <hr />
-                  <br />
-                  <span className="title">Màu sắc</span>
+      {data ? (
+        <Row gutter={[40, 20]} key={data.id}>
+          <Col xs={24} md={24} xxl={15} lg={15}>
+            <Swiper
+              style={
+                {
+                  "--swiper-navigation-color": "#fff",
+                  "--swiper-pagination-color": "#fff",
+                } as CSSProperties
+              }
+              scrollbar={{
+                hide: true,
+              }}
+              spaceBetween={10}
+              navigation={true}
+              thumbs={{
+                swiper:
+                  thumbsSwiper && !thumbsSwiper.destroyed ? thumbsSwiper : null,
+              }}
+              modules={[FreeMode, Navigation, Thumbs, Scrollbar]}
+              className="mySwiper2"
+            >
+              {data.available_colors[indexImg].src.map((img: any) => {
+                return (
+                  <SwiperSlide>
+                    <img src={img} />
+                  </SwiperSlide>
+                );
+              })}
+            </Swiper>
+            <Swiper
+              onSwiper={setThumbsSwiper}
+              spaceBetween={10}
+              grabCursor={true}
+              slidesPerView={4}
+              freeMode={true}
+              watchSlidesProgress={true}
+              modules={[FreeMode, Navigation, Thumbs, Scrollbar]}
+              scrollbar={{
+                hide: true,
+              }}
+              className="mySwiper"
+            >
+              {data.available_colors[indexImg].src.map((img: any) => {
+                return (
+                  <SwiperSlide>
+                    <img src={img} />
+                  </SwiperSlide>
+                );
+              })}
+            </Swiper>
+          </Col>
+          <Col xs={24} md={24} xxl={9} lg={9}>
+            <Swap_Product_Detail>
+              <div className="name">{data.productName}</div>
+              <div className="price">
+                {formatter.format(price == 0 ? data.displayPrice : price)}
+              </div>
+              <div className="decription">
+                The Converse All Star Chuck ’70 is our re-crafted sneaker that
+                uses modern details to cele
+              </div>
+              <hr />
+              <br />
+              <span className="title">Màu sắc</span>
 
-                  <div className="wrap_color">
-                    {product.available_colors.map((x: any, index: number) => {
-                      return (
-                        <div
-                          className="color"
-                          key={index}
-                          style={{
-                            pointerEvents: `${
-                              chooseSizes
-                                ? checkColor(x.name)?.check
-                                  ? "auto"
-                                  : "none"
-                                : "auto"
-                            }`,
-                          }}
-                        >
-                          <Image
-                            style={{
-                              // background: `${
-                              //   checkColor(x.name)?.check
-                              //     ? "rgba(198, 198, 198, 0.88)"
-                              //     : "#fff"
-                              // }`,
-                              border: `${
-                                checkColor(x.name)?.check
-                                  ? "solid 1px black"
-                                  : "none"
-                              }`,
-                            }}
-                            preview={false}
-                            onClick={() =>
-                              onChooseOption("Color", x.name, product.id, index)
-                            }
-                            src={x.src[0]}
-                          />
-                          {isActiveColor && chooseColor == x.name ? (
-                            <p></p>
-                          ) : null}
-                        </div>
-                      );
-                    })}
-                  </div>
-                  <br />
-                  <span>Kích cỡ</span>
-                  <br />
-                  <div className="wrap_color">
-                    {product.available_sizes.map((sz: any, index: Number) => {
-                      return (
-                        <div
-                          className="box"
-                          onClick={() =>
-                            onChooseOption("Size", sz, product.id, index)
-                          }
-                          style={{
-                            background: `${
-                              isActiveSize && chooseSizes == sz
-                                ? "black"
-                                : "white"
-                            }`,
-                            color: `${
-                              isActiveSize && chooseSizes == sz
-                                ? "white"
-                                : "black"
-                            }`,
-                            border: `${
-                              checkSize(sz)?.check ? "solid 1px black" : "none"
-                            }`,
-                            // pointerEvents:`${
-                            //   chooseColor&&chooseSizes?checkSize(sz)?.check?'auto':'none'
-                            //   :'auto'
-                            // }`
-                            pointerEvents: `${
-                              chooseColor
-                                ? checkSize(sz)?.check
-                                  ? "auto"
-                                  : "none"
-                                : "auto"
-                            }`,
-                          }}
-                        >
-                          {sz}
-                        </div>
-                      );
-                    })}
-                  </div>
-                  <br />
-                  <hr />
-                  <br />
-                  <p
-                    style={{
-                      display: "flex",
-                      justifyContent: "flex-end",
-                      fontSize: "13px",
-                      cursor: "pointer",
-                    }}
-                    onClick={() => {
-                      setIsConfirm(true);
-                    }}
-                  >
-                    Hướng dẫn chọn size
-                  </p>
-                  <ButtonBlack onClick={handleAddToCard}>
-                    Thêm vào giỏ hàng
-                  </ButtonBlack>
-                </Swap_Product_Detail>
-              </Col>
-            </Row>
-          );
-        })}
+              <div className="wrap_color">
+                {data.available_colors.map((x: any, index: number) => {
+                  return (
+                    <div
+                      className="color"
+                      key={index}
+                      style={{
+                        pointerEvents: `${
+                          chooseSizes
+                            ? checkColor(x.name)?.check
+                              ? "auto"
+                              : "none"
+                            : "auto"
+                        }`,
+                      }}
+                    >
+                      <Image
+                        style={{
+                          // background: `${
+                          //   checkColor(x.name)?.check
+                          //     ? "rgba(198, 198, 198, 0.88)"
+                          //     : "#fff"
+                          // }`,
+                          border: `${
+                            checkColor(x.name)?.check
+                              ? "solid 1px black"
+                              : "none"
+                          }`,
+                        }}
+                        preview={false}
+                        onClick={() =>
+                          onChooseOption("Color", x.name, data.id, index)
+                        }
+                        src={x.src[0]}
+                      />
+                      {isActiveColor && chooseColor == x.name ? <p></p> : null}
+                    </div>
+                  );
+                })}
+              </div>
+              <br />
+              <span>Kích cỡ</span>
+              <br />
+              <div className="wrap_color">
+                {data.available_sizes.map((sz: any, index: Number) => {
+                  return (
+                    <div
+                      className="box"
+                      onClick={() => onChooseOption("Size", sz, data.id, index)}
+                      style={{
+                        background: `${
+                          isActiveSize && chooseSizes == sz ? "black" : "white"
+                        }`,
+                        color: `${
+                          isActiveSize && chooseSizes == sz ? "white" : "black"
+                        }`,
+                        border: `${
+                          checkSize(sz)?.check ? "solid 1px black" : "none"
+                        }`,
+                        // pointerEvents:`${
+                        //   chooseColor&&chooseSizes?checkSize(sz)?.check?'auto':'none'
+                        //   :'auto'
+                        // }`
+                        pointerEvents: `${
+                          chooseColor
+                            ? checkSize(sz)?.check
+                              ? "auto"
+                              : "none"
+                            : "auto"
+                        }`,
+                      }}
+                    >
+                      {sz}
+                    </div>
+                  );
+                })}
+              </div>
+              <br />
+              <hr />
+              <br />
+              <p
+                style={{
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  fontSize: "13px",
+                  cursor: "pointer",
+                }}
+                onClick={() => {
+                  setIsConfirm(true);
+                }}
+              >
+                Hướng dẫn chọn size
+              </p>
+              <ButtonBlack onClick={handleAddToCard}>
+                Thêm vào giỏ hàng
+              </ButtonBlack>
+            </Swap_Product_Detail>
+          </Col>
+        </Row>
+      ) : null}
       <Confirm
         buttonLeft={""}
         buttonRight={""}

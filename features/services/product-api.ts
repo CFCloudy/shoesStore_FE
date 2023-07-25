@@ -49,11 +49,18 @@ class ProductApi {
       // params: ,
     });
   }
-  getListProduct(payload:IFilterData) {
+  getListProduct(payload: IFilterData) {
     return axiosClient({
       method: "post",
-      url: "/api/StyleControllerAPI",
-      data:payload
+      url: "/api/ShoeControllerAPI",
+      data: payload,
+    });
+  }
+  getProductDetail(payload: number) {
+    return axiosClient({
+      method: "get",
+      url: `/api/ShoeControllerAPI/${payload}`,
+      data: payload,
     });
   }
 }

@@ -39,14 +39,13 @@ export const CommonProduct = (props: IPopsProduct) => {
   return (
     <WrappProduct key={data.id}>
       <div className="image_product">
-        <Image preview={false} src={data.images[0]} />
+        {/* <Image preview={false} src={data.images[0]} /> */}
+        <Image preview={false} src={data.displayImage} />
       </div>
       <div className="name_product" onClick={() => Router.push(`/${data.id}`)}>
-        {data.name}
+        {data.productName}
       </div>
-      <div className="price_product">
-        {formatter.format(data.selling_price)}
-      </div>
+      <div className="price_product">{formatter.format(data.displayPrice)}</div>
       <div className="color">
         {data.available_colors.map((x: any, index: number) => {
           return (

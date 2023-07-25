@@ -59,9 +59,12 @@ export const Sneaker = () => {
   const [dataSizes, setDataSizes] = useState<ISizesResponse[]>([]);
   const [dataBrands, setDataBrands] = useState<IBrandsResponse[]>([]);
   const [dataFeature, setDataFeatures] = useState<IFeaturesResponse[]>([]);
+  const [data, setData] = useState<any>([]);
   // const [dataColors, setDataColors] = useState<IColorsResponse[]>([]);
   const [daataFilter, setDataFilter] = useState<any>();
-  const [payloadFilter, setPayloadFilter] = useState<IFilterData>();
+  const [payloadFilter, setPayloadFilter] = useState<IFilterData>(
+    {} as IFilterData
+  );
   const dispatch = useAppDispatch();
 
   const totalItems = 100;
@@ -74,13 +77,17 @@ export const Sneaker = () => {
     setStartIndex(startIndex);
     setEndIndex(endIndex);
   };
-  useEffect(()=>{
-    fectchDataAsyn(payloadFilter)
-  },[])
-  const fectchDataAsyn=async (filter:any)=>{
-    dispatch(getListProduct(filter)).unwrap().then().then((res:any)=>{
-    console.log(res)})
-  }
+  useEffect(() => {
+    fectchDataAsyn(payloadFilter);
+  }, []);
+  const fectchDataAsyn = async (filter: any) => {
+    dispatch(getListProduct(filter))
+      .unwrap()
+      .then()
+      .then((res: any) => {
+        setData(res);
+      });
+  };
 
   useEffect(() => {
     function handleResize() {
@@ -176,7 +183,7 @@ export const Sneaker = () => {
 
   const handleFilter = (category: any) => {
     if (filter.length == 0) {
-      setFilter([category])
+      setFilter([category]);
     } else {
       if (filter.find((x: any) => x.id == category.id)) {
         setFilter(filter.filter((x: any) => x.id !== category.id));
@@ -186,28 +193,28 @@ export const Sneaker = () => {
     }
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     const data_filter = [
       {
         id: 1,
         name: "Phong cách",
-        arrays: dataStyles
+        arrays: dataStyles,
       },
       {
         id: 2,
         name: "Màu sắc",
-        arrays: dataColors
+        arrays: dataColors,
       },
       {
         id: 3,
         name: "Kích cỡ",
-        arrays: dataSizes
+        arrays: dataSizes,
       },
     ];
-    setDataFilter(data_filter)
-  },[dataBrands,dataColors,dataFeature,dataSizes,dataStyles])
+    setDataFilter(data_filter);
+  }, [dataBrands, dataColors, dataFeature, dataSizes, dataStyles]);
 
-  console.log("daataFilter",daataFilter);
+  console.log("daataFilter", daataFilter);
   const handleHideSideBar = () => {};
   return (
     <ContainerSneaker>
@@ -287,82 +294,81 @@ export const Sneaker = () => {
               </div>
             ))}
 
-          
-          
-          {daataFilter&&daataFilter.map((filter: any) => {
-            return (
-              <div
-                className="filter_option"
-                // style={{ padding: "0 0px 18px 0px" }}
-                key={filter.id}
-              >
-                <div className="wrapp">
-                  <div className="text">{filter.name}</div>
+          {daataFilter &&
+            daataFilter.map((filter: any) => {
+              return (
+                <div
+                  className="filter_option"
+                  // style={{ padding: "0 0px 18px 0px" }}
+                  key={filter.id}
+                >
+                  <div className="wrapp">
+                    <div className="text">{filter.name}</div>
+                    <div
+                      className="icon"
+                      onClick={() => handleChooseId(filter.id)}
+                    >
+                      {listId.length > 0 &&
+                      listId.find((x: any) => x == filter.id) ? (
+                        <MinusOutlined />
+                      ) : (
+                        <PlusOutlined />
+                      )}
+                    </div>
+                  </div>
                   <div
-                    className="icon"
-                    onClick={() => handleChooseId(filter.id)}
+                    className="wrapp_color"
+                    style={{
+                      display: `${
+                        listId.length > 0 &&
+                        listId.find((x: any) => x == filter.id)
+                          ? ""
+                          : "none"
+                      }`,
+                    }}
                   >
-                    {listId.length > 0 &&
-                    listId.find((x: any) => x == filter.id) ? (
-                      <MinusOutlined />
-                    ) : (
-                      <PlusOutlined />
-                    )}
+                    {filter.name === "Màu sắc"
+                      ? filter.arrays.map((arr: any, index: number) => {
+                          return (
+                            <Tooltip title={arr.color} key={index}>
+                              <div
+                                onClick={() => handleFilter(arr)}
+                                className="box_color"
+                                style={{ background: `rgba(${arr.rgba})` }}
+                              ></div>
+                            </Tooltip>
+                          );
+                        })
+                      : filter.name === "Kích cỡ"
+                      ? filter.arrays.map((arr: any, index: number) => {
+                          return (
+                            <div
+                              className="box_size"
+                              key={index}
+                              onClick={() => handleFilter(arr)}
+                            >
+                              {arr.size1}
+                            </div>
+                          );
+                        })
+                      : filter.name === "Phong cách"
+                      ? filter.arrays.map((arr: any, index: number) => {
+                          return (
+                            <div
+                              className="box_styles"
+                              key={index}
+                              onClick={() => handleFilter(arr)}
+                            >
+                              <div className="name">{arr.styleName}</div>
+                              <div className="count">112</div>
+                            </div>
+                          );
+                        })
+                      : null}
                   </div>
                 </div>
-                <div
-                  className="wrapp_color"
-                  style={{
-                    display: `${
-                      listId.length > 0 &&
-                      listId.find((x: any) => x == filter.id)
-                        ? ""
-                        : "none"
-                    }`,
-                  }}
-                >
-                  {filter.name === "Màu sắc"
-                    ? filter.arrays.map((arr: any, index: number) => {
-                        return (
-                          <Tooltip title={arr.color} key={index}>
-                            <div
-                              onClick={() => handleFilter(arr)}
-                              className="box_color"
-                              style={{ background: `rgba(${arr.rgba})` }}
-                            ></div>
-                          </Tooltip>
-                        );
-                      })
-                    : filter.name === "Kích cỡ"
-                    ? filter.arrays.map((arr: any, index: number) => {
-                        return (
-                          <div
-                            className="box_size"
-                            key={index}
-                            onClick={() => handleFilter(arr)}
-                          >
-                            {arr.size1}
-                          </div>
-                        );
-                      })
-                    : filter.name === "Phong cách"
-                    ? filter.arrays.map((arr: any, index: number) => {
-                        return (
-                          <div
-                            className="box_styles"
-                            key={index}
-                            onClick={() => handleFilter(arr)}
-                          >
-                            <div className="name">{arr.styleName}</div>
-                            <div className="count">112</div>
-                          </div>
-                        );
-                      })
-                    : null}
-                </div>
-              </div>
-            );
-          })}
+              );
+            })}
         </div>
         <div
           className="column_main"
@@ -371,19 +377,20 @@ export const Sneaker = () => {
           }}
         >
           <Row gutter={[20, 20]}>
-            {listProduct.map((x, index: number) => {
-              return (
-                <Col
-                  xs={!hideSidebar ? 12 : 24}
-                  md={!hideSidebar ? 12 : 8}
-                  xxl={8}
-                  lg={!hideSidebar ? 8 : 6}
-                  key={x.id}
-                >
-                  <CommonProduct data={x} />
-                </Col>
-              );
-            })}
+            {data &&
+              data.map((x: any, index: number) => {
+                return (
+                  <Col
+                    xs={!hideSidebar ? 12 : 24}
+                    md={!hideSidebar ? 12 : 8}
+                    xxl={8}
+                    lg={!hideSidebar ? 8 : 6}
+                    key={x.id}
+                  >
+                    <CommonProduct data={x} />
+                  </Col>
+                );
+              })}
           </Row>
           <Pagination
             defaultCurrent={1}

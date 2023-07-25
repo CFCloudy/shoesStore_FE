@@ -72,6 +72,21 @@ export const getListProduct = createAsyncThunk(
   }
 );
 
+export const getProductDetail = createAsyncThunk(
+  "getProductDetail",
+  async (payload: number, { rejectWithValue }) => {
+    try {
+      const response = await productApi.getProductDetail(payload);
+      return response.data;
+    } catch (err: any) {
+      if (!err.response) {
+        throw err.response;
+      }
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
 const initState: IInitStateProduct = {
   error: false,
   loading: false,

@@ -36,8 +36,12 @@ export const BoxBody = styled.div`
     }
   }
   .wpbox {
+    .title {
+      font-weight: 600;
+      line-height: 28px;
+    }
     padding: 10px;
-    border: 1px solid black;
+    outline: 1px solid #d3d7da;
     margin: 10px 0;
     line-height: 16px;
   }
