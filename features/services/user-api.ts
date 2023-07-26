@@ -16,7 +16,7 @@ class UserApi {
   userSigIn(payload: ILoginPayload) {
     return axiosClient({
       method: "post",
-      url: "/api/Authenticate/login",
+      url: "/api/Authentication/login",
       data: payload,
     });
   }
@@ -30,7 +30,7 @@ class UserApi {
   userRegister(payload: IRegisterPayload) {
     return axiosClient({
       method: "post",
-      url: "/api/Authenticate/register",
+      url: "/api/Authentication/register",
       data: payload,
     });
   }
@@ -38,35 +38,35 @@ class UserApi {
   userConfirmOTP(payload: IConfirmOTP) {
     return axiosClient({
       method: "post",
-      url: "/api/Authenticate/confirm-otp",
+      url: "/api/Authentication/confirm-otp",
       data: payload,
     });
   }
   userLogout(payload: ILogoutPayload) {
     return axiosClient({
       method: "post",
-      url: `/api/Authenticate/revoke/${payload.id}`,
+      url: `/api/Authentication/revoke/${payload.id}`,
       data: payload,
     });
   }
   reSendOTP(payload: IResendOTP) {
     return axiosClient({
       method: "post",
-      url: "/api/Authenticate/confirm-otp",
+      url: "/api/Authentication/confirm-otp",
       data: payload,
     });
   }
   forgotpass(payload: IForgotPass) {
     return axiosClient({
       method: "post",
-      url: "/api/Authenticate/forgotpass",
+      url: "/api/Authentication/forgotpass",
       data: payload,
     });
   }
   getListAddress(payload: any) {
     return axiosClient({
       method: "get",
-      url: "/api/BookAddress/get-book-address",
+      url: "/api/Address/get-book-address",
       params: payload,
     });
   }
@@ -74,7 +74,7 @@ class UserApi {
   createAddress(payload: ICreateAddress) {
     return axiosClient({
       method: "post",
-      url: `/api/BookAddress/create-address`,
+      url: `/api/Address/create-address`,
       data: payload,
     });
   }
@@ -82,7 +82,7 @@ class UserApi {
   updateAddress(payload: IUpdateAddress) {
     return axiosClient({
       method: "put",
-      url: `/api/BookAddress/update-address`,
+      url: `/api/Address/update-address`,
       data: payload,
     });
   }
@@ -90,7 +90,7 @@ class UserApi {
   getAddressDetails(payload: IGetAddressDetails) {
     return axiosClient({
       method: "get",
-      url: `/api/BookAddress/get-address-detail?id=${payload.id}`,
+      url: `/api/Address/get-address-detail?id=${payload.id}`,
       data: payload,
     });
   }
@@ -98,7 +98,7 @@ class UserApi {
   removeAdress(payload: IGetAddressDetails) {
     return axiosClient({
       method: "delete",
-      url: `/api/BookAddress/delete-address-detail?id=${payload.id}`,
+      url: `/api/Address/delete-address-detail?id=${payload.id}`,
       data: payload,
     });
   }

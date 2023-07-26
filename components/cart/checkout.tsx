@@ -13,14 +13,16 @@ import {
 import { ButtonBlack } from "../home-pages/home-pages-styled";
 import { formatter } from "@/models/common";
 import { IPayloadOrder } from "@/models/order";
-import { useAppSelector } from "@/app/hook";
+import { useAppDispatch, useAppSelector } from "@/app/hook";
 import { selectUser } from "@/features/user-slice";
+import { createOrder } from "@/features/order-slice";
 
 export const CheckOutPage = () => {
   const [current, setCurrent] = useState(1);
   const [chooseType, setChooseType] = useState<boolean>(false);
   const [chooseCard, setChooseCard] = useState<boolean>(false);
   const { loginInfo, cart } = useAppSelector(selectUser);
+  const dispatch =useAppDispatch();
   const onChange = (value: number) => {
     console.log("onChange:", value);
     setCurrent(value);
@@ -28,32 +30,39 @@ export const CheckOutPage = () => {
   let sum = 0;
   const description = "ok";
   const handleThanhtoan = () => {
-    // if(cart&&cart.items){
-    //   let data:[];
-    //   for(let i=0;i<cart.items.length;i++){
-    //     let obj={
-    //       price:cart.items[0].price,
-    //       productId:cart.items[0].price,
-    //       quantity:cart.items[0].price,
-    //       subTotal:cart.items[0].price,
-    //       variantID:3,
-    //       variantName:"Đỏ",
-    //     }
-    //   }
-    // }
-    // let payload:IPayloadOrder={
-    //   listItems:[{
-    //     price,
-    //     productId,
-    //     quantity,
-    //     subTotal,
-    //     variantID,
-    //     variantName
-    //   }],
-    //   status:0,
-    //   shippingDetails:[],
-    //   userID:loginInfo.payload.profilesID
-    // }
+    let data:any=[];
+
+    if(cart&&cart.items){
+      for(let i=0;i<cart.items.length;i++){
+        let obj={
+          price:cart.items[i].productVariantId,
+          productId:1,
+          quantity:cart.items[i].quantity,
+          subTotal:180000,
+          variantID:cart.items[i].productVariantId,
+          variantName:"Đỏ",
+        }
+        data.push(obj)
+      }
+    }
+    let payload:IPayloadOrder={
+      orderCode:"",
+      listItems:data,
+      status:0,
+      shippingDetails:{
+        orderNote:"ok",
+        shippingAddress:"2",
+        shippingName:"32",
+        shippingPhone:"",
+        status:1
+      },
+      total:232323,
+      userID:1
+    }
+
+    dispatch(createOrder(payload)).unwrap().then().then((res:any)=>{
+      console.log(res)}
+    )
   };
 
   return (
@@ -127,7 +136,7 @@ export const CheckOutPage = () => {
                     style={{
                       padding: "-10px 80px",
                     }}
-                    // onClick={() => Router.push("/cart")}
+                    onClick={handleThanhtoan}
                   >
                     Hoàn thành đơn hàng
                   </ButtonBlack>

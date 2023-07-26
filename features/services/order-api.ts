@@ -6,7 +6,7 @@ class OrderApi {
   createrOrder(payload: IPayloadOrder) {
     return axiosClient({
       method: "post",
-      url: "/api/Orders/Create/create-order?isShip=false",
+      url: "/api/Orders/create-order?isShip=false",
       data: payload,
     });
   }

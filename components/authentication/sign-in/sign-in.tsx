@@ -34,10 +34,10 @@ export const SignIn = () => {
       <p>Nếu bạn có tài khoản, hay đăng nhập bằng địa chỉ email của bạn.</p>
       <div className="form">
         <Form layout="vertical" onFinish={handllerlogin}>
-          <Form.Item label="Email" name={"Email"}>
+          <Form.Item label="Email" name={"email"}>
             <Input className="signin"></Input>
           </Form.Item>
-          <Form.Item label="Mật khẩu" name={"Password"}>
+          <Form.Item label="Mật khẩu" name={"password"}>
             <Input
               type="password"
               size={"large"}

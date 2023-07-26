@@ -2,6 +2,7 @@ export interface IPayloadOrder {
   userID: number;
   total: number;
   status: number;
+  orderCode:string;
   listItems: [
     {
       variantID: number;
@@ -12,13 +13,13 @@ export interface IPayloadOrder {
       subTotal: number;
     }
   ];
-  shippingDetails: [
+  shippingDetails: 
     {
-      shippingName: number;
-      shippingAddress: number;
-      shippingPhone: number;
-      orderNote: number;
+      shippingName: string;
+      shippingAddress: string;
+      shippingPhone: string;
+      orderNote: string;
       status: number;
     }
-  ];
+  
 }

@@ -90,33 +90,6 @@ export const SneakerDetail = () => {
       }
     }
   };
-  const available_sizes = [
-    "M 4 / W 4.5",
-    "M 4.5 / W 5",
-    "M 5 / W 5.5",
-    "M 5.5 / W 6",
-    "M 6 / W 6.5",
-    "M 6.5 / W 7",
-    "M 7 / W 7.5",
-    "M 7.5 / W 8",
-    "M 8 / W 8.5",
-    "M 8.5 / W 9",
-    "M 9 / W 9.5",
-    "M 9.5 / W 10",
-    "M 10 / W 10.5",
-    "M 10.5 / W 11",
-    "M 11 / W 11.5",
-    "M 11.5 / W 12",
-    "M 12 / W 12.5",
-    "M 12.5 / W 13",
-    "M 13 / W 13.5",
-    "M 13.5 / W 14",
-    "M 14 / W 14.5",
-    "M 14.5 / W 15",
-    "M 15 / W 15.5",
-    "M 15.5 / W 16",
-    "M 16 / W 16.5",
-  ];
 
   useEffect(() => {
     dispatch(getProductDetail(Number(Router.query.id)))
@@ -128,29 +101,6 @@ export const SneakerDetail = () => {
       });
   }, []);
 
-  const generateProduct = () => {
-    let pr = [];
-    for (let i = 1; i <= 25; i++) {
-      var obj = {
-        id: i,
-        size: `M ${4 + i - 1 - 1} / W ${4.5 + i - 1 - 1}`,
-        color: `Xanh berin`,
-        rgba: "127, 255, 212",
-        prices: 1900000,
-        quantity: i - 1,
-        sku: `OLDF_OL${i}`,
-      };
-      pr.push(obj);
-    }
-    let newpr = [];
-    for (let i = 1; i < pr.length; i++) {
-      let obj = {
-        ...pr[i],
-        size: available_sizes[i],
-      };
-      newpr.push(obj);
-    }
-  };
 
   const checkColor = (value: String) => {
     let checkSizes = data.shoesVariantDTOs.find(
@@ -250,16 +200,15 @@ export const SneakerDetail = () => {
       : ({} as ICartResponse);
 
     if (chooseColor && chooseSizes) {
-      let productVariant = listProduct[0].variant.find(
+      let productVariant = data.shoesVariantDTOs.find(
         (p: any) => p.color == chooseColor && p.size == chooseSizes
       );
       if (productVariant) {
         let payload: IAddToCart = {
           quantity: 1,
-          price: productVariant.prices,
+          price: 1800000,
           productVariantId: productVariant.id,
-          img: listProduct.find((x) => x.id == Number(Router.query.id))
-            ?.available_colors[indexImg].src[0],
+          img: data.available_colors[indexImg].src[0],
           color: productVariant.color,
           size: productVariant.size,
         };
@@ -284,7 +233,7 @@ export const SneakerDetail = () => {
       }
 
       message.success(
-        `Bạn đã thêm sản phẩm ${productVariant?.sku} vào giỏ hàng thành công`
+        `Bạn đã thêm sản phẩm ${productVariant?.variantName} vào giỏ hàng thành công`
       );
     } else if (chooseColor == "" && chooseSizes == "") {
       message.error(`Bạn chưa chọn màu sắc và kích cỡ sản phẩm `);
