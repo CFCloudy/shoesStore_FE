@@ -2,28 +2,33 @@ export interface IStylesResponse {
   id: number;
   styleName: string;
   displayOrder: number;
+  type: string;
 }
 export interface ISizesResponse {
   id: number;
   size1: string;
   displayOrder: number;
   locale: string;
+  type: string;
 }
 
 export interface IFeaturesResponse {
   id: number;
   featureName: string;
   displayOrder: number;
+  type: string;
 }
 export interface IBrandsResponse {
   id: number;
   brandName: string;
   displayOrder: number;
+  type: string;
 }
 export interface IColorsResponse {
   id: number;
   colorName: string;
   displayOrder: number;
+  type: string;
 }
 
 export interface IInitStateProduct {
@@ -32,24 +37,24 @@ export interface IInitStateProduct {
 }
 
 export interface IFilterData {
-  brandDTOs?:[
+  brandDTOs?: [
     {
-      id:number,
-      brandName:string
+      id: number;
+      brandName: string;
     }
-  ],
-  featureDTOs?:[
+  ];
+  featureDTOs?: [
     {
-      id:number,
-      featureName:string
+      id: number;
+      featureName: string;
     }
-  ],
-  styleDTOs?:[
+  ];
+  styleDTOs?: [
     {
-      id:number,
-      styleName:string
+      id: number;
+      styleName: string;
     }
-  ],
-  isDecrease:boolean,
-  isAscending:boolean
+  ];
+  isDecrease: boolean;
+  isAscending: boolean;
 }

@@ -19,6 +19,21 @@ export const createOrder = createAsyncThunk(
   }
 );
 
+export const getOrderByUserId = createAsyncThunk(
+  "createOrder",
+  async (payload: any, { rejectWithValue }) => {
+    try {
+      const response = await orderApi.getOrderByUserId(payload);
+      return response.data;
+    } catch (err: any) {
+      if (!err.response) {
+        throw err.response;
+      }
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
 const initState: IInitStateProduct = {
   error: false,
   loading: false,

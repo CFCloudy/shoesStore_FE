@@ -10,6 +10,13 @@ class OrderApi {
       data: payload,
     });
   }
+  getOrderByUserId(payload: any) {
+    return axiosClient({
+      method: "post",
+      url: `/api/Orders/GetOrdersByUserId?uId=${payload}`,
+      data: payload,
+    });
+  }
 }
 
 export default new OrderApi();

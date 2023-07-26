@@ -371,10 +371,10 @@ export const Cart = () => {
               {/* <div>{Object.entries(dataCart).length > 0 ? sum : ""}</div> */}
               <div>{formatter.format(sum)}</div>
             </CheckOut>
-            <CheckOut>
+            {/* <CheckOut>
               <div>Phí ship</div>
               <div>20.000đ</div>
-            </CheckOut>
+            </CheckOut> */}
             <CheckOut>
               <div style={{ display: "flex", alignItems: "center" }}>
                 <img src={IconVoucher.src}></img>
@@ -427,9 +427,7 @@ export const Cart = () => {
               <div>Tổng tiền hàng</div>
               <div>
                 {" "}
-                {Object.entries(cart2).length > 0
-                  ? formatter.format(sum + 20000)
-                  : ""}
+                {Object.entries(cart2).length > 0 ? formatter.format(sum) : ""}
               </div>
             </CheckOut>
             <CheckOut>
@@ -450,7 +448,7 @@ export const Cart = () => {
             <CheckOut>
               <div className="title">Tổng thanh toán</div>
               <div style={{ color: "red", fontSize: "18px" }}>
-                {formatter.format(sum + ship - valueVoucher)}
+                {formatter.format(sum - valueVoucher)}
               </div>
             </CheckOut>
             {Object.entries(loginInfo).length > 0 ? (

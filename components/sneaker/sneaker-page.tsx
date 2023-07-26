@@ -59,6 +59,7 @@ export const Sneaker = () => {
   const [dataSizes, setDataSizes] = useState<ISizesResponse[]>([]);
   const [dataBrands, setDataBrands] = useState<IBrandsResponse[]>([]);
   const [dataFeature, setDataFeatures] = useState<IFeaturesResponse[]>([]);
+  const [dataF, setDataF] = useState<any>();
   const [data, setData] = useState<any>([]);
   // const [dataColors, setDataColors] = useState<IColorsResponse[]>([]);
   const [daataFilter, setDataFilter] = useState<any>();
@@ -78,8 +79,19 @@ export const Sneaker = () => {
     setEndIndex(endIndex);
   };
   useEffect(() => {
-    fectchDataAsyn(payloadFilter);
-  }, []);
+    let data = {};
+
+    if (filter) {
+      var c = filter.filter((x: any) => (x.type = "Brand"));
+      if (c) {
+        data = {
+          brandDTOs: c,
+        };
+      }
+    }
+    setDataF(c);
+    fectchDataAsyn(filter);
+  }, [filter]);
   const fectchDataAsyn = async (filter: any) => {
     dispatch(getListProduct(filter))
       .unwrap()
@@ -185,13 +197,20 @@ export const Sneaker = () => {
     if (filter.length == 0) {
       setFilter([category]);
     } else {
-      if (filter.find((x: any) => x.id == category.id)) {
-        setFilter(filter.filter((x: any) => x.id !== category.id));
+      if (
+        filter?.find((x: any) => x.id == category.id && x.type == category.type)
+      ) {
+        setFilter(
+          filter.filter(
+            (x: any) => !(x.id === category.id && x.type === category.type)
+          )
+        );
       } else {
         setFilter([...filter, category]);
       }
     }
   };
+  console.log(filter);
 
   useEffect(() => {
     const data_filter = [
@@ -210,11 +229,20 @@ export const Sneaker = () => {
         name: "Kích cỡ",
         arrays: dataSizes,
       },
+      {
+        id: 4,
+        name: "Hãng",
+        arrays: dataBrands,
+      },
+      {
+        id: 5,
+        name: "Feature",
+        arrays: dataFeature,
+      },
     ];
     setDataFilter(data_filter);
   }, [dataBrands, dataColors, dataFeature, dataSizes, dataStyles]);
 
-  console.log("daataFilter", daataFilter);
   const handleHideSideBar = () => {};
   return (
     <ContainerSneaker>
@@ -282,8 +310,20 @@ export const Sneaker = () => {
                     ? "Kích cỡ :"
                     : f.styleName
                     ? "Phong cách: "
-                    : "Màu sắc :"}
-                  {f.size1 ? f.size1 : f.styleName ? f.styleName : f.colorName}
+                    : f.colorName
+                    ? "Màu sắc :"
+                    : f.brandName
+                    ? "Hãng : "
+                    : "Feature : "}
+                  {f.size1
+                    ? f.size1
+                    : f.styleName
+                    ? f.styleName
+                    : f.colorName
+                    ? f.colorName
+                    : f.brandName
+                    ? f.brandName
+                    : f.featureName}
                 </div>
                 <div
                   style={{ cursor: "pointer" }}
@@ -328,7 +368,8 @@ export const Sneaker = () => {
                     }}
                   >
                     {filter.name === "Màu sắc"
-                      ? filter.arrays.map((arr: any, index: number) => {
+                      ? filter.arrays &&
+                        filter.arrays.map((arr: any, index: number) => {
                           return (
                             <Tooltip title={arr.color} key={index}>
                               <div
@@ -360,6 +401,32 @@ export const Sneaker = () => {
                               onClick={() => handleFilter(arr)}
                             >
                               <div className="name">{arr.styleName}</div>
+                              <div className="count">112</div>
+                            </div>
+                          );
+                        })
+                      : filter.name === "Hãng"
+                      ? filter.arrays.map((arr: any, index: number) => {
+                          return (
+                            <div
+                              className="box_styles"
+                              key={index}
+                              onClick={() => handleFilter(arr)}
+                            >
+                              <div className="name">{arr.brandName}</div>
+                              <div className="count">112</div>
+                            </div>
+                          );
+                        })
+                      : filter.name === "Feature"
+                      ? filter.arrays.map((arr: any, index: number) => {
+                          return (
+                            <div
+                              className="box_styles"
+                              key={index}
+                              onClick={() => handleFilter(arr)}
+                            >
+                              <div className="name">{arr.featureName}</div>
                               <div className="count">112</div>
                             </div>
                           );
