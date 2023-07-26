@@ -56,7 +56,7 @@ export const SignUp = () => {
               },
             ]}
           >
-            <Input type="e" size={"large"} maxLength={20} className="signin" />
+            <Input type="e" size={"large"} maxLength={100} className="signin" />
           </Form.Item>
           <Form.Item
             name="PassWord"
