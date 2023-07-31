@@ -2,6 +2,12 @@ import styled from "styled-components";
 
 export const WrappProduct = styled.div`
   width: 100%;
+  .image {
+    width: 100%;
+    height: 260px;
+  }
+  @media screen {
+  }
   .name_product {
     cursor: pointer;
     padding-top: 20px;

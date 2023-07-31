@@ -41,6 +41,7 @@ import { IDiscount, data_voucher } from "@/data/data_voucher";
 import { Confirm } from "../popup-confirm/confirm";
 import moment from "moment";
 import { ICartResponse } from "../sneaker/sneaker-detail";
+import { getListVoucher } from "@/features/order-slice";
 const cartstorage =
   typeof window !== "undefined" ? localStorage.getItem("cart") : undefined;
 const cart2 = cartstorage
@@ -66,10 +67,18 @@ export const Cart = () => {
   const [chooseAddress, setChooseAdress] = useState<any>();
   const [currentPage, setCurrentPage] = useState(1);
   let sum = 0;
-
+  const [datavoucher, setDataVoucher] = useState<any>();
+  useEffect(() => {
+    dispatch(getListVoucher())
+      .unwrap()
+      .then()
+      .then((res: any) => {
+        setDataVoucher(res);
+      });
+  }, []);
   const handleUseVoucher = () => {
-    let resule = data_voucher.find((x) => x.nameVoucher === nameVoucher);
-    if (data_voucher.find((x) => x.nameVoucher == nameVoucher)) {
+    let resule = datavoucher.find((x: any) => x.nameVoucher === nameVoucher);
+    if (datavoucher.find((x: any) => x.nameVoucher == nameVoucher)) {
       setError("");
       if (resule?.unit && resule !== undefined) {
         let result = (Number(resule.value) * sum) / 100;
@@ -92,9 +101,8 @@ export const Cart = () => {
       setValueVoucher(0);
     }
   };
-
   const handleApdung = () => {
-    let resule = data_voucher.find((x) => x.voucherId === selectedRadio);
+    let resule = datavoucher.find((x: any) => x.voucherId === selectedRadio);
     console.log(resule);
     if (resule?.unit && resule !== undefined) {
       let result = (Number(resule.value) * sum) / 100;
@@ -626,8 +634,8 @@ export const Cart = () => {
                   <Button>Áp dụng</Button>
                 </Space>
                 <div>Giảm giá</div>
-                {data_voucher &&
-                  data_voucher.map((res: IDiscount, index: number) => {
+                {datavoucher &&
+                  datavoucher.map((res: IDiscount, index: number) => {
                     return moment(res.endDate) > moment(new Date()) ? (
                       <WrapperDiscount>
                         <WrapperDiscountLeft>
@@ -642,7 +650,7 @@ export const Cart = () => {
                                 <div className="main1">{`${res.value}% đơn 0đ`}</div>
                               ) : (
                                 <div className="main1">{`Giảm ${String(
-                                  res.maxValue
+                                  res.value
                                 ).slice(0, 3)}k`}</div>
                               )}
                               {res.maxValue ? (
@@ -673,7 +681,7 @@ export const Cart = () => {
                       </WrapperDiscount>
                     ) : null;
                   })}
-                {data_voucher ? null : (
+                {datavoucher ? null : (
                   <Empty
                     imageStyle={{
                       height: 60,

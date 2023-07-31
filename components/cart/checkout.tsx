@@ -1,4 +1,4 @@
-import { Col, Row, Steps } from "antd";
+import { Col, Row, Steps, message } from "antd";
 import { WrapperProfile } from "../profiles-user/profiles-tyled";
 import { useState } from "react";
 import { Cart } from "./cart";
@@ -22,7 +22,7 @@ export const CheckOutPage = () => {
   const [chooseType, setChooseType] = useState<boolean>(false);
   const [chooseCard, setChooseCard] = useState<boolean>(false);
   const { loginInfo, cart } = useAppSelector(selectUser);
-  const dispatch =useAppDispatch();
+  const dispatch = useAppDispatch();
   const onChange = (value: number) => {
     console.log("onChange:", value);
     setCurrent(value);
@@ -30,39 +30,48 @@ export const CheckOutPage = () => {
   let sum = 0;
   const description = "ok";
   const handleThanhtoan = () => {
-    let data:any=[];
+    let data: any = [];
 
-    if(cart&&cart.items){
-      for(let i=0;i<cart.items.length;i++){
-        let obj={
-          price:cart.items[i].productVariantId,
-          productId:1,
-          quantity:cart.items[i].quantity,
-          subTotal:180000,
-          variantID:cart.items[i].productVariantId,
-          variantName:"Đỏ",
-        }
-        data.push(obj)
+    if (cart && cart.items) {
+      for (let i = 0; i < cart.items.length; i++) {
+        let obj = {
+          price: cart.items[i].productVariantId,
+          productId: 1,
+          quantity: cart.items[i].quantity,
+          subTotal: 180000,
+          variantID: cart.items[i].productVariantId,
+          variantName: "Đỏ",
+        };
+        data.push(obj);
       }
     }
-    let payload:IPayloadOrder={
-      orderCode:"",
-      listItems:data,
-      status:0,
-      shippingDetails:{
-        orderNote:"ok",
-        shippingAddress:"2",
-        shippingName:"32",
-        shippingPhone:"",
-        status:1
+    let payload: IPayloadOrder = {
+      orderCode: "",
+      listItems: data,
+      status: 0,
+      shippingDetails: {
+        orderNote: "ok",
+        shippingAddress: "2",
+        shippingName: "32",
+        shippingPhone: "",
+        status: 1,
       },
-      total:232323,
-      userID:1
-    }
+      total: 232323,
+      userID: loginInfo.payload.profilesID,
+    };
 
-    dispatch(createOrder(payload)).unwrap().then().then((res:any)=>{
-      console.log(res)}
-    )
+    dispatch(createOrder(payload))
+      .unwrap()
+      .then()
+      .then((res: any) => {
+        console.log(res);
+        message.success("Thanh toán thành công");
+        localStorage.removeItem("cart");
+        setCurrent(2);
+      })
+      .catch((error: any) => {
+        message.error("Thanh toán thất bại");
+      });
   };
 
   return (

@@ -90,17 +90,20 @@ export const SneakerDetail = () => {
       }
     }
   };
+  const { id } = Router.query;
 
   useEffect(() => {
-    dispatch(getProductDetail(Number(Router.query.id)))
-      .unwrap()
-      .then()
-      .then((res: any) => {
-        res.shoesVariantDTOs[0].quantity = 9;
-        setData(res);
-      });
-  }, []);
+    if (typeof window !== "undefined") {
+      console.log(Router.query.id);
 
+      dispatch(getProductDetail(Number(Router.query.id)))
+        .unwrap()
+        .then()
+        .then((res: any) => {
+          setData(res);
+        });
+    }
+  }, [Router.query.id]);
 
   const checkColor = (value: String) => {
     let checkSizes = data.shoesVariantDTOs.find(

@@ -6,15 +6,22 @@ class OrderApi {
   createrOrder(payload: IPayloadOrder) {
     return axiosClient({
       method: "post",
-      url: "/api/Orders/create-order?isShip=false",
+      url: "/api/Orders/Create?isShip=false",
       data: payload,
     });
   }
   getOrderByUserId(payload: any) {
     return axiosClient({
-      method: "post",
+      method: "get",
       url: `/api/Orders/GetOrdersByUserId?uId=${payload}`,
       data: payload,
+    });
+  }
+
+  getListVoucher() {
+    return axiosClient({
+      method: "get",
+      url: `/api/Voucher`,
     });
   }
 }

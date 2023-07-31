@@ -1,6 +1,6 @@
 import { formatter } from "@/models/common";
 import { Image } from "antd";
-import Router from "next/router";
+import Router, { useRouter } from "next/router";
 import { useState } from "react";
 import { WrappProduct } from "./product-styled";
 
@@ -35,14 +35,19 @@ export const CommonProduct = (props: IPopsProduct) => {
   // const handleOnHover=()=>{
   //   setShow()
   // }
-
+  const router = useRouter();
   return (
     <WrappProduct key={data.id}>
       <div className="image_product">
         {/* <Image preview={false} src={data.images[0]} /> */}
-        <Image preview={false} src={data.displayImage} />
+        <Image preview={false} src={data.displayImage} className="image" />
       </div>
-      <div className="name_product" onClick={() => Router.push(`/${data.id}`)}>
+      <div
+        className="name_product"
+        onClick={() => {
+          router.push(`/sneaker/detail/${data.id}`);
+        }}
+      >
         {data.productName}
       </div>
       <div className="price_product">{formatter.format(data.displayPrice)}</div>

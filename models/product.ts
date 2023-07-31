@@ -2,33 +2,33 @@ export interface IStylesResponse {
   id: number;
   styleName: string;
   displayOrder: number;
-  type: string;
+  type: "Style";
 }
 export interface ISizesResponse {
   id: number;
   size1: string;
   displayOrder: number;
   locale: string;
-  type: string;
+  type: "Size";
 }
 
 export interface IFeaturesResponse {
   id: number;
   featureName: string;
   displayOrder: number;
-  type: string;
+  type: "Feature";
 }
 export interface IBrandsResponse {
   id: number;
   brandName: string;
   displayOrder: number;
-  type: string;
+  type: "Brand";
 }
 export interface IColorsResponse {
   id: number;
   colorName: string;
   displayOrder: number;
-  type: string;
+  type: "Color";
 }
 
 export interface IInitStateProduct {
@@ -41,6 +41,7 @@ export interface IFilterData {
     {
       id: number;
       brandName: string;
+      type: string;
     }
   ];
   featureDTOs?: [
@@ -55,6 +56,19 @@ export interface IFilterData {
       styleName: string;
     }
   ];
-  isDecrease: boolean;
-  isAscending: boolean;
+  sizeDTOs?: [
+    {
+      id: number;
+      size1: string;
+    }
+  ];
+  colorDTOs?: [
+    {
+      id: number;
+      colorName: string;
+    }
+  ];
+  isDecrease?: boolean;
+  isAscending?: boolean;
+  page: number;
 }

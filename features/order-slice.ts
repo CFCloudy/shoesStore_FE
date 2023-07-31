@@ -34,6 +34,17 @@ export const getOrderByUserId = createAsyncThunk(
   }
 );
 
+export const getListVoucher = createAsyncThunk("getListVoucher", async () => {
+  try {
+    const response = await orderApi.getListVoucher();
+    return response.data;
+  } catch (err: any) {
+    if (!err.response) {
+      throw err.response;
+    }
+  }
+});
+
 const initState: IInitStateProduct = {
   error: false,
   loading: false,

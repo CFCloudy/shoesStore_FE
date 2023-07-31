@@ -63,6 +63,7 @@ export const Sneaker = () => {
   const [data, setData] = useState<any>([]);
   // const [dataColors, setDataColors] = useState<IColorsResponse[]>([]);
   const [daataFilter, setDataFilter] = useState<any>();
+  const [page, setPage] = useState<number>(1);
   const [payloadFilter, setPayloadFilter] = useState<IFilterData>(
     {} as IFilterData
   );
@@ -79,19 +80,8 @@ export const Sneaker = () => {
     setEndIndex(endIndex);
   };
   useEffect(() => {
-    let data = {};
-
-    if (filter) {
-      var c = filter.filter((x: any) => (x.type = "Brand"));
-      if (c) {
-        data = {
-          brandDTOs: c,
-        };
-      }
-    }
-    setDataF(c);
-    fectchDataAsyn(filter);
-  }, [filter]);
+    fectchDataAsyn(payloadFilter);
+  }, []);
   const fectchDataAsyn = async (filter: any) => {
     dispatch(getListProduct(filter))
       .unwrap()
@@ -192,13 +182,29 @@ export const Sneaker = () => {
   const onClose = () => {
     setOpen(false);
   };
+  const handleFilter = (e: any, category: any) => {
+    e.preventDefault();
 
-  const handleFilter = (category: any) => {
+    if (category.colorName) {
+      category.type = "Color";
+    } else if (category.size1) {
+      category.type = "Size";
+    } else if (category.brandName) {
+      category.type = "Brand";
+    } else if (category.featureName) {
+      category.type = "Feature";
+    } else if (category.styleName) {
+      category.type = "Style";
+    }
+
+    var fake: any = [...filter];
     if (filter.length == 0) {
       setFilter([category]);
     } else {
       if (
-        filter?.find((x: any) => x.id == category.id && x.type == category.type)
+        filter?.find(
+          (x: any) => x.id === category.id && x.type === category.type
+        )
       ) {
         setFilter(
           filter.filter(
@@ -210,7 +216,77 @@ export const Sneaker = () => {
       }
     }
   };
-  console.log(filter);
+
+  useEffect(() => {
+    var fake: any = [...filter];
+    let filterpayloaf: IFilterData = {
+      ...payloadFilter,
+    };
+    if (fake && fake.length > 0) {
+      var arrStyle: any = [];
+      var arrColor: any = [];
+      var arrSizes: any = [];
+      var arrBrands: any = [];
+      var arrFeature: any = [];
+      for (let i = 0; i < fake.length; i++) {
+        if (fake[i].type == "Style") {
+          arrStyle.push({
+            id: fake[i].id,
+            styleName: fake[i].styleName,
+            type: "Style",
+          });
+          filterpayloaf.styleDTOs = arrStyle;
+        } else if (fake[i].type == "Color") {
+          arrColor.push({
+            id: fake[i].id,
+            colorName: fake[i].colorName,
+            type: "Color",
+          });
+          filterpayloaf.colorDTOs = arrColor;
+        } else if (fake[i].type == "Size") {
+          arrColor.push({
+            id: fake[i].id,
+            size1: fake[i].size1,
+            type: "Color",
+          });
+          filterpayloaf.sizeDTOs = arrSizes;
+        } else if (fake[i].type == "Brand") {
+          arrBrands.push({
+            id: fake[i].id,
+            brandName: fake[i].brandName,
+            type: "brand",
+          });
+          filterpayloaf.brandDTOs = arrBrands;
+        } else if (fake[i].type == "Feature") {
+          arrFeature.push({
+            id: fake[i].id,
+            featureName: fake[i].featureName,
+            type: "Feature",
+          });
+          filterpayloaf.featureDTOs = arrFeature;
+        }
+      }
+      // setPayloadFilter(filterpayloaf);
+    } else {
+      if (filterpayloaf.styleDTOs) {
+        delete filterpayloaf.styleDTOs;
+      }
+      if (filterpayloaf.brandDTOs) {
+        delete filterpayloaf.brandDTOs;
+      }
+      if (filterpayloaf.colorDTOs) {
+        delete filterpayloaf.colorDTOs;
+      }
+      if (filterpayloaf.featureDTOs) {
+        delete filterpayloaf.featureDTOs;
+      }
+      if (filterpayloaf.sizeDTOs) {
+        delete filterpayloaf.sizeDTOs;
+      }
+    }
+    setPayloadFilter(filterpayloaf);
+    fectchDataAsyn(filterpayloaf);
+  }, [filter]);
 
   useEffect(() => {
     const data_filter = [
@@ -242,6 +318,24 @@ export const Sneaker = () => {
     ];
     setDataFilter(data_filter);
   }, [dataBrands, dataColors, dataFeature, dataSizes, dataStyles]);
+
+  const handleChange = (value: any) => {
+    var fil: IFilterData = {
+      ...payloadFilter,
+    };
+    if (value == "isDecrease") {
+      fil.isAscending = true;
+      if (fil.isDecrease) {
+        fil.isDecrease = false;
+      }
+    } else if (value == "isAscending") {
+      fil.isDecrease = true;
+      if (fil.isAscending) {
+        fil.isAscending = false;
+      }
+    }
+    setPayloadFilter(fil);
+  };
 
   const handleHideSideBar = () => {};
   return (
@@ -279,17 +373,16 @@ export const Sneaker = () => {
                 <CaretDownOutlined />
               </div> */}
               <Select
-                defaultValue="lucy"
+                defaultValue="Tất cả"
                 style={{ width: "auto" }}
-                // onChange={handleChange}
+                onChange={handleChange}
                 // className="filter2"
                 bordered={false}
                 suffixIcon={<CaretDownOutlined />}
                 options={[
-                  { value: "jack", label: "Giá tăng dần" },
-                  { value: "lucy", label: "Giá thấp  dần" },
-                  { value: "Yiminghe", label: "yiminghe" },
-                  { value: "disabled", label: "Disabled", disabled: true },
+                  { value: "all", label: "Tất cả" },
+                  { value: "isAscending", label: "Giá tăng dần" },
+                  { value: "isDecrease", label: "Giá thấp dần" },
                 ]}
               />
             </div>
@@ -327,7 +420,7 @@ export const Sneaker = () => {
                 </div>
                 <div
                   style={{ cursor: "pointer" }}
-                  onClick={() => handleFilter(f)}
+                  onClick={(e) => handleFilter(e, f)}
                 >
                   <CloseOutlined />
                 </div>
@@ -373,7 +466,9 @@ export const Sneaker = () => {
                           return (
                             <Tooltip title={arr.color} key={index}>
                               <div
-                                onClick={() => handleFilter(arr)}
+                                onClick={(e) => {
+                                  handleFilter(e, arr);
+                                }}
                                 className="box_color"
                                 style={{ background: `rgba(${arr.rgba})` }}
                               ></div>
@@ -386,7 +481,7 @@ export const Sneaker = () => {
                             <div
                               className="box_size"
                               key={index}
-                              onClick={() => handleFilter(arr)}
+                              onClick={(e) => handleFilter(e, arr)}
                             >
                               {arr.size1}
                             </div>
@@ -398,7 +493,7 @@ export const Sneaker = () => {
                             <div
                               className="box_styles"
                               key={index}
-                              onClick={() => handleFilter(arr)}
+                              onClick={(e) => handleFilter(e, arr)}
                             >
                               <div className="name">{arr.styleName}</div>
                               <div className="count">112</div>
@@ -411,7 +506,7 @@ export const Sneaker = () => {
                             <div
                               className="box_styles"
                               key={index}
-                              onClick={() => handleFilter(arr)}
+                              onClick={(e) => handleFilter(e, arr)}
                             >
                               <div className="name">{arr.brandName}</div>
                               <div className="count">112</div>
@@ -424,7 +519,7 @@ export const Sneaker = () => {
                             <div
                               className="box_styles"
                               key={index}
-                              onClick={() => handleFilter(arr)}
+                              onClick={(e) => handleFilter(e, arr)}
                             >
                               <div className="name">{arr.featureName}</div>
                               <div className="count">112</div>
@@ -445,7 +540,8 @@ export const Sneaker = () => {
         >
           <Row gutter={[20, 20]}>
             {data &&
-              data.map((x: any, index: number) => {
+              data.shoes &&
+              data.shoes.map((x: any, index: number) => {
                 return (
                   <Col
                     xs={!hideSidebar ? 12 : 24}
@@ -522,16 +618,18 @@ export const Sneaker = () => {
                   }}
                 >
                   {filter.name === "Màu sắc"
-                    ? filter.arrays.map((arr: any, index: number) => {
-                        return (
-                          <Tooltip title={arr.color} key={index}>
-                            <div
-                              className="box_color"
-                              style={{ background: `rgba(${arr.rgba})` }}
-                            ></div>
-                          </Tooltip>
-                        );
-                      })
+                    ? filter.arrays
+                        .filter((x: any) => x.type === "Color")
+                        .map((arr: any, index: number) => {
+                          return (
+                            <Tooltip title={arr.color} key={index}>
+                              <div
+                                className="box_color"
+                                style={{ background: `rgba(${arr.rgba})` }}
+                              ></div>
+                            </Tooltip>
+                          );
+                        })
                     : filter.name === "Kích cỡ"
                     ? filter.arrays.map((arr: any, index: number) => {
                         return (

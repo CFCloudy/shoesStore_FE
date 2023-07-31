@@ -62,6 +62,7 @@ export const MyOders = () => {
           <Tabs tabBarStyle={{ fontSize: "20px" }} size="middle">
             <Tabs.TabPane key="item-1" tab="Tất cả">
               {renderEmpty()}
+              {/* {data&&d} */}
             </Tabs.TabPane>
             <Tabs.TabPane key="item-2" tab="Chờ xác nhận"></Tabs.TabPane>
             <Tabs.TabPane key="item-3" tab="Chờ lấy hàng"></Tabs.TabPane>
