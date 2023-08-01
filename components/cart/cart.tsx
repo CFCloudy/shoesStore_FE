@@ -40,13 +40,10 @@ import { ButtonBlack } from "../home-pages/home-pages-styled";
 import { IDiscount, data_voucher } from "@/data/data_voucher";
 import { Confirm } from "../popup-confirm/confirm";
 import moment from "moment";
-import { ICartResponse } from "../sneaker/sneaker-detail";
-import { getListVoucher } from "@/features/order-slice";
+// import { ICartResponse } from "../sneaker/sneaker-detail";
+import { getCart, getListVoucher, selectOrder } from "@/features/order-slice";
 const cartstorage =
   typeof window !== "undefined" ? localStorage.getItem("cart") : undefined;
-const cart2 = cartstorage
-  ? (JSON.parse(cartstorage) as ICartResponse)
-  : ({} as ICartResponse);
 
 export const Cart = () => {
   const [form] = Form.useForm();
@@ -66,6 +63,8 @@ export const Cart = () => {
   const { loginInfo } = useAppSelector(selectUser);
   const [chooseAddress, setChooseAdress] = useState<any>();
   const [currentPage, setCurrentPage] = useState(1);
+  const { cart } = useAppSelector(selectOrder);
+
   let sum = 0;
   const [datavoucher, setDataVoucher] = useState<any>();
   useEffect(() => {
@@ -252,26 +251,20 @@ export const Cart = () => {
     }
     return number.toString();
   }
-  const [cart, setCart] = useState<ICartResponse>();
-  const getCart = () => {
-    const cartstorage3 =
-      typeof window !== "undefined" ? localStorage.getItem("cart") : undefined;
-    const cart24 = cartstorage3
-      ? (JSON.parse(cartstorage3) as ICartResponse)
-      : ({} as ICartResponse);
-    setCart(cart24);
-  };
-  if (cart && cart.items) {
-    cart.items.forEach((item) => {
+
+  if (cart && cart.payload && cart.payload.cartItemDTOs) {
+    cart.payload.cartItemDTOs.forEach((item) => {
       sum += item.price * item.quantity;
     });
   }
   useEffect(() => {
-    getCart();
-    if (cart && cart.items) {
-      cart.items.forEach((item) => {
-        sum += item.price * item.quantity;
-      });
+    if (loginInfo && loginInfo.payload) {
+      dispatch(getCart(loginInfo.payload.profilesID))
+        .unwrap()
+        .then()
+        .then((res: any) => {
+          // setCart(res)
+        });
     }
   }, []);
 
@@ -285,16 +278,15 @@ export const Cart = () => {
             </BoxHeader>
             <BoxBody>
               {cart &&
-                cart2 &&
-                cart2?.cartSessionId &&
-                cart2?.items.length > 0 &&
-                cart.items.map((cart: any) => (
+                cart.payload &&
+                cart.payload.cartItemDTOs &&
+                cart.payload.cartItemDTOs.map((cart: any) => (
                   <CartItem>
                     <Row gutter={[10, 10]}>
                       <Col span={8}>
                         <Image
                           preview={false}
-                          src={cart.img}
+                          src={cart.image}
                           alt=""
                           width={"240px"}
                           height={"240px"}
@@ -435,7 +427,7 @@ export const Cart = () => {
               <div>Tổng tiền hàng</div>
               <div>
                 {" "}
-                {Object.entries(cart2).length > 0 ? formatter.format(sum) : ""}
+                {Object.entries(cart).length > 0 ? formatter.format(sum) : ""}
               </div>
             </CheckOut>
             <CheckOut>

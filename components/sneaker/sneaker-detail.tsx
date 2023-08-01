@@ -20,26 +20,12 @@ import { Confirm } from "../dialog_size";
 import { ButtonBlack } from "../home-pages/home-pages-styled";
 import { CSSProperties } from "styled-components";
 import Router from "next/router";
-import { useAppDispatch } from "@/app/hook";
-import { updateStorageValue } from "@/features/user-slice";
+import { useAppDispatch, useAppSelector } from "@/app/hook";
+import { selectUser, updateStorageValue } from "@/features/user-slice";
 import { getProductDetail } from "@/features/product-slice";
+import { IAddToCart } from "@/models/order";
+import { AddToCart, selectOrder } from "@/features/order-slice";
 
-export interface IAddToCart {
-  cartToken?: string;
-  userId?: string;
-  productVariantId: number;
-  price: number;
-  quantity: number;
-  img?: string;
-  size: string;
-  color: string;
-}
-
-export interface ICartResponse {
-  cartSessionId: string;
-  total: number;
-  items: IAddToCart[];
-}
 export const SneakerDetail = () => {
   const [thumbsSwiper, setThumbsSwiper] = useState<any>(null);
   const [isConfirm, setIsConfirm] = useState<boolean>(false);
@@ -62,6 +48,7 @@ export const SneakerDetail = () => {
     if (type == "Color") {
       setIndexImg(index);
       let checkColor = data.shoesVariantDTOs.find((p: any) => p.color == value);
+      console.log(checkColor);
       if (checkColor) {
         if (isActiveColor && chooseColor == value) {
           setIsActiveColor(false);
@@ -72,13 +59,15 @@ export const SneakerDetail = () => {
           setIsActiveColor(true);
           setChooseColor(value);
           setIdColorChooes(id);
-          setPrice(checkColor.prices);
+          setPrice(checkColor.quantity);
         }
       }
     } else if (type == "Size") {
-      let checkSize = data.shoesVariantDTOs.find((p: any) => p.size == value);
+      let checkSize = data.shoesVariantDTOs.find(
+        (p: any) => p.size == String(value)
+      );
       if (checkSize) {
-        if (isActiveSize && chooseSizes == value) {
+        if (isActiveSize && chooseSizes == String(value)) {
           setIdSizeChooes(0);
           setChooseSizes("");
           setIsActiveSize(false);
@@ -151,7 +140,7 @@ export const SneakerDetail = () => {
   };
 
   const checkSize = (value: String) => {
-    let checkSizes = listProduct[0].variant.find(
+    let checkSizes = data.shoesVariantDTOs.find(
       (p: any) => p.size == value && p.color == chooseColor
     );
     if (chooseColor == "") {
@@ -195,49 +184,35 @@ export const SneakerDetail = () => {
     }
   };
   const dispatch = useAppDispatch();
+  const { loginInfo } = useAppSelector(selectUser);
+  const { loading } = useAppSelector(selectOrder);
   const handleAddToCard = () => {
-    const cartstorage =
-      typeof window !== "undefined" ? localStorage.getItem("cart") : undefined;
-    var cart = cartstorage
-      ? (JSON.parse(cartstorage) as ICartResponse)
-      : ({} as ICartResponse);
-
     if (chooseColor && chooseSizes) {
       let productVariant = data.shoesVariantDTOs.find(
-        (p: any) => p.color == chooseColor && p.size == chooseSizes
+        (p: any) => p.color == chooseColor && p.size == String(chooseSizes)
       );
-      if (productVariant) {
-        let payload: IAddToCart = {
-          quantity: 1,
-          price: 1800000,
-          productVariantId: productVariant.id,
-          img: data.available_colors[indexImg].src[0],
-          color: productVariant.color,
-          size: productVariant.size,
-        };
 
-        if (cart.cartSessionId) {
-          var it = cart.items.find(
-            (x) => x.productVariantId == payload.productVariantId
+      let payload: IAddToCart = {
+        userId: loginInfo.payload.profilesID,
+        cartItemDTOs: [
+          {
+            price: productVariant?.price,
+            quantity: 1,
+            ProductVariantId: productVariant.id,
+          },
+        ],
+      };
+      dispatch(AddToCart(payload))
+        .unwrap()
+        .then()
+        .then((res: any) => {
+          message.success(
+            `Bạn đã thêm sản phẩm ${productVariant?.variantName} vào giỏ hàng thành công`
           );
-          if (it) {
-            it.quantity = it.quantity + 1;
-          } else {
-            cart.items = [...cart.items, payload];
-          }
-        } else {
-          cart.items = [payload];
-          (cart.cartSessionId = "001"), (cart.total = payload.price);
-        }
-        if (typeof window !== "undefined") {
-          localStorage.setItem("cart", JSON.stringify(cart));
-        }
-        // dispatch(updateStorageValue(cart))
-      }
-
-      message.success(
-        `Bạn đã thêm sản phẩm ${productVariant?.variantName} vào giỏ hàng thành công`
-      );
+        })
+        .catch((e: any) => {
+          message.error("Failed!!!");
+        });
     } else if (chooseColor == "" && chooseSizes == "") {
       message.error(`Bạn chưa chọn màu sắc và kích cỡ sản phẩm `);
     } else if (chooseColor == "" || chooseSizes == "") {
@@ -248,7 +223,7 @@ export const SneakerDetail = () => {
       );
     }
   };
-  console.log(listProduct);
+
   return (
     <ContainerSneaker>
       {data ? (
@@ -273,13 +248,15 @@ export const SneakerDetail = () => {
               modules={[FreeMode, Navigation, Thumbs, Scrollbar]}
               className="mySwiper2"
             >
-              {data.available_colors[indexImg].src.map((img: any) => {
-                return (
-                  <SwiperSlide>
-                    <img src={img} />
-                  </SwiperSlide>
-                );
-              })}
+              {data.available_colors[indexImg].src.map(
+                (img: any, index: number) => {
+                  return (
+                    <SwiperSlide key={index}>
+                      <img src={img} />
+                    </SwiperSlide>
+                  );
+                }
+              )}
             </Swiper>
             <Swiper
               onSwiper={setThumbsSwiper}
@@ -294,13 +271,15 @@ export const SneakerDetail = () => {
               }}
               className="mySwiper"
             >
-              {data.available_colors[indexImg].src.map((img: any) => {
-                return (
-                  <SwiperSlide>
-                    <img src={img} />
-                  </SwiperSlide>
-                );
-              })}
+              {data.available_colors[indexImg].src.map(
+                (img: any, index: number) => {
+                  return (
+                    <SwiperSlide key={index}>
+                      <img src={img} />
+                    </SwiperSlide>
+                  );
+                }
+              )}
             </Swiper>
           </Col>
           <Col xs={24} md={24} xxl={9} lg={9}>
@@ -374,7 +353,9 @@ export const SneakerDetail = () => {
                           isActiveSize && chooseSizes == sz ? "white" : "black"
                         }`,
                         border: `${
-                          checkSize(sz)?.check ? "solid 1px black" : "none"
+                          checkSize(sz)?.check
+                            ? "solid 1px black"
+                            : "0.0625rem solid #e5e5e5"
                         }`,
                         // pointerEvents:`${
                         //   chooseColor&&chooseSizes?checkSize(sz)?.check?'auto':'none'
@@ -388,6 +369,7 @@ export const SneakerDetail = () => {
                             : "auto"
                         }`,
                       }}
+                      key={sz}
                     >
                       {sz}
                     </div>

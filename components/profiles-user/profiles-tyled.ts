@@ -104,3 +104,18 @@ export const BoxInfoUser = styled.div`
     }
   }
 `;
+
+export const WrapperOrder = styled.div`
+  border: 0.625px solid #e5e5e5;
+  padding: 10px;
+  margin: 10px 0;
+  .wp {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .line {
+    display: flex;
+    gap: 20px;
+  }
+`;

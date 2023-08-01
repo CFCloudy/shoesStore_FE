@@ -2,7 +2,7 @@ export interface IPayloadOrder {
   userID: number;
   total: number;
   status: number;
-  orderCode:string;
+  orderCode: string;
   listItems: [
     {
       variantID: number;
@@ -13,13 +13,54 @@ export interface IPayloadOrder {
       subTotal: number;
     }
   ];
-  shippingDetails: 
+  shippingDetails: {
+    shippingName: string;
+    shippingAddress: string;
+    shippingPhone: string;
+    orderNote: string;
+    status: number;
+  };
+}
+
+export interface IAddToCart {
+  userId: number;
+  cartItemDTOs: [
     {
-      shippingName: string;
-      shippingAddress: string;
-      shippingPhone: string;
-      orderNote: string;
-      status: number;
+      ProductVariantId: number;
+      quantity: number;
+      price: number;
     }
-  
+  ];
+}
+
+export interface IInitStateOrder {
+  loading: boolean;
+  error: boolean;
+  cart: ICartResponse;
+}
+export interface IFilterOrder {
+  userId?: number;
+  orderCode?: string;
+  sorting: string;
+  skipCount: number;
+  maxResultCount: number;
+}
+export interface ICartResponse {
+  payload: {
+    id: number;
+    userId: number;
+    totalItem: number;
+    cartItemDTOs: [
+      {
+        id: number;
+        cartId: number;
+        productVariantId: number;
+        variantName: string;
+        description: string;
+        image: string;
+        price: number;
+        quantity: number;
+      }
+    ];
+  };
 }

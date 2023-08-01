@@ -4,12 +4,13 @@ import {
   ShoppingCartOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { Avatar, Button, Col, Form, Input, Row, Space, Tabs } from "antd";
+import { Avatar, Button, Col, Form, Input, Row, Image, Tabs } from "antd";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { BoxInfoUser } from "./profiles-tyled";
+import { BoxInfoUser, WrapperOrder } from "./profiles-tyled";
 import { getOrderByUserId } from "@/features/order-slice";
 import { selectUser } from "@/features/user-slice";
+import { formatter } from "@/models/common";
 
 export interface IResponseAdress {
   userAddressId: string;
@@ -27,7 +28,7 @@ export interface IResponseAdress {
 
 export const MyOders = () => {
   const dispatch = useAppDispatch();
-  const [data, setData] = useState<IResponseAdress[]>([]);
+  const [data, setData] = useState<any>([]);
   const router = useRouter();
   const { loginInfo } = useAppSelector(selectUser);
 
@@ -37,7 +38,7 @@ export const MyOders = () => {
         .unwrap()
         .then()
         .then((res: any) => {
-          setData(res?.data);
+          setData(res);
         });
     }
   }, []);
@@ -54,6 +55,8 @@ export const MyOders = () => {
     );
   };
 
+  console.log(data);
+
   return (
     <div>
       <BoxInfoUser style={{ minHeight: "560px" }}>
@@ -61,8 +64,47 @@ export const MyOders = () => {
         <div className="form">
           <Tabs tabBarStyle={{ fontSize: "20px" }} size="middle">
             <Tabs.TabPane key="item-1" tab="Tất cả">
-              {renderEmpty()}
-              {/* {data&&d} */}
+              {/* {renderEmpty()} */}
+              {/* {data && data.map((item: any) => <div>{item.createDate}</div>)} */}
+              {data &&
+                data.map((item: any, index: number) => (
+                  <WrapperOrder>
+                    <div className="line">
+                      <Image
+                        src={item.items && item.items[0]?.img}
+                        width={"50px"}
+                        height={"50px"}
+                        style={{ flex: 0 }}
+                      />
+                      <div style={{ flex: 1 }}>
+                        <div className="name">
+                          {item.items && item.items[0]?.color}
+                        </div>
+                        <div className="wp">
+                          <div>
+                            <div>
+                              Màu sắc:{item.items && item.items[0]?.color}
+                            </div>
+                            <div>
+                              Kích thước:{item.items && item.items[0]?.color}
+                            </div>
+                          </div>
+                          <div>2</div>
+                        </div>
+                        <div className="wp">
+                          <div></div>
+                          <div className="price">
+                            {formatter.format(200000)}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="wp">
+                      <div>{`${item.items.length} sản phẩm`}</div>
+                      <div>Thành tiền {formatter.format(200000)}</div>
+                    </div>
+                  </WrapperOrder>
+                ))}
             </Tabs.TabPane>
             <Tabs.TabPane key="item-2" tab="Chờ xác nhận"></Tabs.TabPane>
             <Tabs.TabPane key="item-3" tab="Chờ lấy hàng"></Tabs.TabPane>

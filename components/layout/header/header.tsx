@@ -47,22 +47,21 @@ import {
   userLogout,
 } from "@/features/user-slice";
 import { ILogoutPayload } from "@/models/user";
-import { ICartResponse } from "@/components/sneaker/sneaker-detail";
+import { getCart, selectOrder } from "@/features/order-slice";
+import { ICartResponse } from "@/models/order";
 
 const cartstorage =
   typeof window !== "undefined" ? localStorage.getItem("cart") : undefined;
-const cart2 = cartstorage
-  ? (JSON.parse(cartstorage) as ICartResponse)
-  : ({} as ICartResponse);
+
 export const Header = () => {
   const [open, setOpen] = useState(false);
   const [openCart, setOpenCart] = useState(false);
   const [placement, setPlacement] = useState<DrawerProps["placement"]>("left");
   const { loginInfo } = useAppSelector(selectUser);
   const [menu, setMenu] = useState<any>(data_category);
-  const [cart, setCart] = useState<ICartResponse>();
   const [isOpenMenu, setOpenMenu] = useState<string>("none");
   const [mainTiltle, setMainTitle] = useState<string>("");
+  // const [cartItem,setCart]=useState<ICartResponse>()
   const dispatch = useAppDispatch();
   const storage =
     typeof window !== "undefined" ? localStorage.getItem("u") : undefined;
@@ -79,16 +78,17 @@ export const Header = () => {
     setOpenCart(false);
   };
 
-  const getCart = () => {
-    const cartstorage3 =
-      typeof window !== "undefined" ? localStorage.getItem("cart") : undefined;
-    const cart24 = cartstorage3
-      ? (JSON.parse(cartstorage3) as ICartResponse)
-      : ({} as ICartResponse);
-    setCart(cart24);
-    console.log(cart24);
-  };
-
+  useEffect(() => {
+    if (loginInfo && loginInfo.payload) {
+      dispatch(getCart(loginInfo.payload.profilesID))
+        .unwrap()
+        .then()
+        .then((res: any) => {
+          // setCart(res)
+        });
+    }
+  }, []);
+  const { cart } = useAppSelector(selectOrder);
   const logout = () => {
     let payload: ILogoutPayload = {
       id: loginInfo.payload.id,
@@ -134,13 +134,8 @@ export const Header = () => {
     },
   ];
   const [idchoose, setId] = useState<number>(0);
-
-  const handleDeleteItem = (id: number) => {
-    if (cart) {
-      cart.items = cart?.items.filter((x) => x.productVariantId != id);
-      localStorage.setItem("cart", JSON.stringify(cart));
-    }
-  };
+  console.log(cart);
+  const handleDeleteItem = (id: number) => {};
   return (
     <ContainerHeader>
       <div className="hideMenu" onClick={showDrawer}>
@@ -225,7 +220,11 @@ export const Header = () => {
             <li className="shoppingcart">
               <Badge
                 count={
-                  Object.entries(cart2).length > 0 ? cart2.items.length : 0
+                  Object.entries(cart).length > 0 &&
+                  cart.payload &&
+                  cart.payload.cartItemDTOs.length > 0
+                    ? cart.payload.cartItemDTOs.length
+                    : 0
                 }
                 size="small"
                 showZero
@@ -235,7 +234,6 @@ export const Header = () => {
                   className="iconShopingcart"
                   onClick={() => {
                     setOpenCart(true);
-                    getCart();
                   }}
                 />
               </Badge>
@@ -285,12 +283,12 @@ export const Header = () => {
       >
         <div className="wrapp">
           <div className="item">
-            {cart && cart2 && cart2?.cartSessionId && cart2?.items.length > 0
-              ? cart.items.map((item: any) => (
-                  <WrapCartItemPopup>
+            {cart && cart?.payload && cart?.payload.cartItemDTOs
+              ? cart.payload.cartItemDTOs.map((item: any) => (
+                  <WrapCartItemPopup key={item.id}>
                     <div className="img">
                       <img
-                        src={item.img}
+                        src={item.image}
                         alt=""
                         width={"110px"}
                         height={"110px"}
@@ -326,9 +324,9 @@ export const Header = () => {
             <div className="sum">
               <div className="title">Tổng cộng</div>
               <div className="price">
-                {cart && cart.items
+                {cart && cart.payload && cart.payload.cartItemDTOs
                   ? formatter.format(
-                      cart.items.reduce(
+                      cart.payload.cartItemDTOs.reduce(
                         (accumulator: number, currentValue: any) => {
                           return accumulator + currentValue.price;
                         },

@@ -15,7 +15,6 @@ import {
 } from "@/models/user";
 import { createSlice, createAsyncThunk, createAction } from "@reduxjs/toolkit";
 import userApi from "./services/user-api";
-import { ICartResponse } from "@/components/sneaker/sneaker-detail";
 
 export const userSignin = createAsyncThunk(
   "UserSignin",
@@ -194,14 +193,14 @@ export const removeAddress = createAsyncThunk(
   }
 );
 
-export const updateStorageValue = (newValue:any) => ({
-  type: 'UPDATE_STORAGE_VALUE',
+export const updateStorageValue = (newValue: any) => ({
+  type: "UPDATE_STORAGE_VALUE",
   payload: newValue,
 });
 
 const storage =
   typeof window !== "undefined" ? localStorage.getItem("u") : undefined;
-  const storagecart =
+const storagecart =
   typeof window !== "undefined" ? localStorage.getItem("cart") : undefined;
 const initState: IInitStateUser = {
   error: false,
@@ -213,9 +212,7 @@ const initState: IInitStateUser = {
     : ({} as ILoginResponse),
   loadingAdress: false,
   loadingDeleteAdress: false,
-  cart:storagecart
-  ? (JSON.parse(storagecart) as ICartResponse)
-  : ({} as ICartResponse),
+  cart: {},
 };
 
 const userSlice = createSlice({

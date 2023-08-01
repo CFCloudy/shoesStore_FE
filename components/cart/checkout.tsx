@@ -15,13 +15,14 @@ import { formatter } from "@/models/common";
 import { IPayloadOrder } from "@/models/order";
 import { useAppDispatch, useAppSelector } from "@/app/hook";
 import { selectUser } from "@/features/user-slice";
-import { createOrder } from "@/features/order-slice";
+import { createOrder, selectOrder } from "@/features/order-slice";
 
 export const CheckOutPage = () => {
   const [current, setCurrent] = useState(1);
   const [chooseType, setChooseType] = useState<boolean>(false);
   const [chooseCard, setChooseCard] = useState<boolean>(false);
-  const { loginInfo, cart } = useAppSelector(selectUser);
+  const { loginInfo } = useAppSelector(selectUser);
+  const { cart } = useAppSelector(selectOrder);
   const dispatch = useAppDispatch();
   const onChange = (value: number) => {
     console.log("onChange:", value);
@@ -32,14 +33,14 @@ export const CheckOutPage = () => {
   const handleThanhtoan = () => {
     let data: any = [];
 
-    if (cart && cart.items) {
-      for (let i = 0; i < cart.items.length; i++) {
+    if (cart && cart.payload && cart.payload.cartItemDTOs) {
+      for (let i = 0; i < cart.payload.cartItemDTOs.length; i++) {
         let obj = {
-          price: cart.items[i].productVariantId,
+          price: cart.payload.cartItemDTOs[i].productVariantId,
           productId: 1,
-          quantity: cart.items[i].quantity,
+          quantity: cart.payload.cartItemDTOs[i].quantity,
           subTotal: 180000,
-          variantID: cart.items[i].productVariantId,
+          variantID: cart.payload.cartItemDTOs[i].productVariantId,
           variantName: "Đỏ",
         };
         data.push(obj);
