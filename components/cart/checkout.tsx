@@ -15,7 +15,14 @@ import { formatter } from "@/models/common";
 import { IPayloadOrder } from "@/models/order";
 import { useAppDispatch, useAppSelector } from "@/app/hook";
 import { selectUser } from "@/features/user-slice";
-import { createOrder, selectOrder } from "@/features/order-slice";
+import {
+  createOrder,
+  getCart,
+  removeCartItem,
+  selectOrder,
+} from "@/features/order-slice";
+import { useRouter } from "next/router";
+import { IRemoveItem } from "@/features/services/order-api";
 
 export const CheckOutPage = () => {
   const [current, setCurrent] = useState(1);
@@ -28,6 +35,7 @@ export const CheckOutPage = () => {
     console.log("onChange:", value);
     setCurrent(value);
   };
+  const router = useRouter();
   let sum = 0;
   const description = "ok";
   const handleThanhtoan = () => {
@@ -36,12 +44,14 @@ export const CheckOutPage = () => {
     if (cart && cart.payload && cart.payload.cartItemDTOs) {
       for (let i = 0; i < cart.payload.cartItemDTOs.length; i++) {
         let obj = {
-          price: cart.payload.cartItemDTOs[i].productVariantId,
+          price: cart.payload.cartItemDTOs[i].price,
           productId: 1,
           quantity: cart.payload.cartItemDTOs[i].quantity,
           subTotal: 180000,
           variantID: cart.payload.cartItemDTOs[i].productVariantId,
           variantName: "Đỏ",
+          cartId: cart.payload.cartItemDTOs[i].cartId,
+          id: cart.payload.cartItemDTOs[i].id,
         };
         data.push(obj);
       }
@@ -55,7 +65,8 @@ export const CheckOutPage = () => {
         shippingAddress: "2",
         shippingName: "32",
         shippingPhone: "",
-        status: 1,
+        status: 0,
+        shippingId: Number(router.query.id),
       },
       total: 232323,
       userID: loginInfo.payload.profilesID,
@@ -68,6 +79,22 @@ export const CheckOutPage = () => {
         console.log(res);
         message.success("Thanh toán thành công");
         localStorage.removeItem("cart");
+
+        dispatch(removeCartItem(data))
+          .unwrap()
+          .then()
+          .then((res: any) => {
+            dispatch(getCart(loginInfo.payload.profilesID))
+              .unwrap()
+              .then()
+              .then((res: any) => {
+                // setCart(res)
+              });
+            message.success("Xóa sản phẩm khỏi giỏ hàng thành công");
+          })
+          .catch((error: any) => {
+            message.error("Xóa thất bại!!!");
+          });
         setCurrent(2);
       })
       .catch((error: any) => {

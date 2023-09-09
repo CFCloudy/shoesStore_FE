@@ -113,6 +113,14 @@ export const WrapperOrder = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
+    .detail {
+      padding-top: 4px;
+      cursor: pointer;
+      font-weight: 600;
+      :hover {
+        text-decoration: underline;
+      }
+    }
   }
   .line {
     display: flex;

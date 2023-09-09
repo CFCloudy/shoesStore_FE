@@ -267,6 +267,7 @@ export const Cart = () => {
         });
     }
   }, []);
+  console.log(chooseAddress);
 
   return (
     <WrapperProfile>
@@ -520,7 +521,14 @@ export const Cart = () => {
                   >
                     <ButtonBlack
                       // loading={loading}
-                      onClick={() => Router.push("/checkout")}
+                      onClick={() =>
+                        Router.push({
+                          pathname: `/checkout/`,
+                          query: {
+                            id: chooseAddress.id,
+                          },
+                        })
+                      }
                     >
                       Thanh toán
                     </ButtonBlack>

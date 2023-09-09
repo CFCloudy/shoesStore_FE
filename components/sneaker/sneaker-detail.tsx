@@ -24,7 +24,7 @@ import { useAppDispatch, useAppSelector } from "@/app/hook";
 import { selectUser, updateStorageValue } from "@/features/user-slice";
 import { getProductDetail } from "@/features/product-slice";
 import { IAddToCart } from "@/models/order";
-import { AddToCart, selectOrder } from "@/features/order-slice";
+import { AddToCart, getCart, selectOrder } from "@/features/order-slice";
 
 export const SneakerDetail = () => {
   const [thumbsSwiper, setThumbsSwiper] = useState<any>(null);
@@ -59,7 +59,7 @@ export const SneakerDetail = () => {
           setIsActiveColor(true);
           setChooseColor(value);
           setIdColorChooes(id);
-          setPrice(checkColor.quantity);
+          setPrice(checkColor.price);
         }
       }
     } else if (type == "Size") {
@@ -83,8 +83,6 @@ export const SneakerDetail = () => {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      console.log(Router.query.id);
-
       dispatch(getProductDetail(Number(Router.query.id)))
         .unwrap()
         .then()
@@ -186,12 +184,14 @@ export const SneakerDetail = () => {
   const dispatch = useAppDispatch();
   const { loginInfo } = useAppSelector(selectUser);
   const { loading } = useAppSelector(selectOrder);
+  const [choseShoes, setChoseShoes] = useState<any>();
   const handleAddToCard = () => {
     if (chooseColor && chooseSizes) {
       let productVariant = data.shoesVariantDTOs.find(
         (p: any) => p.color == chooseColor && p.size == String(chooseSizes)
       );
 
+      setChoseShoes(productVariant);
       let payload: IAddToCart = {
         userId: loginInfo.payload.profilesID,
         cartItemDTOs: [
@@ -209,6 +209,12 @@ export const SneakerDetail = () => {
           message.success(
             `Bạn đã thêm sản phẩm ${productVariant?.variantName} vào giỏ hàng thành công`
           );
+          if (loginInfo && loginInfo.payload) {
+            dispatch(getCart(loginInfo.payload.profilesID))
+              .unwrap()
+              .then()
+              .then((res: any) => {});
+          }
         })
         .catch((e: any) => {
           message.error("Failed!!!");
@@ -392,7 +398,7 @@ export const SneakerDetail = () => {
               >
                 Hướng dẫn chọn size
               </p>
-              <ButtonBlack onClick={handleAddToCard}>
+              <ButtonBlack onClick={handleAddToCard} loading={loading}>
                 Thêm vào giỏ hàng
               </ButtonBlack>
             </Swap_Product_Detail>

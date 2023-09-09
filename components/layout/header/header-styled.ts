@@ -208,3 +208,29 @@ export const WrapUser = styled.div`
   font-weight: 600;
   cursor: pointer;
 `;
+
+export const WrapperSearch = styled.div`
+  width: 400px;
+  position: absolute;
+  background-color: white;
+
+  height: 320px;
+  border: 0.0625rem solid #e5e5e5;
+  margin-left: 129px;
+  border-radius: 8px;
+  padding: 12px;
+  .wrap {
+    display: flex;
+    gap: 20px;
+    line-height: 24px;
+    margin: 10px 0;
+    :hover {
+      background-color: antiquewhite;
+      cursor: pointer;
+    }
+  }
+  .price {
+    color: blue;
+  }
+  flex-wrap: wrap;
+`;

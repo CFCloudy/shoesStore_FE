@@ -1,4 +1,9 @@
-import { IAddToCart, IFilterOrder, IPayloadOrder } from "@/models/order";
+import {
+  IAddToCart,
+  IFilterOrder,
+  IFilterPhieuGiaHang,
+  IPayloadOrder,
+} from "@/models/order";
 import axiosClient from "./axios-client";
 import { IFilterData } from "@/models/product";
 
@@ -6,7 +11,7 @@ class OrderApi {
   createrOrder(payload: IPayloadOrder) {
     return axiosClient({
       method: "post",
-      url: "/api/Orders/Create?isShip=false",
+      url: "/api/Orders/Create?isShip=true",
       data: payload,
     });
   }
@@ -40,6 +45,14 @@ class OrderApi {
       data: payload,
     });
   }
+
+  removeItemCart(payload: any) {
+    return axiosClient({
+      method: "delete",
+      url: `/api/Cart`,
+      data: payload,
+    });
+  }
   getListOrder(payload: IFilterOrder) {
     return axiosClient({
       method: "post",
@@ -47,6 +60,29 @@ class OrderApi {
       data: payload,
     });
   }
+
+  getOrderById(payload: any) {
+    return axiosClient({
+      method: "get",
+      url: `/api/Orders/GetOrderItemsById?orderId=${payload}`,
+      data: payload,
+    });
+  }
+
+  getListPhieuGiaoHang(payload: IFilterPhieuGiaHang) {
+    return axiosClient({
+      method: "post",
+      url: `api/Orders/GetAllPhieuGiaoHang`,
+      data: payload,
+    });
+  }
 }
 
 export default new OrderApi();
+
+export interface IRemoveItem {
+  id: number;
+  cartId: number;
+  productVariantId: number;
+  variantName: string;
+}

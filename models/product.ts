@@ -37,6 +37,7 @@ export interface IInitStateProduct {
 }
 
 export interface IFilterData {
+  nameShoe?: string;
   brandDTOs?: [
     {
       id: number;

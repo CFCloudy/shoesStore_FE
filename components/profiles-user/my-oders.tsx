@@ -57,6 +57,8 @@ export const MyOders = () => {
 
   console.log(data);
 
+  
+
   return (
     <div>
       <BoxInfoUser style={{ minHeight: "560px" }}>
@@ -102,6 +104,19 @@ export const MyOders = () => {
                     <div className="wp">
                       <div>{`${item.items.length} sản phẩm`}</div>
                       <div>Thành tiền {formatter.format(200000)}</div>
+                    </div>
+                    <div className="wp">
+                      <div></div>
+                      <div
+                        className="detail"
+                        onClick={() =>
+                          router.push(
+                            `/my-oder/my-order-detail/${item.orderId}`
+                          )
+                        }
+                      >
+                        Xem chi tiết
+                      </div>
                     </div>
                   </WrapperOrder>
                 ))}

@@ -19,6 +19,7 @@ export interface IPayloadOrder {
     shippingPhone: string;
     orderNote: string;
     status: number;
+    shippingId?: number;
   };
 }
 
@@ -39,6 +40,14 @@ export interface IInitStateOrder {
   cart: ICartResponse;
 }
 export interface IFilterOrder {
+  userId?: number;
+  orderCode?: string;
+  sorting: string;
+  skipCount: number;
+  maxResultCount: number;
+}
+
+export interface IFilterPhieuGiaHang {
   userId?: number;
   orderCode?: string;
   sorting: string;

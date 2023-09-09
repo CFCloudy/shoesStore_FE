@@ -23,15 +23,17 @@ import {
   Menu,
   message,
   Badge,
+  Spin,
 } from "antd";
 import Router from "next/router";
-import { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useRef, useState } from "react";
 import {
   ContainerHeader,
   DrawerCustom,
   FooterPopupCart,
   WrapCartItemPopup,
   WrapUser,
+  WrapperSearch,
 } from "./header-styled";
 import logo from "@/assets/logo-no-background_home.svg";
 
@@ -47,8 +49,11 @@ import {
   userLogout,
 } from "@/features/user-slice";
 import { ILogoutPayload } from "@/models/user";
-import { getCart, selectOrder } from "@/features/order-slice";
+import { getCart, removeCartItem, selectOrder } from "@/features/order-slice";
 import { ICartResponse } from "@/models/order";
+import { IRemoveItem } from "@/features/services/order-api";
+import { IFilterData } from "@/models/product";
+import { getListProduct, selectProduct } from "@/features/product-slice";
 
 const cartstorage =
   typeof window !== "undefined" ? localStorage.getItem("cart") : undefined;
@@ -78,6 +83,7 @@ export const Header = () => {
     setOpenCart(false);
   };
 
+  const { cart } = useAppSelector(selectOrder);
   useEffect(() => {
     if (loginInfo && loginInfo.payload) {
       dispatch(getCart(loginInfo.payload.profilesID))
@@ -88,7 +94,6 @@ export const Header = () => {
         });
     }
   }, []);
-  const { cart } = useAppSelector(selectOrder);
   const logout = () => {
     let payload: ILogoutPayload = {
       id: loginInfo.payload.id,
@@ -134,8 +139,67 @@ export const Header = () => {
     },
   ];
   const [idchoose, setId] = useState<number>(0);
-  console.log(cart);
-  const handleDeleteItem = (id: number) => {};
+  const { loading } = useAppSelector(selectProduct);
+  const [data, setData] = useState<any>();
+  const [payloadFilter, setPayloadFilter] = useState<IFilterData>(
+    {} as IFilterData
+  );
+  const handleSearch = (e: any) => {
+    e.preventDefault();
+    let payload = payloadFilter;
+    payload.nameShoe = e.target.value;
+    setIsEditTarget(true);
+    dispatch(getListProduct(payload))
+      .unwrap()
+      .then()
+      .then((res: any) => {
+        setData(res);
+      });
+  };
+
+  const handleDeleteItem = (item: any) => {
+    let payload: IRemoveItem[] = [
+      {
+        cartId: item.cartId,
+        id: item.id,
+        variantName: item.variantName,
+        productVariantId: item.productVariantId,
+      },
+    ];
+    dispatch(removeCartItem(payload))
+      .unwrap()
+      .then()
+      .then((res: any) => {
+        dispatch(getCart(loginInfo.payload.profilesID))
+          .unwrap()
+          .then()
+          .then((res: any) => {
+            // setCart(res)
+          });
+        message.success("Xóa sản phẩm khỏi giỏ hàng thành công");
+      })
+      .catch((error: any) => {
+        message.error("Xóa thất bại!!!");
+      });
+  };
+  const wrapperRef = useRef(null);
+  const [isEditTarget, setIsEditTarget] = useState<boolean>(false);
+  useOutsideTarget(wrapperRef);
+
+  function useOutsideTarget(ref: any) {
+    useEffect(() => {
+      function handleClickOutside(event: any) {
+        if (ref.current && !ref.current.contains(event.target)) {
+          setIsEditTarget(false);
+        }
+      }
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+      };
+    }, [ref]);
+  }
+
   return (
     <ContainerHeader>
       <div className="hideMenu" onClick={showDrawer}>
@@ -244,8 +308,48 @@ export const Header = () => {
                 size="large"
                 style={{ width: "300px" }}
                 className="input"
+                onChange={(e: any) => {
+                  handleSearch(e);
+                }}
               ></Input>
             </li>
+            <Spin spinning={loading} delay={500}>
+              <WrapperSearch
+                ref={wrapperRef}
+                hidden={isEditTarget ? false : true}
+              >
+                {data &&
+                  data.shoes &&
+                  data.shoes.map((x: any, index: number) =>
+                    index >= 4 ? (
+                      ""
+                    ) : (
+                      <div
+                        className="wrap"
+                        key={index}
+                        onClick={() => {
+                          Router.push(`/sneaker/detail/${x.id}`);
+                        }}
+                      >
+                        <div className="img">
+                          <Image
+                            src={x.displayImage}
+                            preview={false}
+                            width={"60px"}
+                            height={"60px"}
+                          />
+                        </div>
+                        <div className="detail">
+                          <div>{x.productName}</div>
+                          <div className="price">
+                            {formatter.format(x.displayPrice)}
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  )}
+              </WrapperSearch>
+            </Spin>
           </ul>
         </div>
       </div>
@@ -310,9 +414,7 @@ export const Header = () => {
                       <div className="action">
                         <EditOutlined />
                         <DeleteOutlined
-                          onClick={() =>
-                            handleDeleteItem(item.productVariantId)
-                          }
+                          onClick={() => handleDeleteItem(item)}
                         />
                       </div>
                     </div>
