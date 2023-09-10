@@ -58,7 +58,7 @@ export const getOrderByUserId = createAsyncThunk(
 
 export const removeCartItem = createAsyncThunk(
   "removeCartItem",
-  async (payload: IRemoveItem, { rejectWithValue }) => {
+  async (payload: IRemoveItem[], { rejectWithValue }) => {
     try {
       const response = await orderApi.removeItemCart(payload);
       return response.data;

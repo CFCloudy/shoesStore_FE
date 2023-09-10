@@ -200,6 +200,14 @@ export const Header = () => {
     }, [ref]);
   }
 
+  let title = `Giỏ hàng của tôi. ${
+    Object.entries(cart).length > 0 &&
+    cart.payload &&
+    cart.payload.cartItemDTOs.length > 0
+      ? cart.payload.cartItemDTOs.length
+      : 0
+  } sản phẩm`;
+
   return (
     <ContainerHeader>
       <div className="hideMenu" onClick={showDrawer}>
@@ -368,7 +376,7 @@ export const Header = () => {
         <p>Some contents...</p>
       </Drawer>
       <DrawerCustom
-        title="Giỏ hàng của tôi, 1 sản phẩm"
+        title={title}
         placement={"right"}
         width={400}
         onClose={onCloseCart}

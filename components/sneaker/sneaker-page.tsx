@@ -59,6 +59,7 @@ export const Sneaker = () => {
   const [dataSizes, setDataSizes] = useState<ISizesResponse[]>([]);
   const [dataBrands, setDataBrands] = useState<IBrandsResponse[]>([]);
   const [dataFeature, setDataFeatures] = useState<IFeaturesResponse[]>([]);
+  const [toltalItem, setToltalItem] = useState<number>(0);
   const [dataF, setDataF] = useState<any>();
   const [data, setData] = useState<any>([]);
   // const [dataColors, setDataColors] = useState<IColorsResponse[]>([]);
@@ -78,6 +79,10 @@ export const Sneaker = () => {
     const endIndex = startIndex + itemsPerPage;
     setStartIndex(startIndex);
     setEndIndex(endIndex);
+    var pa = { ...payloadFilter };
+    pa.page = pageNumber;
+    setPayloadFilter(pa);
+    fectchDataAsyn(pa);
   };
   useEffect(() => {
     fectchDataAsyn(payloadFilter);
@@ -88,6 +93,7 @@ export const Sneaker = () => {
       .then()
       .then((res: any) => {
         setData(res);
+        setToltalItem(res.totalItem);
       });
   };
 
@@ -335,6 +341,7 @@ export const Sneaker = () => {
       }
     }
     setPayloadFilter(fil);
+    fectchDataAsyn(fil);
   };
 
   const handleHideSideBar = () => {};
@@ -360,7 +367,7 @@ export const Sneaker = () => {
         </div>
         <div className="result">
           <div className="wrap_col">
-            <div className="title">190 kết quả</div>
+            <div className="title">{toltalItem} kết quả</div>
             <div className="icon">{/* <FilterOutlined /> */}</div>
           </div>
         </div>
