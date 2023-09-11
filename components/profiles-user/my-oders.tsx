@@ -62,7 +62,7 @@ export const MyOders = () => {
   return (
     <div>
       <BoxInfoUser style={{ minHeight: "560px" }}>
-        <div className="info">Địa chỉ của tôi</div>
+        <div className="info">Đơn hàng của tôi</div>
         <div className="form">
           <Tabs tabBarStyle={{ fontSize: "20px" }} size="middle">
             <Tabs.TabPane key="item-1" tab="Tất cả">
@@ -70,7 +70,7 @@ export const MyOders = () => {
               {/* {data && data.map((item: any) => <div>{item.createDate}</div>)} */}
               {data &&
                 data.map((item: any, index: number) => (
-                  <WrapperOrder>
+                  <WrapperOrder key={index}>
                     <div className="line">
                       <Image
                         src={item.items && item.items[0]?.img}
@@ -121,9 +121,168 @@ export const MyOders = () => {
                   </WrapperOrder>
                 ))}
             </Tabs.TabPane>
-            <Tabs.TabPane key="item-2" tab="Chờ xác nhận"></Tabs.TabPane>
-            <Tabs.TabPane key="item-3" tab="Chờ lấy hàng"></Tabs.TabPane>
-            <Tabs.TabPane key="item-4" tab="Đang giao"></Tabs.TabPane>
+            <Tabs.TabPane key="item-2" tab="Chờ xác nhận">
+            {data &&
+                data.map((item: any, index: number) => (
+                  item.status==0?<WrapperOrder key={index}>
+                  <div className="line">
+                    <Image
+                      src={item.items && item.items[0]?.img}
+                      width={"50px"}
+                      height={"50px"}
+                      style={{ flex: 0 }}
+                    />
+                    <div style={{ flex: 1 }}>
+                      <div className="name">
+                        {item.items && item.items[0]?.color}
+                      </div>
+                      <div className="wp">
+                        <div>
+                          <div>
+                            Màu sắc:{item.items && item.items[0]?.color}
+                          </div>
+                          <div>
+                            Kích thước:{item.items && item.items[0]?.color}
+                          </div>
+                        </div>
+                        <div>2</div>
+                      </div>
+                      <div className="wp">
+                        <div></div>
+                        <div className="price">
+                          {formatter.format(200000)}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="wp">
+                    <div>{`${item.items.length} sản phẩm`}</div>
+                    <div>Thành tiền {formatter.format(200000)}</div>
+                  </div>
+                  <div className="wp">
+                    <div></div>
+                    <div
+                      className="detail"
+                      onClick={() =>
+                        router.push(
+                          `/my-oder/my-order-detail/${item.orderId}`
+                        )
+                      }
+                    >
+                      Xem chi tiết
+                    </div>
+                  </div>
+                </WrapperOrder>:null
+                ))}
+            </Tabs.TabPane>
+            <Tabs.TabPane key="item-3" tab="Chờ lấy hàng">
+            {data &&
+                data.map((item: any, index: number) => (
+                  item.status==3?<WrapperOrder key={index}>
+                  <div className="line">
+                    <Image
+                      src={item.items && item.items[0]?.img}
+                      width={"50px"}
+                      height={"50px"}
+                      style={{ flex: 0 }}
+                    />
+                    <div style={{ flex: 1 }}>
+                      <div className="name">
+                        {item.items && item.items[0]?.color}
+                      </div>
+                      <div className="wp">
+                        <div>
+                          <div>
+                            Màu sắc:{item.items && item.items[0]?.color}
+                          </div>
+                          <div>
+                            Kích thước:{item.items && item.items[0]?.color}
+                          </div>
+                        </div>
+                        <div>2</div>
+                      </div>
+                      <div className="wp">
+                        <div></div>
+                        <div className="price">
+                          {formatter.format(200000)}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="wp">
+                    <div>{`${item.items.length} sản phẩm`}</div>
+                    <div>Thành tiền {formatter.format(200000)}</div>
+                  </div>
+                  <div className="wp">
+                    <div></div>
+                    <div
+                      className="detail"
+                      onClick={() =>
+                        router.push(
+                          `/my-oder/my-order-detail/${item.orderId}`
+                        )
+                      }
+                    >
+                      Xem chi tiết
+                    </div>
+                  </div>
+                </WrapperOrder>:null
+                ))}
+            </Tabs.TabPane>
+            <Tabs.TabPane key="item-4" tab="Đang giao">
+            {data &&
+                data.map((item: any, index: number) => (
+                  item.status==4?<WrapperOrder key={index}>
+                  <div className="line">
+                    <Image
+                      src={item.items && item.items[0]?.img}
+                      width={"50px"}
+                      height={"50px"}
+                      style={{ flex: 0 }}
+                    />
+                    <div style={{ flex: 1 }}>
+                      <div className="name">
+                        {item.items && item.items[0]?.color}
+                      </div>
+                      <div className="wp">
+                        <div>
+                          <div>
+                            Màu sắc:{item.items && item.items[0]?.color}
+                          </div>
+                          <div>
+                            Kích thước:{item.items && item.items[0]?.color}
+                          </div>
+                        </div>
+                        <div>2</div>
+                      </div>
+                      <div className="wp">
+                        <div></div>
+                        <div className="price">
+                          {formatter.format(200000)}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="wp">
+                    <div>{`${item.items.length} sản phẩm`}</div>
+                    <div>Thành tiền {formatter.format(200000)}</div>
+                  </div>
+                  <div className="wp">
+                    <div></div>
+                    <div
+                      className="detail"
+                      onClick={() =>
+                        router.push(
+                          `/my-oder/my-order-detail/${item.orderId}`
+                        )
+                      }
+                    >
+                      Xem chi tiết
+                    </div>
+                  </div>
+                </WrapperOrder>:null
+                ))}
+            </Tabs.TabPane>
             <Tabs.TabPane key="item-5" tab="Đã giao"></Tabs.TabPane>
             <Tabs.TabPane key="item-6" tab="Đã hủy"></Tabs.TabPane>
           </Tabs>

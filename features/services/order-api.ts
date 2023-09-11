@@ -22,7 +22,13 @@ class OrderApi {
       data: payload,
     });
   }
-
+  getOrderLog(payload: any) {
+    return axiosClient({
+      method: "get",
+      url: `api/Orders/GetUseLog?orderId=${payload}`,
+      data: payload,
+    });
+  }
   getListVoucher() {
     return axiosClient({
       method: "get",

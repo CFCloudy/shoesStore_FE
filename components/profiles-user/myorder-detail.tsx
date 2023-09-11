@@ -13,6 +13,7 @@ import {
   Select,
   Space,
   Spin,
+  Timeline,
 } from "antd";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -30,7 +31,8 @@ import {
   IResDetailAdd,
   IUpdateAddress,
 } from "@/models/user";
-import { getOrderById } from "@/features/order-slice";
+import { getOrderById, getOrderLog } from "@/features/order-slice";
+import moment from "moment";
 
 export interface IResponseAdress {
   userAddressId: string;
@@ -50,58 +52,8 @@ export const MyOrderDetail = () => {
   const dispatch = useAppDispatch();
   const [data, setData] = useState<any>([]);
   const router = useRouter();
-
+  const [dataLog, setDataLog] = useState<any>();
   const { loginInfo } = useAppSelector(selectUser);
-
-  const handelSubmit = (values: any) => {
-    let payload: ICreateAddress = {
-      addressDetail: values.addressDetail,
-      city: values.City,
-      phoneNumber: values.phoneNumber,
-      name: values.name,
-      district: values.District,
-      type: values.typeAdress == undefined ? true : false,
-      userId: loginInfo.payload.profilesID,
-      isDefault: values.isDefault,
-      ward: values.Ward,
-    };
-    if (router.query.id === "new") {
-      dispatch(createAddresss(payload))
-        .unwrap()
-        .then()
-        .then((res: any) => {
-          message.success("Thêm địa chỉ mới thành công");
-          router.back();
-        })
-        .catch((error: any) => {
-          message.error("Thêm mới địa chỉ thất bại !!");
-        });
-    } else {
-      let payloadUpdate: IUpdateAddress = {
-        addressDetail: values.addressDetail,
-        city: values.City,
-        phoneNumber: values.phoneNumber,
-        name: values.name,
-        district: values.District,
-        type: values.typeAdress == undefined ? true : false,
-        userId: loginInfo.payload.profilesID,
-        isDefault: values.isDefault,
-        ward: values.Ward,
-        id: Number(router.query.id),
-      };
-      dispatch(updateAddress(payloadUpdate))
-        .unwrap()
-        .then()
-        .then((res: any) => {
-          message.success("Cập nhât địa chỉ mới thành công");
-          router.back();
-        })
-        .catch((error: any) => {
-          message.error("Cập nhât địa chỉ thất bại !!");
-        });
-    }
-  };
-
   useEffect(() => {
     if (router.query.id) {
       dispatch(getOrderById(Number(router.query.id)))
@@ -113,7 +65,18 @@ export const MyOrderDetail = () => {
     }
   }, [Number(router.query.id)]);
 
-  console.log(data);
+
+  useEffect(() => {
+    if (router.query.id) {
+    console.log(1)
+
+      dispatch(getOrderLog(router.query.id)).unwrap().then().then((res:any)=>{
+        setDataLog(res)
+      })
+    }
+  }, []);
+
+  console.log(dataLog)
 
   return (
     <Spin spinning={false} delay={500}>
@@ -135,6 +98,53 @@ export const MyOrderDetail = () => {
             ? `Đơn hàng giao không thành công do bạn từ chối nhận hàng`
             : `Đơn hàng đã hoàn thành`}
         </div>
+        <hr/>
+        <Space>
+          <div style={{width:'200px'}}>
+            Địa chỉ nhận hàng
+            <p>Số điện thoại: 099009999</p>
+            <p>Địaa chỉ sd sa d dsa dá d asd á dá d sdasd á ds</p>
+          </div>
+          <div >
+          <Timeline style={{ marginTop: "20px" }}>
+              {dataLog &&
+                dataLog.map((x: any, index: number) => (
+                  <Timeline.Item key={index}>
+                    {index == 0 ? (
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        <div>
+                          {`${x.tenKhachHang}  `}
+                          {x.message}
+                        </div>
+                        <div>{moment(x.logTime).format("DD/MM/YYYY H:mm")}</div>
+                      </div>
+                    ) : (
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        <div>
+                          {" "}
+                          {`${x.tenBoss}  `}
+                          {x.message}
+                        </div>
+                        <div>{moment(x.logTime).format("DD/MM/YYYY H:mm")}</div>
+                      </div>
+                    )}
+                  </Timeline.Item>
+                ))}
+            </Timeline>
+          </div>
+        </Space>
       </BoxInfoUser>
     </Spin>
   );

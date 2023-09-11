@@ -40,6 +40,20 @@ export const AddToCart = createAsyncThunk(
     }
   }
 );
+export const getOrderLog = createAsyncThunk(
+  "getOrderLog",
+  async (payload: any, { rejectWithValue }) => {
+    try {
+      const response = await orderApi.getOrderLog(payload);
+      return response.data;
+    } catch (err: any) {
+      if (!err.response) {
+        throw err;
+      }
+      throw rejectWithValue(err.response.data);
+    }
+  }
+);
 
 export const getOrderByUserId = createAsyncThunk(
   "createOrder",
@@ -169,6 +183,17 @@ const orderSlice = createSlice({
         //   state.token=payload as ILoginResponseNotActive
       })
 
+      .addCase(getOrderLog.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getOrderLog.fulfilled, (state, { payload }) => {
+        state.loading = false;
+      })
+      .addCase(getOrderLog.rejected, (state, { payload }) => {
+        state.loading = false;
+        state.error = true;
+        //   state.token=payload as ILoginResponseNotActive
+      })
       .addCase(createOrder.pending, (state) => {
         state.loading = true;
       })
