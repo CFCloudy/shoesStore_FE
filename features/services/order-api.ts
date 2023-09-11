@@ -3,6 +3,7 @@ import {
   IFilterOrder,
   IFilterPhieuGiaHang,
   IPayloadOrder,
+  IUpdateCart,
 } from "@/models/order";
 import axiosClient from "./axios-client";
 import { IFilterData } from "@/models/product";
@@ -40,6 +41,14 @@ class OrderApi {
     return axiosClient({
       method: "post",
       url: "/api/Cart",
+      data: payload,
+    });
+  }
+
+  updateCart(payload: IUpdateCart) {
+    return axiosClient({
+      method: "put",
+      url: `/api/Cart/${payload.cartItemId}`,
       data: payload,
     });
   }

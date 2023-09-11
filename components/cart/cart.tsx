@@ -9,6 +9,8 @@ import {
   Radio,
   Empty,
   RadioChangeEvent,
+  message,
+  Popconfirm,
 } from "antd";
 import { WrapperProfile } from "../profiles-user/profiles-tyled";
 import {
@@ -41,7 +43,15 @@ import { IDiscount, data_voucher } from "@/data/data_voucher";
 import { Confirm } from "../popup-confirm/confirm";
 import moment from "moment";
 // import { ICartResponse } from "../sneaker/sneaker-detail";
-import { getCart, getListVoucher, selectOrder } from "@/features/order-slice";
+import {
+  getCart,
+  getListVoucher,
+  removeCartItem,
+  selectOrder,
+  updateCart,
+} from "@/features/order-slice";
+import { ICartResponse, IUpdateCart } from "@/models/order";
+import { IRemoveItem } from "@/features/services/order-api";
 const cartstorage =
   typeof window !== "undefined" ? localStorage.getItem("cart") : undefined;
 
@@ -56,7 +66,7 @@ export const Cart = () => {
   const [valueVoucher, setValueVoucher] = useState<number>(0);
   const ship = 20000;
   const [total, setTotal] = useState<number>(0);
-  const [dataCart, setDataCart] = useState<any>({});
+  const [dataCart, setDataCart] = useState<ICartResponse>();
   const [dataProduct, setDataProduct] = useState<any>();
   const [dataProductVariant, setDataProductVariant] = useState<any>();
   const [dataAdress, setDataAddress] = useState<any>();
@@ -64,7 +74,6 @@ export const Cart = () => {
   const [chooseAddress, setChooseAdress] = useState<any>();
   const [currentPage, setCurrentPage] = useState(1);
   const { cart } = useAppSelector(selectOrder);
-
   let sum = 0;
   const [datavoucher, setDataVoucher] = useState<any>();
   useEffect(() => {
@@ -204,37 +213,30 @@ export const Cart = () => {
     }
   }, []);
 
+  console.log(cart);
   const handleUpdateQuantity = (e: any, name: any) => {
-    // console.log(e);
-    // e.preventDefault();
-    // let lstProduct: any = [...cartshopping.items];
-    // let index: number = lstProduct.findIndex(
-    //   (x: any) => x.cartSessionDetailId === name
-    // );
-    // if (index > -1) {
-    //   let quantitynew = lstProduct[index];
-    //   quantitynew = { ...quantitynew, quantity: Number(e.target.value) };
-    //   lstProduct[index] = quantitynew;
-    //   setDataCart({ ...dataCart, items: [...lstProduct] });
-    //   let payload: IUpdateQuantity = {
-    //     itemId: name,
-    //     quantity: e.target.value,
-    //   };
-    //   // dispatch(updateQuantityProduct(payload))
-    //   //   .unwrap()
-    //   //   .then()
-    //   //   .then((res: any) => {
-    //   //     let payload2: IGetListOder = {
-    //   //       userId: cartshopping.cartSessionId,
-    //   //     };
-    //   //     dispatch(getCartById(payload2))
-    //   //       .unwrap()
-    //   //       .then()
-    //   //       .then((res: any) => {
-    //   //         setDataCart(res);
-    //   //       });
-    //   //   });
-    // }
+    e.preventDefault();
+    const newQuantity = Number(e.target.value); // Get the new quantity from the input field
+    if (newQuantity >= 0) {
+      setDataCart((prevCartData: any) => {
+        const updatedCartItemDTOs = prevCartData.payload.cartItemDTOs.map(
+          (item: any) => {
+            if (item.id === name.id) {
+              return { ...item, quantity: newQuantity };
+            }
+            return item;
+          }
+        );
+
+        return {
+          ...prevCartData,
+          payload: {
+            ...prevCartData.payload,
+            cartItemDTOs: updatedCartItemDTOs,
+          },
+        };
+      });
+    }
   };
 
   function formatNumber(number: number) {
@@ -251,7 +253,18 @@ export const Cart = () => {
     }
     return number.toString();
   }
-
+  const handleCheckout = () => {
+    if (!chooseAddress) {
+      message.error("Vui lòng chọn địa chỉ hoặc thêm mới");
+      return;
+    }
+    Router.push({
+      pathname: `/checkout/`,
+      query: {
+        id: chooseAddress.id,
+      },
+    });
+  };
   if (cart && cart.payload && cart.payload.cartItemDTOs) {
     cart.payload.cartItemDTOs.forEach((item) => {
       sum += item.price * item.quantity;
@@ -263,11 +276,57 @@ export const Cart = () => {
         .unwrap()
         .then()
         .then((res: any) => {
-          // setCart(res)
+          setDataCart(res);
         });
     }
   }, []);
-  console.log(chooseAddress);
+
+  const handleQuantityBlur = (e: any, item: any) => {
+    e.preventDefault();
+    let payload: IUpdateCart = {
+      cartItemId: item.id,
+      ...item,
+    };
+    dispatch(updateCart(payload))
+      .then()
+      .then((res: any) => {
+        message.success("Cập nhật số lượng sản phẩm thành công");
+      })
+      .catch((e: any) => {
+        message.error(e);
+      });
+  };
+  const cancel = (e: any) => {};
+  const confirm = (e: React.MouseEvent<HTMLElement>, data: any) => {
+    let payload: IRemoveItem[] = [
+      {
+        cartId: data.cartId,
+        id: data.id,
+        variantName: data.variantName,
+        productVariantId: data.productVariantId,
+      },
+    ];
+    dispatch(removeCartItem(payload))
+      .unwrap()
+      .then()
+      .then((res: any) => {
+        dispatch(getCart(loginInfo.payload.profilesID))
+          .unwrap()
+          .then()
+          .then((res: any) => {
+            dispatch(getCart(loginInfo.payload.profilesID))
+              .unwrap()
+              .then()
+              .then((res: any) => {
+                setDataCart(res);
+              });
+          });
+        message.success("Xóa sản phẩm khỏi giỏ hàng thành công");
+      })
+      .catch((error: any) => {
+        message.error("Xóa thất bại!!!");
+      });
+  };
 
   return (
     <WrapperProfile>
@@ -278,10 +337,10 @@ export const Cart = () => {
               <div>Giỏ hàng của bạn</div>
             </BoxHeader>
             <BoxBody>
-              {cart &&
-                cart.payload &&
-                cart.payload.cartItemDTOs &&
-                cart.payload.cartItemDTOs.map((cart: any) => (
+              {dataCart &&
+                dataCart.payload &&
+                dataCart.payload.cartItemDTOs &&
+                dataCart.payload.cartItemDTOs.map((cart: any) => (
                   <CartItem>
                     <Row gutter={[10, 10]}>
                       <Col span={8}>
@@ -314,19 +373,14 @@ export const Cart = () => {
                             <Input
                               type="number"
                               onKeyUp={(e) => {
-                                handleUpdateQuantity(
-                                  e,
-                                  cart.cartSessionDetailId
-                                );
+                                handleUpdateQuantity(e, cart);
                               }}
+                              onBlur={(e) => handleQuantityBlur(e, cart)}
                               className="quantity"
                               min={1}
                               value={cart.quantity}
                               onChange={(e) => {
-                                handleUpdateQuantity(
-                                  e,
-                                  cart.cartSessionDetailId
-                                );
+                                handleUpdateQuantity(e, cart);
                               }}
                             />
                           </Space>
@@ -337,15 +391,16 @@ export const Cart = () => {
                               {formatter.format(
                                 Number(cart.price) * Number(cart.quantity)
                               )}
-                              <DeleteOutlined
-                                style={{
-                                  cursor: "pointer",
-                                  marginLeft: "10px",
-                                }}
-                                // onClick={() => {
-                                //   removeItemFromCart(cart.cartSessionDetailId);
-                                // }}
-                              />
+                              <Popconfirm
+                                title="Bạn có muốn xóa sản phẩm này không?"
+                                // description="Are you sure to delete this task?"
+                                onConfirm={(e: any) => confirm(e, cart)}
+                                onCancel={cancel}
+                                okText="Yes"
+                                cancelText="No"
+                              >
+                                <DeleteOutlined />
+                              </Popconfirm>
                             </div>
                           </div>
                         </div>
@@ -426,10 +481,7 @@ export const Cart = () => {
             <br />
             <CheckOut>
               <div>Tổng tiền hàng</div>
-              <div>
-                {" "}
-                {Object.entries(cart).length > 0 ? formatter.format(sum) : ""}
-              </div>
+              <div> {dataCart ? formatter.format(sum) : ""}</div>
             </CheckOut>
             <CheckOut>
               <div>Giảm giá</div>
@@ -521,14 +573,7 @@ export const Cart = () => {
                   >
                     <ButtonBlack
                       // loading={loading}
-                      onClick={() =>
-                        Router.push({
-                          pathname: `/checkout/`,
-                          query: {
-                            id: chooseAddress.id,
-                          },
-                        })
-                      }
+                      onClick={handleCheckout}
                     >
                       Thanh toán
                     </ButtonBlack>

@@ -9,7 +9,9 @@ import {
   IFilterPhieuGiaHang,
   IInitStateOrder,
   IPayloadOrder,
+  IUpdateCart,
 } from "@/models/order";
+import { IUpdateAddress } from "@/models/user";
 
 export const createOrder = createAsyncThunk(
   "createOrder",
@@ -60,6 +62,21 @@ export const getOrderByUserId = createAsyncThunk(
   async (payload: any, { rejectWithValue }) => {
     try {
       const response = await orderApi.getOrderByUserId(payload);
+      return response.data;
+    } catch (err: any) {
+      if (!err.response) {
+        throw err.response;
+      }
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
+export const updateCart = createAsyncThunk(
+  "updateCart",
+  async (payload: IUpdateCart, { rejectWithValue }) => {
+    try {
+      const response = await orderApi.updateCart(payload);
       return response.data;
     } catch (err: any) {
       if (!err.response) {

@@ -11,13 +11,13 @@ import {
   Radio,
   Row,
   Select,
-  Space,
+  Image,
   Spin,
   Timeline,
 } from "antd";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { BoxInfoUser } from "./profiles-tyled";
+import { BoxInfoUser, WrapperOrder } from "./profiles-tyled";
 import axios from "axios";
 import {
   createAddresss,
@@ -33,6 +33,7 @@ import {
 } from "@/models/user";
 import { getOrderById, getOrderLog } from "@/features/order-slice";
 import moment from "moment";
+import { formatter } from "@/models/common";
 
 export interface IResponseAdress {
   userAddressId: string;
@@ -65,18 +66,20 @@ export const MyOrderDetail = () => {
     }
   }, [Number(router.query.id)]);
 
-
   useEffect(() => {
     if (router.query.id) {
-    console.log(1)
+      console.log(1);
 
-      dispatch(getOrderLog(router.query.id)).unwrap().then().then((res:any)=>{
-        setDataLog(res)
-      })
+      dispatch(getOrderLog(router.query.id))
+        .unwrap()
+        .then()
+        .then((res: any) => {
+          setDataLog(res);
+        });
     }
   }, []);
 
-  console.log(dataLog)
+  console.log(data);
 
   return (
     <Spin spinning={false} delay={500}>
@@ -98,53 +101,109 @@ export const MyOrderDetail = () => {
             ? `Đơn hàng giao không thành công do bạn từ chối nhận hàng`
             : `Đơn hàng đã hoàn thành`}
         </div>
-        <hr/>
-        <Space>
-          <div style={{width:'200px'}}>
-            Địa chỉ nhận hàng
-            <p>Số điện thoại: 099009999</p>
-            <p>Địaa chỉ sd sa d dsa dá d asd á dá d sdasd á ds</p>
-          </div>
-          <div >
-          <Timeline style={{ marginTop: "20px" }}>
-              {dataLog &&
-                dataLog.map((x: any, index: number) => (
-                  <Timeline.Item key={index}>
-                    {index == 0 ? (
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "space-between",
-                        }}
-                      >
-                        <div>
-                          {`${x.tenKhachHang}  `}
-                          {x.message}
+        <hr />
+        <Row gutter={[15, 15]}>
+          <Col span={8}>
+            <div
+              style={{
+                marginLeft: "12px",
+                marginTop: "12px",
+                lineHeight: "26px",
+              }}
+            >
+              <div style={{ fontSize: "20px", fontWeight: 600 }}>
+                {" "}
+                Địa chỉ nhận hàng
+              </div>
+              <p style={{ fontWeight: 600, marginTop: "20px" }}>Hoang Chung </p>
+              <p>Số điện thoại: 099009999</p>
+              <p>Địaa chỉ sd sa d dsa dá d asd á dá d sdasd á ds</p>
+            </div>
+          </Col>
+          <Col span={15}>
+            <div>
+              <Timeline style={{ marginTop: "20px" }}>
+                {dataLog &&
+                  dataLog.map((x: any, index: number) => (
+                    <Timeline.Item key={index}>
+                      {index == 0 ? (
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                          }}
+                        >
+                          <div>
+                            {`${x.tenKhachHang}  `}
+                            {x.message}
+                          </div>
+                          <div>
+                            {moment(x.logTime).format("DD/MM/YYYY H:mm")}
+                          </div>
                         </div>
-                        <div>{moment(x.logTime).format("DD/MM/YYYY H:mm")}</div>
-                      </div>
-                    ) : (
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "space-between",
-                        }}
-                      >
-                        <div>
-                          {" "}
-                          {`${x.tenBoss}  `}
-                          {x.message}
+                      ) : (
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                          }}
+                        >
+                          <div>
+                            {" "}
+                            {`${x.tenBoss}  `}
+                            {x.message}
+                          </div>
+                          <div>
+                            {moment(x.logTime).format("DD/MM/YYYY H:mm")}
+                          </div>
                         </div>
-                        <div>{moment(x.logTime).format("DD/MM/YYYY H:mm")}</div>
+                      )}
+                    </Timeline.Item>
+                  ))}
+              </Timeline>
+            </div>
+          </Col>
+        </Row>
+        <div>
+          {data && data.items && data.items.length > 0
+            ? data.items.map((item: any, index: number) => {
+                return (
+                  <WrapperOrder key={index}>
+                    <div className="line">
+                      <Image
+                        src={item.img}
+                        width={"50px"}
+                        height={"50px"}
+                        style={{ flex: 0 }}
+                      />
+                      <div style={{ flex: 1 }}>
+                        <div className="name">{item.variantName}</div>
+                        <div className="wp">
+                          <div>
+                            <div>Màu sắc:{item.color}</div>
+                            <div>Kích thước:{item.size}</div>
+                          </div>
+                          <div>x{item.quantity}</div>
+                        </div>
+                        <div className="wp">
+                          <div></div>
+                          <div className="price">
+                            {formatter.format(item.price)}
+                          </div>
+                        </div>
                       </div>
-                    )}
-                  </Timeline.Item>
-                ))}
-            </Timeline>
-          </div>
-        </Space>
+                    </div>
+                    {/* <div className="wp">
+                      <div> sản phẩm`}</div>
+                      <div>Thành tiền {formatter.format(200000)}</div>
+                    </div> */}
+                  </WrapperOrder>
+                );
+              })
+            : null}
+        </div>
       </BoxInfoUser>
     </Spin>
   );

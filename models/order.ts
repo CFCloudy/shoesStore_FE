@@ -34,6 +34,16 @@ export interface IAddToCart {
   ];
 }
 
+export interface IUpdateCart {
+  cartItemId: number;
+  cartItemDTO: [
+    {
+      quantity: number;
+      id: number;
+    }
+  ];
+}
+
 export interface IInitStateOrder {
   loading: boolean;
   error: boolean;
