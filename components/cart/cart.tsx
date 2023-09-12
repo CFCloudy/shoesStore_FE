@@ -217,7 +217,7 @@ export const Cart = () => {
   const handleUpdateQuantity = (e: any, name: any) => {
     e.preventDefault();
     const newQuantity = Number(e.target.value); // Get the new quantity from the input field
-    if (newQuantity >= 0) {
+    if (newQuantity > 0) {
       setDataCart((prevCartData: any) => {
         const updatedCartItemDTOs = prevCartData.payload.cartItemDTOs.map(
           (item: any) => {
@@ -283,6 +283,8 @@ export const Cart = () => {
 
   const handleQuantityBlur = (e: any, item: any) => {
     e.preventDefault();
+    const newQuantity = Number(e.target.value); 
+    if (newQuantity > 0) {
     let payload: IUpdateCart = {
       cartItemId: item.id,
       ...item,
@@ -294,7 +296,7 @@ export const Cart = () => {
       })
       .catch((e: any) => {
         message.error(e);
-      });
+      });}
   };
   const cancel = (e: any) => {};
   const confirm = (e: React.MouseEvent<HTMLElement>, data: any) => {

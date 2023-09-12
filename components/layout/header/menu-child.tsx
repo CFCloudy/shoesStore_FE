@@ -2,6 +2,11 @@ import { data_category } from "@/data/data_category";
 import { ArrowRightOutlined } from "@ant-design/icons";
 import { Col, Row } from "antd";
 import { ContainerMenuChild, WrapperChild } from "./header-styled";
+import { IBrandsResponse, IFeaturesResponse, IStylesResponse } from "@/models/product";
+import { useEffect, useState } from "react";
+import { getListBrands, getListFeature, getListStyles } from "@/features/product-slice";
+import { useAppDispatch } from "@/app/hook";
+import Router from "next/router";
 
 const child = [
   {
@@ -48,12 +53,44 @@ export interface IMenuChild {
   isOpen: string;
   onMouseLeave: any;
   mainTitle: string;
+  onClickState:any
 }
 
 export const MenuChild = (props: IMenuChild) => {
-  const { isOpen, onMouseLeave, mainTitle } = props;
-
+  const { isOpen, onMouseLeave, mainTitle ,onClickState} = props;
+  const [dataStyles, setDataStyles] = useState<IStylesResponse[]>([]);
+  const [dataBrands, setDataBrands] = useState<IBrandsResponse[]>([]);
+  const [dataFeature, setDataFeatures] = useState<IFeaturesResponse[]>([]);
   const data = data_category.find((x: any) => x.name == mainTitle);
+  const dispatch=useAppDispatch();
+  useEffect(() => {
+    dispatch(getListFeature())
+      .unwrap()
+      .then()
+      .then((res: any) => {
+        setDataFeatures(res);
+      })
+      .catch((er: any) => {});
+  }, []);
+  useEffect(() => {
+    dispatch(getListBrands())
+      .unwrap()
+      .then()
+      .then((res: any) => {
+        setDataBrands(res);
+      })
+      .catch((er: any) => {});
+  }, []);
+
+  useEffect(() => {
+    dispatch(getListStyles())
+      .unwrap()
+      .then()
+      .then((res: any) => {
+        setDataStyles(res);
+      })
+      .catch((er: any) => {});
+  }, []);
   return (
     <ContainerMenuChild
       style={{ display: `${isOpen}` }}
@@ -65,20 +102,46 @@ export const MenuChild = (props: IMenuChild) => {
       </div>
       <hr />
       <Row gutter={[20, 20]}>
-        {data?.children_category.map((x: any, index: number) => {
-          return (
-            <Col key={index} span={4} className="wrapp_col">
+          
+            <Col  span={4} className="wrapp_col">
               <WrapperChild>
-                <div className="title">{x.name}</div>
+                <div className="title">Phong cách</div>
                 <ul>
-                  {x.sub_sub_category.map((c: any) => (
-                    <li key={c.id}>{c.name}</li>
+                  {dataStyles&&dataStyles.map((c: any) => (
+                    <li key={c.id} onClick={()=>{
+                      Router.push({query:{id:c.id,type:'style',name:c.styleName},pathname:'/sneaker'})
+                      onClickState();
+                    }}>{c.styleName}</li>
                   ))}
                 </ul>
               </WrapperChild>
             </Col>
-          );
-        })}
+            <Col  span={4} className="wrapp_col">
+              <WrapperChild>
+                <div className="title">Hãng giày</div>
+                <ul>
+                  {dataBrands&&dataBrands.map((c: any) => (
+                    <li key={c.id} onClick={()=>{
+                      Router.push({query:{id:c.id,type:'brand',name:c.brandName},pathname:'/sneaker'})
+                      onClickState();
+                    }}>{c.brandName}</li>
+                  ))}
+                </ul>
+              </WrapperChild>
+            </Col>
+            <Col  span={4} className="wrapp_col">
+              <WrapperChild>
+                <div className="title">Đặc điểm nổi bật</div>
+                <ul>
+                  {dataFeature&&dataFeature.map((c: any) => (
+                    <li key={c.id} onClick={()=>{
+                      Router.push({query:{id:c.id,type:'feature',name:c.featureName},pathname:'/sneaker'})
+                      onClickState();
+                    }}>{c.featureName}</li>
+                  ))}
+                </ul>
+              </WrapperChild>
+            </Col>
       </Row>
     </ContainerMenuChild>
   );

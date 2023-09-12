@@ -52,8 +52,8 @@ import { ILogoutPayload } from "@/models/user";
 import { getCart, removeCartItem, selectOrder } from "@/features/order-slice";
 import { ICartResponse } from "@/models/order";
 import { IRemoveItem } from "@/features/services/order-api";
-import { IFilterData } from "@/models/product";
-import { getListProduct, selectProduct } from "@/features/product-slice";
+import { IFeaturesResponse, IFilterData, IStylesResponse } from "@/models/product";
+import { getListBrands, getListFeature, getListProduct, getListStyles, selectProduct } from "@/features/product-slice";
 
 const cartstorage =
   typeof window !== "undefined" ? localStorage.getItem("cart") : undefined;
@@ -65,6 +65,7 @@ export const Header = () => {
   const { loginInfo } = useAppSelector(selectUser);
   const [menu, setMenu] = useState<any>(data_category);
   const [isOpenMenu, setOpenMenu] = useState<string>("none");
+
   const [mainTiltle, setMainTitle] = useState<string>("");
   // const [cartItem,setCart]=useState<ICartResponse>()
   const dispatch = useAppDispatch();
@@ -199,6 +200,9 @@ export const Header = () => {
       };
     }, [ref]);
   }
+  const updateParentState = () => {
+    setOpenMenu("none")
+  };
 
   let title = `Giỏ hàng của tôi. ${
     Object.entries(cart).length > 0 &&
@@ -266,6 +270,7 @@ export const Header = () => {
             isOpen={isOpenMenu}
             onMouseLeave={() => setOpenMenu("none")}
             mainTitle={mainTiltle}
+            onClickState={updateParentState }
           />
         </div>
         <div className="rightMenu">

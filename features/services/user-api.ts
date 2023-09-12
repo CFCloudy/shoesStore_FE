@@ -52,7 +52,7 @@ class UserApi {
   reSendOTP(payload: IResendOTP) {
     return axiosClient({
       method: "post",
-      url: "/api/Authentication/confirm-otp",
+      url: "/api/Authentication/resend-otp",
       data: payload,
     });
   }

@@ -16,7 +16,7 @@ export const SendOTP = () => {
   const onSubmit = (value: any) => {
     console.log(register);
     const payload: IConfirmOTP = {
-      UserId: "adbe8aac-5c27-43c6-8540-946d4465a2b5",
+      UserId: register.userId,
       Code: value.Code,
     };
     console.log(payload);

@@ -40,6 +40,7 @@ import {
   ISizesResponse,
   IStylesResponse,
 } from "@/models/product";
+import Router from "next/router";
 
 export const Sneaker = () => {
   const [hideFilter, setHideFilter] = useState<boolean>(true);
@@ -84,9 +85,47 @@ export const Sneaker = () => {
     setPayloadFilter(pa);
     fectchDataAsyn(pa);
   };
+  
+
   useEffect(() => {
-    fectchDataAsyn(payloadFilter);
-  }, []);
+    console.log(Router.query.type,Router.query.id)
+    var pay={...payloadFilter}
+    if(Router.query.type){
+      if(Router.query.type=="style"){
+        pay.styleDTOs=[{id:Number(Router.query.id),styleName:String(Router.query.name),type:'style'}]
+        // setFilter([{id:Number(Router.query.id),styleName:Router.query.name,type:'Style'}])
+        // console.log([{id:Number(Router.query.id),styleName:Router.query.name,type:'Style'}])
+        if (pay.brandDTOs) {
+          delete pay.brandDTOs;
+        }
+        if (pay.featureDTOs) {
+          delete pay.featureDTOs;
+        }
+      }
+      if(Router.query.type=="feature"){
+        pay.featureDTOs=[{id:Number(Router.query.id),featureName:String(Router.query.name),type:'feature'}]
+        // setFilter({id:Number(Router.query.id),featureName:Router.query.name,type:'Feature'})
+        if (pay.styleDTOs) {
+          delete pay.styleDTOs;
+        }
+        if (pay.brandDTOs) {
+          delete pay.brandDTOs;
+        }
+      }
+      if(Router.query.type=="brand"){
+        pay.brandDTOs=[{id:Number(Router.query.id),brandName:String(Router.query.name),type:'brand'}]
+        // setFilter({id:Number(Router.query.id),brandName:Router.query.name,type:'Brand'})
+        if (pay.styleDTOs) {
+          delete pay.styleDTOs;
+        }
+        if (pay.featureDTOs) {
+          delete pay.featureDTOs;
+        }
+      }
+      setPayloadFilter(pay)
+    }
+    fectchDataAsyn(pay);
+  }, [Router.query.type,Router.query.id]);
   const fectchDataAsyn = async (filter: any) => {
     dispatch(getListProduct(filter))
       .unwrap()
@@ -96,7 +135,6 @@ export const Sneaker = () => {
         setToltalItem(res.totalItem);
       });
   };
-
   useEffect(() => {
     function handleResize() {
       if (window.innerWidth <= 980) {
@@ -188,6 +226,7 @@ export const Sneaker = () => {
   const onClose = () => {
     setOpen(false);
   };
+
   const handleFilter = (e: any, category: any) => {
     e.preventDefault();
 

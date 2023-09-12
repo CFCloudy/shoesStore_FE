@@ -49,12 +49,14 @@ export interface IFilterData {
     {
       id: number;
       featureName: string;
+      type: string;
     }
   ];
   styleDTOs?: [
     {
       id: number;
       styleName: string;
+      type: string;
     }
   ];
   sizeDTOs?: [
