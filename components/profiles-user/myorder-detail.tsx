@@ -34,6 +34,7 @@ import {
 import { getOrderById, getOrderLog } from "@/features/order-slice";
 import moment from "moment";
 import { formatter } from "@/models/common";
+import { ButtonBlack } from "../home-pages/home-pages-styled";
 
 export interface IResponseAdress {
   userAddressId: string;
@@ -101,7 +102,13 @@ export const MyOrderDetail = () => {
             ? `Đơn hàng giao không thành công do bạn từ chối nhận hàng`
             : `Đơn hàng đã hoàn thành`}
         </div>
+        <br />
+        <br />
+        <ButtonBlack>Hủy đơn hàng</ButtonBlack>
+        <br />
+        <br />
         <hr />
+
         <Row gutter={[15, 15]}>
           <Col span={8}>
             <div
