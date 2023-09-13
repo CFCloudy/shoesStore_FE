@@ -14,6 +14,7 @@ import {
   Image,
   Spin,
   Timeline,
+  Space,
 } from "antd";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -31,10 +32,15 @@ import {
   IResDetailAdd,
   IUpdateAddress,
 } from "@/models/user";
-import { getOrderById, getOrderLog } from "@/features/order-slice";
+import {
+  getOrderById,
+  getOrderLog,
+  updateTrangThaiDonHang,
+} from "@/features/order-slice";
 import moment from "moment";
 import { formatter } from "@/models/common";
 import { ButtonBlack } from "../home-pages/home-pages-styled";
+import { IUpdateStatusOrder } from "@/models/order";
 
 export interface IResponseAdress {
   userAddressId: string;
@@ -69,8 +75,6 @@ export const MyOrderDetail = () => {
 
   useEffect(() => {
     if (router.query.id) {
-      console.log(1);
-
       dispatch(getOrderLog(router.query.id))
         .unwrap()
         .then()
@@ -81,6 +85,35 @@ export const MyOrderDetail = () => {
   }, []);
 
   console.log(data);
+
+  const handleUpdateTrangThai = (status: number) => {
+    let payload: IUpdateStatusOrder = {
+      status: status,
+      uId: Number(router.query.id),
+      idBoss: Number(router.query.id),
+    };
+    dispatch(updateTrangThaiDonHang(payload))
+      .unwrap()
+      .then()
+      .then((res: any) => {
+        message.success("Cập nhật trạng thái thành công");
+        dispatch(getOrderLog(router.query.id))
+          .unwrap()
+          .then()
+          .then((res: any) => {
+            setDataLog(res);
+          });
+        dispatch(getOrderById(router.query.id))
+          .unwrap()
+          .then()
+          .then((res: any) => {
+            setData(res);
+          });
+      })
+      .catch((e: any) => {
+        message.error("Cập nhật trạng thái thất bại");
+      });
+  };
 
   return (
     <Spin spinning={false} delay={500}>
@@ -104,7 +137,12 @@ export const MyOrderDetail = () => {
         </div>
         <br />
         <br />
-        <ButtonBlack>Hủy đơn hàng</ButtonBlack>
+        {data && data.status == 0 ? (
+          <ButtonBlack onClick={() => handleUpdateTrangThai(6)}>
+            Hủy đơn hàng
+          </ButtonBlack>
+        ) : null}
+
         <br />
         <br />
         <hr />
@@ -159,7 +197,9 @@ export const MyOrderDetail = () => {
                         >
                           <div>
                             {" "}
-                            {`${x.tenBoss}  `}
+                            {`${
+                              x.tenBoss == null ? x.tenKhachHang : x.tenBoss
+                            }  `}
                             {x.message}
                           </div>
                           <div>
@@ -202,14 +242,80 @@ export const MyOrderDetail = () => {
                         </div>
                       </div>
                     </div>
-                    {/* <div className="wp">
-                      <div> sản phẩm`}</div>
-                      <div>Thành tiền {formatter.format(200000)}</div>
-                    </div> */}
                   </WrapperOrder>
                 );
               })
             : null}
+          {data && data.items && data.items.length > 0 ? (
+            <div
+              className="wp"
+              style={{ display: "flex", justifyContent: "space-between" }}
+            >
+              <div>{data.items.length} sản phẩm</div>
+              <div>
+                <Space>
+                  <div>Thành tiền</div>
+                  <div style={{ marginLeft: "100px" }}>
+                    {formatter.format(
+                      data.items.reduce(
+                        (accumulator: number, currentValue: any) => {
+                          return (
+                            accumulator +
+                            currentValue.price * currentValue.quantity
+                          );
+                        },
+                        0
+                      )
+                    )}
+                  </div>
+                </Space>
+              </div>
+            </div>
+          ) : null}
+          {data.soTienDuocTru ? (
+            <div
+              className="wp"
+              style={{ display: "flex", justifyContent: "space-between" }}
+            >
+              <div></div>
+              <div>
+                <Space>
+                  <div>Voucher từ KingShoes</div>
+                  <div style={{ marginLeft: "120px" }}>
+                    {" "}
+                    {formatter.format(data.soTienDuocTru)}
+                  </div>
+                </Space>
+              </div>
+            </div>
+          ) : null}
+          {data.soTienDuocTru ? (
+            <div
+              className="wp"
+              style={{ display: "flex", justifyContent: "space-between" }}
+            >
+              <div></div>
+              <div>
+                <Space>
+                  <div>Tổng</div>
+                  <div style={{ marginLeft: "100px" }}>
+                    {" "}
+                    {formatter.format(
+                      data.items.reduce(
+                        (accumulator: number, currentValue: any) => {
+                          return (
+                            accumulator +
+                            currentValue.price * currentValue.quantity
+                          );
+                        },
+                        0
+                      ) - data.soTienDuocTru
+                    )}
+                  </div>
+                </Space>
+              </div>
+            </div>
+          ) : null}
         </div>
       </BoxInfoUser>
     </Spin>

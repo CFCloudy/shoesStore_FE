@@ -52,8 +52,18 @@ import { ILogoutPayload } from "@/models/user";
 import { getCart, removeCartItem, selectOrder } from "@/features/order-slice";
 import { ICartResponse } from "@/models/order";
 import { IRemoveItem } from "@/features/services/order-api";
-import { IFeaturesResponse, IFilterData, IStylesResponse } from "@/models/product";
-import { getListBrands, getListFeature, getListProduct, getListStyles, selectProduct } from "@/features/product-slice";
+import {
+  IFeaturesResponse,
+  IFilterData,
+  IStylesResponse,
+} from "@/models/product";
+import {
+  getListBrands,
+  getListFeature,
+  getListProduct,
+  getListStyles,
+  selectProduct,
+} from "@/features/product-slice";
 
 const cartstorage =
   typeof window !== "undefined" ? localStorage.getItem("cart") : undefined;
@@ -201,7 +211,7 @@ export const Header = () => {
     }, [ref]);
   }
   const updateParentState = () => {
-    setOpenMenu("none")
+    setOpenMenu("none");
   };
 
   let title = `Giỏ hàng của tôi. ${
@@ -270,7 +280,7 @@ export const Header = () => {
             isOpen={isOpenMenu}
             onMouseLeave={() => setOpenMenu("none")}
             mainTitle={mainTiltle}
-            onClickState={updateParentState }
+            onClickState={updateParentState}
           />
         </div>
         <div className="rightMenu">
@@ -443,7 +453,10 @@ export const Header = () => {
                   ? formatter.format(
                       cart.payload.cartItemDTOs.reduce(
                         (accumulator: number, currentValue: any) => {
-                          return accumulator + currentValue.price;
+                          return (
+                            accumulator +
+                            currentValue.price * currentValue.quantity
+                          );
                         },
                         0
                       )

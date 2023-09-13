@@ -22,7 +22,11 @@ export interface IPayloadOrder {
     shippingId?: number;
   };
 }
-
+export interface IUpdateStatusOrder {
+  uId: number;
+  status: number;
+  idBoss?: number;
+}
 export interface IAddToCart {
   userId: number;
   cartItemDTOs: [

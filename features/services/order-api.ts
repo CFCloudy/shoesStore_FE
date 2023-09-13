@@ -4,6 +4,7 @@ import {
   IFilterPhieuGiaHang,
   IPayloadOrder,
   IUpdateCart,
+  IUpdateStatusOrder,
 } from "@/models/order";
 import axiosClient from "./axios-client";
 import { IFilterData } from "@/models/product";
@@ -30,7 +31,7 @@ class OrderApi {
       data: payload,
     });
   }
-  getListVoucher(payload:any) {
+  getListVoucher(payload: any) {
     return axiosClient({
       method: "get",
       url: `api/Voucher/GetVoucherByUserId?uid=${payload}`,
@@ -42,6 +43,21 @@ class OrderApi {
     return axiosClient({
       method: "post",
       url: "/api/Cart",
+      data: payload,
+    });
+  }
+
+  useVoucher(payload: any) {
+    return axiosClient({
+      method: "post",
+      url: "/api/VouchersUseLog",
+      data: payload,
+    });
+  }
+  updateStatusOrder(payload: IUpdateStatusOrder) {
+    return axiosClient({
+      method: "put",
+      url: `/api/Orders/UpdateTrangThai?uid=${payload.uId}&status=${payload.status}&idBoss=${payload.idBoss}`,
       data: payload,
     });
   }

@@ -10,6 +10,7 @@ import {
   IInitStateOrder,
   IPayloadOrder,
   IUpdateCart,
+  IUpdateStatusOrder,
 } from "@/models/order";
 import { IUpdateAddress } from "@/models/user";
 
@@ -87,6 +88,36 @@ export const updateCart = createAsyncThunk(
   }
 );
 
+export const updateTrangThaiDonHang = createAsyncThunk(
+  "updateTrangThaiDonHang",
+  async (payload: IUpdateStatusOrder, { rejectWithValue }) => {
+    try {
+      const response = await orderApi.updateStatusOrder(payload);
+      return response.data;
+    } catch (err: any) {
+      if (!err.response) {
+        throw err;
+      }
+      throw rejectWithValue(err.response.data);
+    }
+  }
+);
+
+export const useVoucher = createAsyncThunk(
+  "updateCart",
+  async (payload: any, { rejectWithValue }) => {
+    try {
+      const response = await orderApi.useVoucher(payload);
+      return response.data;
+    } catch (err: any) {
+      if (!err.response) {
+        throw err.response;
+      }
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
 export const removeCartItem = createAsyncThunk(
   "removeCartItem",
   async (payload: IRemoveItem[], { rejectWithValue }) => {
@@ -146,7 +177,6 @@ export const getCart = createAsyncThunk(
     }
   }
 );
-
 
 export const getListVoucher = createAsyncThunk(
   "getListVoucher",

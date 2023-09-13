@@ -20,6 +20,7 @@ import {
   getCart,
   removeCartItem,
   selectOrder,
+  useVoucher,
 } from "@/features/order-slice";
 import { useRouter } from "next/router";
 import { IRemoveItem } from "@/features/services/order-api";
@@ -30,6 +31,7 @@ export const CheckOutPage = () => {
   const [chooseCard, setChooseCard] = useState<boolean>(false);
   const { loginInfo } = useAppSelector(selectUser);
   const { cart } = useAppSelector(selectOrder);
+  const [maHD, setMaHD] = useState<any>("");
   const dispatch = useAppDispatch();
   const onChange = (value: number) => {
     console.log("onChange:", value);
@@ -47,15 +49,21 @@ export const CheckOutPage = () => {
           price: cart.payload.cartItemDTOs[i].price,
           productId: 1,
           quantity: cart.payload.cartItemDTOs[i].quantity,
-          subTotal: 180000,
+          subTotal: cart.payload.cartItemDTOs.reduce(
+            (accumulator: number, currentValue: any) => {
+              return accumulator + currentValue.price * currentValue.quantity;
+            },
+            0
+          ),
           variantID: cart.payload.cartItemDTOs[i].productVariantId,
-          variantName: "Đỏ",
+          variantName: cart.payload.cartItemDTOs[i].variantName,
           cartId: cart.payload.cartItemDTOs[i].cartId,
           id: cart.payload.cartItemDTOs[i].id,
         };
         data.push(obj);
       }
     }
+    let total = data;
     let payload: IPayloadOrder = {
       orderCode: "",
       listItems: data,
@@ -68,10 +76,11 @@ export const CheckOutPage = () => {
         status: 0,
         shippingId: Number(router.query.id),
       },
-      total: 232323,
+      total: data.reduce((accumulator: number, currentValue: any) => {
+        return accumulator + currentValue.subTotal;
+      }, 0),
       userID: loginInfo.payload.profilesID,
     };
-
     dispatch(createOrder(payload))
       .unwrap()
       .then()
@@ -79,7 +88,15 @@ export const CheckOutPage = () => {
         console.log(res);
         message.success("Thanh toán thành công");
         localStorage.removeItem("cart");
-
+        if (router.query.vcid) {
+          let useVo = {
+            voucherUserId: Number(router.query.vcid),
+            orderId: res.orderId,
+            price: Number(router.query.value),
+          };
+          dispatch(useVoucher(useVo)).unwrap().then().then().catch();
+        }
+        setMaHD(res.maDonHang);
         dispatch(removeCartItem(data))
           .unwrap()
           .then()
@@ -90,10 +107,6 @@ export const CheckOutPage = () => {
               .then((res: any) => {
                 // setCart(res)
               });
-            message.success("Xóa sản phẩm khỏi giỏ hàng thành công");
-          })
-          .catch((error: any) => {
-            message.error("Xóa thất bại!!!");
           });
         setCurrent(2);
       })
@@ -211,7 +224,7 @@ export const CheckOutPage = () => {
         <div style={{ marginTop: "10px", lineHeight: "30px" }}>
           <h2>Cảm ơn bạn!</h2>
           <p>Đơn hàng của bạn đang được xử lý</p>
-          <div>Mã đơn hàng: AVN00735206</div>
+          <div>Mã đơn hàng: {maHD}</div>
           <div>
             Bạn sẽ sớm nhận được email xác nhận. Đơn hàng sẽ xuất hiện trong tài
             khoản của bạn ngay sau khi bạn nhận được email.{" "}

@@ -76,16 +76,18 @@ export const Cart = () => {
   const { cart } = useAppSelector(selectOrder);
   let sum = 0;
   const [datavoucher, setDataVoucher] = useState<any>();
+  const [useVoucher, setUseVoucher] = useState<any>();
+  console.log(useVoucher);
   useEffect(() => {
-    let payload=loginInfo.payload.profilesID
-   if(payload){
-    dispatch(getListVoucher(payload))
-    .unwrap()
-    .then()
-    .then((res: any) => {
-      setDataVoucher(res);
-    });
-   }
+    let payload = loginInfo.payload.profilesID;
+    if (payload) {
+      dispatch(getListVoucher(payload))
+        .unwrap()
+        .then()
+        .then((res: any) => {
+          setDataVoucher(res);
+        });
+    }
   }, []);
   const handleUseVoucher = () => {
     let resule = datavoucher.find((x: any) => x.nameVoucher === nameVoucher);
@@ -114,7 +116,7 @@ export const Cart = () => {
   };
   const handleApdung = () => {
     let resule = datavoucher.find((x: any) => x.voucherId === selectedRadio);
-    console.log(resule);
+    setUseVoucher(resule);
     if (resule?.unit && resule !== undefined) {
       let result = (Number(resule.value) * sum) / 100;
       if (Number(result) > Number(resule.maxValue)) {
@@ -163,6 +165,7 @@ export const Cart = () => {
   const handleDontUse = () => {
     setTotal(sum + ship);
     setValueVoucher(0);
+    setUseVoucher({});
   };
 
   useEffect(() => {
@@ -261,11 +264,16 @@ export const Cart = () => {
       message.error("Vui lòng chọn địa chỉ hoặc thêm mới");
       return;
     }
+    var query: any = {
+      id: chooseAddress.id,
+    };
+    if (useVoucher) {
+      query.vcid = useVoucher.voucherId;
+      query.value = valueVoucher;
+    }
     Router.push({
       pathname: `/checkout/`,
-      query: {
-        id: chooseAddress.id,
-      },
+      query: query,
     });
   };
   if (cart && cart.payload && cart.payload.cartItemDTOs) {
@@ -286,28 +294,30 @@ export const Cart = () => {
 
   const handleQuantityBlur = (e: any, item: any) => {
     e.preventDefault();
-    const newQuantity = Number(e.target.value); 
+    const newQuantity = Number(e.target.value);
     if (newQuantity > 0) {
-    let payload: IUpdateCart = {
-      cartItemId: item.id,
-      ...item,
-    };
-    dispatch(updateCart(payload)).unwrap()
-      .then()
-      .then((res: any) => {
-        message.success("Cập nhật số lượng sản phẩm thành công");
-      })
-      .catch((e: any) => {
-        message.error(e.message);
-        if (loginInfo && loginInfo.payload) {
-          dispatch(getCart(loginInfo.payload.profilesID))
-            .unwrap()
-            .then()
-            .then((res: any) => {
-              setDataCart(res);
-            });
-        }
-      });}
+      let payload: IUpdateCart = {
+        cartItemId: item.id,
+        ...item,
+      };
+      dispatch(updateCart(payload))
+        .unwrap()
+        .then()
+        .then((res: any) => {
+          message.success("Cập nhật số lượng sản phẩm thành công");
+        })
+        .catch((e: any) => {
+          message.error(e.message);
+          if (loginInfo && loginInfo.payload) {
+            dispatch(getCart(loginInfo.payload.profilesID))
+              .unwrap()
+              .then()
+              .then((res: any) => {
+                setDataCart(res);
+              });
+          }
+        });
+    }
   };
   const cancel = (e: any) => {};
   const confirm = (e: React.MouseEvent<HTMLElement>, data: any) => {
