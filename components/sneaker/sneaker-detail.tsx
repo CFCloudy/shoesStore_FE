@@ -186,6 +186,10 @@ export const SneakerDetail = () => {
   const { loading } = useAppSelector(selectOrder);
   const [choseShoes, setChoseShoes] = useState<any>();
   const handleAddToCard = () => {
+    if(!loginInfo || !loginInfo.payload){
+      message.error("Vui lòng đăng nhập, hoặc đăng ký rồi tiếp tục mua hàng")
+      return;
+    }
     if (chooseColor && chooseSizes) {
       let productVariant = data.shoesVariantDTOs.find(
         (p: any) => p.color == chooseColor && p.size == String(chooseSizes)
@@ -254,11 +258,11 @@ export const SneakerDetail = () => {
               modules={[FreeMode, Navigation, Thumbs, Scrollbar]}
               className="mySwiper2"
             >
-              {data.available_colors[indexImg].src.map(
+              {data.available_colors[indexImg].imageVariants.map(
                 (img: any, index: number) => {
                   return (
                     <SwiperSlide key={index}>
-                      <img src={img} />
+                      <img src={img.url} />
                     </SwiperSlide>
                   );
                 }
@@ -277,11 +281,11 @@ export const SneakerDetail = () => {
               }}
               className="mySwiper"
             >
-              {data.available_colors[indexImg].src.map(
+              {data.available_colors[indexImg].imageVariants.map(
                 (img: any, index: number) => {
                   return (
                     <SwiperSlide key={index}>
-                      <img src={img} />
+                      <img src={img.url} />
                     </SwiperSlide>
                   );
                 }
@@ -335,7 +339,7 @@ export const SneakerDetail = () => {
                         onClick={() =>
                           onChooseOption("Color", x.name, data.id, index)
                         }
-                        src={x.src[0]}
+                        src={x.imageVariants[0].url}
                       />
                       {isActiveColor && chooseColor == x.name ? <p></p> : null}
                     </div>

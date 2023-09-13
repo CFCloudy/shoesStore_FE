@@ -77,12 +77,15 @@ export const Cart = () => {
   let sum = 0;
   const [datavoucher, setDataVoucher] = useState<any>();
   useEffect(() => {
-    dispatch(getListVoucher())
-      .unwrap()
-      .then()
-      .then((res: any) => {
-        setDataVoucher(res);
-      });
+    let payload=loginInfo.payload.profilesID
+   if(payload){
+    dispatch(getListVoucher(payload))
+    .unwrap()
+    .then()
+    .then((res: any) => {
+      setDataVoucher(res);
+    });
+   }
   }, []);
   const handleUseVoucher = () => {
     let resule = datavoucher.find((x: any) => x.nameVoucher === nameVoucher);
@@ -289,13 +292,21 @@ export const Cart = () => {
       cartItemId: item.id,
       ...item,
     };
-    dispatch(updateCart(payload))
+    dispatch(updateCart(payload)).unwrap()
       .then()
       .then((res: any) => {
         message.success("Cập nhật số lượng sản phẩm thành công");
       })
       .catch((e: any) => {
-        message.error(e);
+        message.error(e.message);
+        if (loginInfo && loginInfo.payload) {
+          dispatch(getCart(loginInfo.payload.profilesID))
+            .unwrap()
+            .then()
+            .then((res: any) => {
+              setDataCart(res);
+            });
+        }
       });}
   };
   const cancel = (e: any) => {};

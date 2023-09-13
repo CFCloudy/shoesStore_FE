@@ -30,10 +30,11 @@ class OrderApi {
       data: payload,
     });
   }
-  getListVoucher() {
+  getListVoucher(payload:any) {
     return axiosClient({
       method: "get",
-      url: `/api/Voucher`,
+      url: `api/Voucher/GetVoucherByUserId?uid=${payload}`,
+      data: payload,
     });
   }
 

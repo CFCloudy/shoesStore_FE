@@ -147,16 +147,21 @@ export const getCart = createAsyncThunk(
   }
 );
 
-export const getListVoucher = createAsyncThunk("getListVoucher", async () => {
-  try {
-    const response = await orderApi.getListVoucher();
-    return response.data;
-  } catch (err: any) {
-    if (!err.response) {
-      throw err.response;
+
+export const getListVoucher = createAsyncThunk(
+  "getListVoucher",
+  async (payload: any, { rejectWithValue }) => {
+    try {
+      const response = await orderApi.getListVoucher(payload);
+      return response.data;
+    } catch (err: any) {
+      if (!err.response) {
+        throw err.response;
+      }
+      return rejectWithValue(err.response.data);
     }
   }
-});
+);
 
 export const getOrderById = createAsyncThunk(
   "getOrderById",
