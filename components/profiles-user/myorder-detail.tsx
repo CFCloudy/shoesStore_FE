@@ -17,7 +17,7 @@ import {
   Space,
 } from "antd";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BoxInfoUser, WrapperOrder } from "./profiles-tyled";
 import axios from "axios";
 import {
@@ -141,7 +141,16 @@ export const MyOrderDetail = () => {
           <ButtonBlack onClick={() => handleUpdateTrangThai(6)}>
             Hủy đơn hàng
           </ButtonBlack>
-        ) : null}
+        ) : data.status == 4 ? (
+          <React.Fragment>
+            <ButtonBlack onClick={() => handleUpdateTrangThai(5)}>
+              Đã nhận được hàng
+            </ButtonBlack>
+            <ButtonBlack onClick={() => handleUpdateTrangThai(7)}>
+             Từ chối nhận hàng
+            </ButtonBlack>
+          </React.Fragment>
+        ):null}
 
         <br />
         <br />

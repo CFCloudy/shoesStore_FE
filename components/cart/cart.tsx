@@ -580,7 +580,13 @@ export const Cart = () => {
                           </Button>
                         )
                       ) : (
-                        ""
+                        <Button
+                        type="link"
+                        onClick={() => Router.push("/book-address")}
+                      >
+                        {" "}
+                        + Thêm mới địa chỉ
+                      </Button>
                       )}
                     </div>
                   </div>
