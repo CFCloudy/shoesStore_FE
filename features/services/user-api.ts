@@ -45,7 +45,7 @@ class UserApi {
   userLogout(payload: ILogoutPayload) {
     return axiosClient({
       method: "post",
-      url: `/api/Authentication/revoke/${payload.id}`,
+      url: `/api/Authentication/revoke?id=${payload.id}`,
       data: payload,
     });
   }
@@ -59,7 +59,7 @@ class UserApi {
   forgotpass(payload: IForgotPass) {
     return axiosClient({
       method: "post",
-      url: "/api/Authentication/forgotpass",
+      url: `/api/Authentication/forgotpass?email=${payload}`,
       data: payload,
     });
   }

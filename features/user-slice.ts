@@ -289,6 +289,7 @@ const userSlice = createSlice({
       })
       .addCase(userForgotPass.fulfilled, (state, { payload }) => {
         state.loading = false;
+        state.register = payload;
         state.isforgot = true;
       })
       .addCase(userForgotPass.rejected, (state, { error }) => {

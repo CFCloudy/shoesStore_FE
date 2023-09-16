@@ -1,14 +1,24 @@
 import { ButtonBlack } from "@/components/home-pages/home-pages-styled";
-import { Button, Form, Input } from "antd";
+import { Button, Form, Input, message } from "antd";
 import Router from "next/router";
 import { Fragment } from "react";
 import { WrapperAuthen } from "../auth-styled";
-import { useAppDispatch } from "@/app/hook";
+import { useAppDispatch, useAppSelector } from "@/app/hook";
+import { useForm } from "antd/es/form/Form";
+import { selectUser, userForgotPass } from "@/features/user-slice";
 
 export const ForgotPassWord = () => {
   const dispatch = useAppDispatch();
+  const {loading}=useAppSelector(selectUser)
+  const [form]=Form.useForm();
   const onSubmit = (value: any) => {
-    Router.push("/auth/send-otp");
+    
+    dispatch(userForgotPass(value.email)).unwrap().then().then((res:any)=>{
+      Router.push("/auth/send-otp");
+    }
+    ).catch((e:any)=>{
+      message.error(e.message)
+    })
   };
 
   return (
@@ -16,7 +26,7 @@ export const ForgotPassWord = () => {
       <h2>Quên mật khẩu?</h2>
       <p>Vui lòng nhập địa chỉ email bạn đã đăng ký để lấy lại mật khẩu.</p>
       <div className="form">
-        <Form layout="vertical" onFinish={onSubmit}>
+        <Form layout="vertical" onFinish={onSubmit} form={form}>
           <Form.Item
             label="Email"
             name={"email"}
@@ -30,7 +40,7 @@ export const ForgotPassWord = () => {
           >
             <Input className="signin"></Input>
           </Form.Item>
-          <ButtonBlack htmlType="submit">Lấy lại mật khẩu</ButtonBlack>
+          <ButtonBlack htmlType="submit" loading={loading}>Lấy lại mật khẩu</ButtonBlack>
         </Form>
       </div>
     </WrapperAuthen>

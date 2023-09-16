@@ -12,7 +12,7 @@ import {
   Swap_Product_Detail,
 } from "./sneaker-pages-styled";
 import { FreeMode, Navigation, Thumbs, Scrollbar, EffectCube } from "swiper";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Col, Image, Row, message } from "antd";
 import { formatter } from "@/models/common";
 import { listProduct } from "../product/product";
@@ -239,7 +239,8 @@ export const SneakerDetail = () => {
       {data ? (
         <Row gutter={[40, 20]} key={data.id}>
           <Col xs={24} md={24} xxl={15} lg={15}>
-            <Swiper
+            {data.available_colors[indexImg]?<React.Fragment>
+              <Swiper
               style={
                 {
                   "--swiper-navigation-color": "#fff",
@@ -258,7 +259,7 @@ export const SneakerDetail = () => {
               modules={[FreeMode, Navigation, Thumbs, Scrollbar]}
               className="mySwiper2"
             >
-              {data.available_colors[indexImg].imageVariants.map(
+              {data.available_colors[indexImg]&&data.available_colors[indexImg].imageVariants.map(
                 (img: any, index: number) => {
                   return (
                     <SwiperSlide key={index}>
@@ -281,7 +282,7 @@ export const SneakerDetail = () => {
               }}
               className="mySwiper"
             >
-              {data.available_colors[indexImg].imageVariants.map(
+              {data.available_colors[indexImg]&&data.available_colors[indexImg].imageVariants.map(
                 (img: any, index: number) => {
                   return (
                     <SwiperSlide key={index}>
@@ -291,6 +292,7 @@ export const SneakerDetail = () => {
                 }
               )}
             </Swiper>
+            </React.Fragment>:null}
           </Col>
           <Col xs={24} md={24} xxl={9} lg={9}>
             <Swap_Product_Detail>

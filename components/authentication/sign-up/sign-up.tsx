@@ -21,7 +21,7 @@ export const SignUp = () => {
         Router.push("/auth/send-otp");
       })
       .catch((e: any) => {
-        message.error("Fails");
+        message.error(e.message);
       });
   };
   return (
