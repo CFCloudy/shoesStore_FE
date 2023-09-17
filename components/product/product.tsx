@@ -1,5 +1,5 @@
 import { formatter } from "@/models/common";
-import { Image } from "antd";
+import { Image, Tooltip } from "antd";
 import Router, { useRouter } from "next/router";
 import { useState } from "react";
 import { WrappProduct } from "./product-styled";
@@ -40,7 +40,12 @@ export const CommonProduct = (props: IPopsProduct) => {
     <WrappProduct key={data.id}>
       <div className="image_product">
         {/* <Image preview={false} src={data.images[0]} /> */}
-        <Image preview={false} src={data.displayImage} className="image" />
+        <Image
+          preview={false}
+          src={data.displayImage}
+          className="image"
+          width={"100%"}
+        />
       </div>
       <div
         className="name_product"
@@ -48,7 +53,11 @@ export const CommonProduct = (props: IPopsProduct) => {
           router.push(`/sneaker/detail/${data.id}`);
         }}
       >
-        {data.productName}
+        <Tooltip title={data.productName.length > 55 ? data.productName : ""}>
+          {data.productName.length > 55
+            ? `${data.productName.slice(0, 55)}...`
+            : data.productName}
+        </Tooltip>
       </div>
       <div className="price_product">{formatter.format(data.displayPrice)}</div>
       <div className="color">

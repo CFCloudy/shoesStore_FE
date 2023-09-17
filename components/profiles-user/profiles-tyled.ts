@@ -1,3 +1,4 @@
+import { Upload } from "antd";
 import styled from "styled-components";
 
 export const WrapperProfile = styled.div`
@@ -104,7 +105,39 @@ export const BoxInfoUser = styled.div`
     }
   }
 `;
+export const BoxImage = styled.div`
+  width: 130px;
+  height: 130px;
+  position: relative;
+  .icon {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    cursor: pointer;
+    font-size: 18px;
+  }
+`;
 
+export const UploadCustom = styled(Upload)`
+  background: rgba(0, 0, 0, 0.5);
+  /* position: absolute; */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  img {
+    width: 40px;
+  }
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  text-align: center;
+  background-color: #002766;
+  border: 2px solid #ffff;
+  bottom: 8px;
+  right: 9px;
+  cursor: pointer;
+`;
 export const WrapperOrder = styled.div`
   border: 0.625px solid #e5e5e5;
   padding: 10px;

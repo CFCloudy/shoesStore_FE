@@ -61,6 +61,7 @@ export const Sneaker = () => {
   const [dataBrands, setDataBrands] = useState<IBrandsResponse[]>([]);
   const [dataFeature, setDataFeatures] = useState<IFeaturesResponse[]>([]);
   const [toltalItem, setToltalItem] = useState<number>(0);
+  const [toltalConut, setToltalConut] = useState<number>(0);
   const [dataF, setDataF] = useState<any>();
   const [data, setData] = useState<any>([]);
   // const [dataColors, setDataColors] = useState<IColorsResponse[]>([]);
@@ -85,14 +86,19 @@ export const Sneaker = () => {
     setPayloadFilter(pa);
     fectchDataAsyn(pa);
   };
-  
 
   useEffect(() => {
-    console.log(Router.query.type,Router.query.id)
-    var pay={...payloadFilter}
-    if(Router.query.type){
-      if(Router.query.type=="style"){
-        pay.styleDTOs=[{id:Number(Router.query.id),styleName:String(Router.query.name),type:'style'}]
+    console.log(Router.query.type, Router.query.id);
+    var pay = { ...payloadFilter };
+    if (Router.query.type) {
+      if (Router.query.type == "style") {
+        pay.styleDTOs = [
+          {
+            id: Number(Router.query.id),
+            styleName: String(Router.query.name),
+            type: "style",
+          },
+        ];
         // setFilter([{id:Number(Router.query.id),styleName:Router.query.name,type:'Style'}])
         // console.log([{id:Number(Router.query.id),styleName:Router.query.name,type:'Style'}])
         if (pay.brandDTOs) {
@@ -102,8 +108,14 @@ export const Sneaker = () => {
           delete pay.featureDTOs;
         }
       }
-      if(Router.query.type=="feature"){
-        pay.featureDTOs=[{id:Number(Router.query.id),featureName:String(Router.query.name),type:'feature'}]
+      if (Router.query.type == "feature") {
+        pay.featureDTOs = [
+          {
+            id: Number(Router.query.id),
+            featureName: String(Router.query.name),
+            type: "feature",
+          },
+        ];
         // setFilter({id:Number(Router.query.id),featureName:Router.query.name,type:'Feature'})
         if (pay.styleDTOs) {
           delete pay.styleDTOs;
@@ -112,8 +124,14 @@ export const Sneaker = () => {
           delete pay.brandDTOs;
         }
       }
-      if(Router.query.type=="brand"){
-        pay.brandDTOs=[{id:Number(Router.query.id),brandName:String(Router.query.name),type:'brand'}]
+      if (Router.query.type == "brand") {
+        pay.brandDTOs = [
+          {
+            id: Number(Router.query.id),
+            brandName: String(Router.query.name),
+            type: "brand",
+          },
+        ];
         // setFilter({id:Number(Router.query.id),brandName:Router.query.name,type:'Brand'})
         if (pay.styleDTOs) {
           delete pay.styleDTOs;
@@ -122,10 +140,10 @@ export const Sneaker = () => {
           delete pay.featureDTOs;
         }
       }
-      setPayloadFilter(pay)
+      setPayloadFilter(pay);
     }
     fectchDataAsyn(pay);
-  }, [Router.query.type,Router.query.id]);
+  }, [Router.query.type, Router.query.id]);
   const fectchDataAsyn = async (filter: any) => {
     dispatch(getListProduct(filter))
       .unwrap()
@@ -133,6 +151,7 @@ export const Sneaker = () => {
       .then((res: any) => {
         setData(res);
         setToltalItem(res.totalItem);
+        setToltalConut(res.toltalConut);
       });
   };
   useEffect(() => {
@@ -610,7 +629,7 @@ export const Sneaker = () => {
             }}
             current={currentPage}
             pageSize={itemsPerPage}
-            total={totalItems}
+            total={toltalConut}
             onChange={handlePageChange}
           />
         </div>

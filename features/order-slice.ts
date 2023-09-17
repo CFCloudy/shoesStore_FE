@@ -59,7 +59,7 @@ export const getOrderLog = createAsyncThunk(
 );
 
 export const getOrderByUserId = createAsyncThunk(
-  "createOrder",
+  "getOrderByUserId",
   async (payload: any, { rejectWithValue }) => {
     try {
       const response = await orderApi.getOrderByUserId(payload);

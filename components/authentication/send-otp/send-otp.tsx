@@ -9,14 +9,14 @@ import { IConfirmOTP, IResendOTP } from "@/models/user";
 
 export const SendOTP = () => {
   const dispatch = useAppDispatch();
-  const { loading, register,isforgot } = useAppSelector(selectUser);
+  const { loading, register, isforgot } = useAppSelector(selectUser);
   let countDountS = 61;
   const [initSecond, setInitSecond] = useState<number>(0);
 
   const onSubmit = (value: any) => {
     console.log(register);
     const payload: IConfirmOTP = {
-      UserId: isforgot?register.payload.id:register.userId,
+      UserId: isforgot ? register.payload.id : register.payload.userId,
       Code: value.Code,
     };
     console.log(payload);
@@ -26,13 +26,14 @@ export const SendOTP = () => {
       .then((res: any) => {
         if (!isforgot) {
           message.success("Chúc mừng bạn đăng ký thành công");
+          Router.push("/");
         } else {
-          message.success("Chúc mừng bạn đăng ký thành công");
-          
+          message.success("Confirm Otp thành công");
+          Router.push("/auth/confirm-password");
         }
       })
       .catch((error: any) => {
-        message.error(error.Message);
+        message.error(error.message);
       });
   };
 

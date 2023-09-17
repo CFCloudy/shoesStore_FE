@@ -293,3 +293,11 @@ export const StepsCustom = styled(Steps)`
     /* font-size: 90px !important; */
   }
 `;
+
+export const SpaceBetW = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 6px;
+  line-height: 22px;
+`;

@@ -33,7 +33,7 @@ import {
 } from "@/features/user-slice";
 import { RegexValidation, formatter } from "@/models/common";
 import { DeleteOutlined, TransactionOutlined } from "@ant-design/icons";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/app/hook";
 import { selectUser } from "@/features/user-slice";
 import Router from "next/router";
@@ -79,8 +79,9 @@ export const Cart = () => {
   const [useVoucher, setUseVoucher] = useState<any>();
   console.log(useVoucher);
   useEffect(() => {
-    let payload = loginInfo.payload.profilesID;
-    if (payload) {
+    if (loginInfo) {
+      let payload = loginInfo?.payload?.profilesID;
+
       dispatch(getListVoucher(payload))
         .unwrap()
         .then()
@@ -149,12 +150,29 @@ export const Cart = () => {
         moment(new Date(), "YYYY/MM/DD HH:mm")
       )
     );
-    if (result > 24) {
-      let hour = result - 24;
-      return `Còn ${time.days()} ngày ${hour.toFixed()} giờ`;
-    } else {
-      return `Còn ${time.hours()} giờ`;
+
+    let days = Math.floor(result / 24);
+    let remainingHours = result % 24;
+    let remainingMinutes = Math.floor((result % 1) * 60);
+    let result2 = "";
+
+    if (days > 0) {
+      result2 += days + " ngày ";
     }
+
+    if (remainingHours > 0) {
+      result2 += Math.round(remainingHours) + " giờ ";
+    }
+
+    if (remainingMinutes > 0 || (days === 0 && remainingHours === 0)) {
+      result2 += Math.round(remainingMinutes) + " phút ";
+    }
+
+    if (result2 === "") {
+      result2 = "0 phút";
+    }
+
+    return `Còn ${result2}`;
   };
   const dispatch = useAppDispatch();
 
@@ -359,79 +377,92 @@ export const Cart = () => {
             <BoxHeader>
               <div>Giỏ hàng của bạn</div>
             </BoxHeader>
-            <BoxBody>
-              {dataCart &&
-                dataCart.payload &&
-                dataCart.payload.cartItemDTOs &&
-                dataCart.payload.cartItemDTOs.map((cart: any) => (
-                  <CartItem>
-                    <Row gutter={[10, 10]}>
-                      <Col span={8}>
-                        <Image
-                          preview={false}
-                          src={cart.image}
-                          alt=""
-                          width={"240px"}
-                          height={"240px"}
-                        />
-                      </Col>
-                      <Col span={16}>
-                        <div className="detail">
-                          <Space direction="vertical">
-                            <div
-                              style={{
-                                textTransform: "uppercase",
-                                fontSize: "16px",
-                                fontWeight: 500,
-                                width: "260px",
-                              }}
-                            >
-                              {cart.Productname}
-                            </div>
-                            <div style={{ fontWeight: "500" }}>
-                              {formatter.format(cart.price)}
-                            </div>
-                            <div>Kích cỡ: {cart.size}</div>
-                            <div>Màu sắc: {cart.color}</div>
-                            <Input
-                              type="number"
-                              onKeyUp={(e) => {
-                                handleUpdateQuantity(e, cart);
-                              }}
-                              onBlur={(e) => handleQuantityBlur(e, cart)}
-                              className="quantity"
-                              min={1}
-                              value={cart.quantity}
-                              onChange={(e) => {
-                                handleUpdateQuantity(e, cart);
-                              }}
-                            />
-                          </Space>
-                          <div>
-                            <div
-                              style={{ fontWeight: "500", marginTop: "10px" }}
-                            >
-                              {formatter.format(
-                                Number(cart.price) * Number(cart.quantity)
-                              )}
-                              <Popconfirm
-                                title="Bạn có muốn xóa sản phẩm này không?"
-                                // description="Are you sure to delete this task?"
-                                onConfirm={(e: any) => confirm(e, cart)}
-                                onCancel={cancel}
-                                okText="Yes"
-                                cancelText="No"
+
+            {dataCart &&
+            dataCart.payload &&
+            dataCart.payload.cartItemDTOs &&
+            dataCart.payload.cartItemDTOs.length > 0 ? (
+              <BoxBody>
+                {dataCart &&
+                  dataCart.payload &&
+                  dataCart.payload.cartItemDTOs &&
+                  dataCart.payload.cartItemDTOs.map((cart: any) => (
+                    <CartItem>
+                      <Row gutter={[10, 10]}>
+                        <Col span={8}>
+                          <Image
+                            preview={false}
+                            src={cart.image}
+                            alt=""
+                            width={"240px"}
+                            height={"240px"}
+                          />
+                        </Col>
+                        <Col span={16}>
+                          <div className="detail">
+                            <Space direction="vertical">
+                              <div
+                                style={{
+                                  textTransform: "uppercase",
+                                  fontSize: "16px",
+                                  fontWeight: 500,
+                                  width: "260px",
+                                }}
                               >
-                                <DeleteOutlined />
-                              </Popconfirm>
+                                {cart.Productname}
+                              </div>
+                              <div style={{ fontWeight: "500" }}>
+                                {formatter.format(cart.price)}
+                              </div>
+                              <div>Kích cỡ: {cart.size}</div>
+                              <div>Màu sắc: {cart.color}</div>
+                              <Input
+                                type="number"
+                                onKeyUp={(e) => {
+                                  handleUpdateQuantity(e, cart);
+                                }}
+                                onBlur={(e) => handleQuantityBlur(e, cart)}
+                                className="quantity"
+                                min={1}
+                                value={cart.quantity}
+                                onChange={(e) => {
+                                  handleUpdateQuantity(e, cart);
+                                }}
+                              />
+                            </Space>
+                            <div>
+                              <div
+                                style={{ fontWeight: "500", marginTop: "10px" }}
+                              >
+                                {formatter.format(
+                                  Number(cart.price) * Number(cart.quantity)
+                                )}
+                                <Popconfirm
+                                  title="Bạn có muốn xóa sản phẩm này không?"
+                                  // description="Are you sure to delete this task?"
+                                  onConfirm={(e: any) => confirm(e, cart)}
+                                  onCancel={cancel}
+                                  okText="Yes"
+                                  cancelText="No"
+                                >
+                                  <DeleteOutlined />
+                                </Popconfirm>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      </Col>
-                    </Row>
-                  </CartItem>
-                ))}
-            </BoxBody>
+                        </Col>
+                      </Row>
+                    </CartItem>
+                  ))}
+              </BoxBody>
+            ) : (
+              <Empty
+                imageStyle={{
+                  height: 120,
+                }}
+                description={<span>Giỏ hàng của bạn đang rỗng</span>}
+              ></Empty>
+            )}
           </Box>
           <Button
             style={{
@@ -440,249 +471,267 @@ export const Cart = () => {
               color: "#fff",
               fontWeight: 600,
             }}
+            onClick={() => Router.push("/sneaker/")}
           >{`< Quay lại mua hàng`}</Button>
         </Col>
         <Col span={8}>
           <WrapProduct>
             <div className="title">Chi tiết thanh toán</div>
-            <CheckOut>
-              <div>Tổng tiền</div>
-              {/* <div>{Object.entries(dataCart).length > 0 ? sum : ""}</div> */}
-              <div>{formatter.format(sum)}</div>
-            </CheckOut>
-            {/* <CheckOut>
-              <div>Phí ship</div>
-              <div>20.000đ</div>
-            </CheckOut> */}
-            <CheckOut>
-              <div style={{ display: "flex", alignItems: "center" }}>
-                <img src={IconVoucher.src}></img>
-                <b>{`King Shoes Voucher`}</b>
-              </div>
-              <b
-                style={{ cursor: "pointer" }}
-                onClick={() => {
-                  setSelectedRadio("");
-                  setIsConfirm(true);
-                  setNumberOpen(1);
-                }}
-              >
-                Chọn Hoặc Nhập Mã
-              </b>
-            </CheckOut>
+            {dataCart &&
+            dataCart.payload &&
+            dataCart.payload.cartItemDTOs &&
+            dataCart.payload.cartItemDTOs.length > 0 ? (
+              <React.Fragment>
+                <CheckOut>
+                  <div>Tổng tiền</div>
+                  {/* <div>{Object.entries(dataCart).length > 0 ? sum : ""}</div> */}
+                  <div>{formatter.format(sum)}</div>
+                </CheckOut>
 
-            <Input.Group compact>
-              <Input
-                style={{ width: "calc(100% - 85px)", marginTop: "10px" }}
-                onChange={(e) => {
-                  setNameVoucher(e.target.value);
-                  if (e.target.value.length === 0) {
-                    setError("");
-                  }
-                }}
-              />
-              <Button
-                type="primary"
-                style={{
-                  marginTop: "10px",
-                  backgroundColor: "black",
-                  color: "#fff",
-                  fontWeight: 500,
-                }}
-                onClick={handleUseVoucher}
-                disabled={nameVoucher ? false : true}
-              >
-                Áp dụng
-              </Button>
-            </Input.Group>
-            <CheckOut>
-              <div style={{ color: "red" }}>{error}</div>
-              <div></div>
-            </CheckOut>
-            <br />
-            <br />
-            <br />
-            <CheckOut>
-              <div>Tổng tiền hàng</div>
-              <div> {dataCart ? formatter.format(sum) : ""}</div>
-            </CheckOut>
-            <CheckOut>
-              <div>Giảm giá</div>
-              <div className="deal">
-                <div>
-                  {valueVoucher
-                    ? "-" + formatter.format(valueVoucher)
-                    : formatter.format(valueVoucher)}
-                </div>
-                {valueVoucher > 0 ? (
-                  <div className="main1" onClick={handleDontUse}>
-                    Không sử dụng
+                <CheckOut>
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    <img src={IconVoucher.src}></img>
+                    <b>{`King Shoes Voucher`}</b>
                   </div>
-                ) : null}
-              </div>
-            </CheckOut>
-            <CheckOut>
-              <div className="title">Tổng thanh toán</div>
-              <div style={{ color: "red", fontSize: "18px" }}>
-                {formatter.format(sum - valueVoucher)}
-              </div>
-            </CheckOut>
-            {Object.entries(loginInfo).length > 0 ? (
-              <div>
-                <div style={{ display: "flex" }}>
-                  <div>
+                  <b
+                    style={{ cursor: "pointer" }}
+                    onClick={() => {
+                      setSelectedRadio("");
+                      setIsConfirm(true);
+                      setNumberOpen(1);
+                    }}
+                  >
+                    Chọn Hoặc Nhập Mã
+                  </b>
+                </CheckOut>
+                <Input.Group compact>
+                  <Input
+                    style={{ width: "calc(100% - 85px)", marginTop: "10px" }}
+                    onChange={(e) => {
+                      setNameVoucher(e.target.value);
+                      if (e.target.value.length === 0) {
+                        setError("");
+                      }
+                    }}
+                  />
+                  <Button
+                    type="primary"
+                    style={{
+                      marginTop: "10px",
+                      backgroundColor: "black",
+                      color: "#fff",
+                      fontWeight: 500,
+                    }}
+                    onClick={handleUseVoucher}
+                    disabled={nameVoucher ? false : true}
+                  >
+                    Áp dụng
+                  </Button>
+                </Input.Group>
+                <CheckOut>
+                  <div style={{ color: "red" }}>{error}</div>
+                  <div></div>
+                </CheckOut>
+                <br />
+                <br />
+                <br />
+                <CheckOut>
+                  <div>Tổng tiền hàng</div>
+                  <div> {dataCart ? formatter.format(sum) : ""}</div>
+                </CheckOut>
+                <CheckOut>
+                  <div>Giảm giá</div>
+                  <div className="deal">
                     <div>
-                      {" "}
-                      {chooseAddress ? (
-                        Object.entries(chooseAddress).length > 0 ? (
-                          <div style={{ display: "flex" }}>
-                            <div style={{ marginRight: "10px" }}>
-                              <TransactionOutlined style={{ color: "red" }} />
-                            </div>
-                            <div>
-                              {" "}
-                              <div>
-                                {chooseAddress.name} |{" "}
-                                {chooseAddress.phoneNumber}
+                      {valueVoucher
+                        ? "-" + formatter.format(valueVoucher)
+                        : formatter.format(valueVoucher)}
+                    </div>
+                    {valueVoucher > 0 ? (
+                      <div className="main1" onClick={handleDontUse}>
+                        Không sử dụng
+                      </div>
+                    ) : null}
+                  </div>
+                </CheckOut>
+                <CheckOut>
+                  <div className="title">Tổng thanh toán</div>
+                  <div style={{ color: "red", fontSize: "18px" }}>
+                    {formatter.format(sum - valueVoucher)}
+                  </div>
+                </CheckOut>
+                {Object.entries(loginInfo).length > 0 ? (
+                  <div>
+                    <div style={{ display: "flex" }}>
+                      <div>
+                        <div>
+                          {" "}
+                          {chooseAddress ? (
+                            Object.entries(chooseAddress).length > 0 ? (
+                              <div style={{ display: "flex" }}>
+                                <div style={{ marginRight: "10px" }}>
+                                  <TransactionOutlined
+                                    style={{ color: "red" }}
+                                  />
+                                </div>
+                                <div>
+                                  {" "}
+                                  <div>
+                                    {chooseAddress.name} |{" "}
+                                    {chooseAddress.phoneNumber}
+                                  </div>
+                                  <div>{`${chooseAddress.addressDetail}, ${chooseAddress.ward},${chooseAddress.district}, ${chooseAddress.city}`}</div>
+                                  <div>Địa chỉ nhận hàng</div>
+                                </div>
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    marginLeft: "20px",
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      position: "absolute",
+                                      right: "28px",
+                                      // left: "20px",
+                                      cursor: "pointer",
+                                      fontSize: "20px",
+                                    }}
+                                    onClick={() => {
+                                      setNumberOpen(2);
+                                      setIsConfirm(true);
+                                    }}
+                                  >{`>`}</div>
+                                </div>
                               </div>
-                              <div>{`${chooseAddress.addressDetail}, ${chooseAddress.ward},${chooseAddress.district}, ${chooseAddress.city}`}</div>
-                              <div>Địa chỉ nhận hàng</div>
-                            </div>
-                            <div
-                              style={{
-                                display: "flex",
-                                alignItems: "center",
-                                marginLeft: "20px",
-                              }}
+                            ) : (
+                              <Button
+                                type="link"
+                                onClick={() => Router.push("/book-address")}
+                              >
+                                {" "}
+                                + Thêm mới địa chỉ
+                              </Button>
+                            )
+                          ) : (
+                            <Button
+                              type="link"
+                              onClick={() => Router.push("/book-address")}
                             >
-                              <div
-                                style={{
-                                  position: "absolute",
-                                  right: "28px",
-                                  // left: "20px",
-                                  cursor: "pointer",
-                                  fontSize: "20px",
-                                }}
-                                onClick={() => {
-                                  setNumberOpen(2);
-                                  setIsConfirm(true);
-                                }}
-                              >{`>`}</div>
-                            </div>
-                          </div>
-                        ) : (
-                          <Button
-                            type="link"
-                            onClick={() => Router.push("/book-address")}
-                          >
-                            {" "}
-                            + Thêm mới địa chỉ
-                          </Button>
-                        )
-                      ) : (
-                        <Button
-                        type="link"
-                        onClick={() => Router.push("/book-address")}
+                              {" "}
+                              + Thêm mới địa chỉ
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    <br />
+                    <div>
+                      <CheckOut
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
                       >
-                        {" "}
-                        + Thêm mới địa chỉ
-                      </Button>
-                      )}
+                        <ButtonBlack
+                          // loading={loading}
+                          onClick={handleCheckout}
+                          disabled={
+                            dataCart &&
+                            dataCart.payload &&
+                            dataCart.payload.cartItemDTOs
+                              ? true
+                              : false
+                          }
+                        >
+                          Thanh toán
+                        </ButtonBlack>
+                      </CheckOut>
                     </div>
                   </div>
-                </div>
-                <br />
-                <div>
-                  <CheckOut
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <ButtonBlack
-                      // loading={loading}
-                      onClick={handleCheckout}
+                ) : (
+                  <div>
+                    <div className="title" style={{ fontSize: "18px" }}>
+                      Thông tin người nhận hàng:
+                    </div>
+                    <Form
+                      form={form}
+                      // onFinish={OnSubmit}
                     >
-                      Thanh toán
-                    </ButtonBlack>
-                  </CheckOut>
-                </div>
-              </div>
-            ) : (
-              <div>
-                <div className="title" style={{ fontSize: "18px" }}>
-                  Thông tin người nhận hàng:
-                </div>
-                <Form
-                  form={form}
-                  // onFinish={OnSubmit}
-                >
-                  <Form.Item
-                    name={"name"}
-                    rules={[
-                      {
-                        required: true,
-                        message: "Họ tên không được để trống",
-                      },
-                    ]}
-                  >
-                    <Input placeholder="Họ tên"></Input>
-                  </Form.Item>
-                  <Form.Item
-                    name={"phone"}
-                    rules={[
-                      {
-                        required: true,
-                        message: "Số điện thoại không được để trống",
-                      },
-                      {
-                        validator: async (rule: any, value: any, callback) => {
-                          if (value) {
-                            if (
-                              RegexValidation.REGEXPHONENUMBER.test(value) ==
-                              false
-                            ) {
-                              return Promise.reject(
-                                "Số điện thoại không hợp lệ"
-                              );
-                            }
-                          }
-                        },
-                      },
-                    ]}
-                  >
-                    <Input placeholder="Số điện thoại"></Input>
-                  </Form.Item>
-                  <Form.Item
-                    name={"address"}
-                    rules={[
-                      {
-                        required: true,
-                        message: "Địa chỉ không được để trống",
-                      },
-                    ]}
-                  >
-                    <Input placeholder="Địa chỉ"></Input>
-                  </Form.Item>
-                  <CheckOut
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <Button
-                      type="primary"
-                      htmlType="submit"
-                      // loading={loading}
-                    >
-                      Thanh toán
-                    </Button>
-                  </CheckOut>
-                </Form>
-              </div>
-            )}
+                      <Form.Item
+                        name={"name"}
+                        rules={[
+                          {
+                            required: true,
+                            message: "Họ tên không được để trống",
+                          },
+                        ]}
+                      >
+                        <Input placeholder="Họ tên"></Input>
+                      </Form.Item>
+                      <Form.Item
+                        name={"phone"}
+                        rules={[
+                          {
+                            required: true,
+                            message: "Số điện thoại không được để trống",
+                          },
+                          {
+                            validator: async (
+                              rule: any,
+                              value: any,
+                              callback
+                            ) => {
+                              if (value) {
+                                if (
+                                  RegexValidation.REGEXPHONENUMBER.test(
+                                    value
+                                  ) == false
+                                ) {
+                                  return Promise.reject(
+                                    "Số điện thoại không hợp lệ"
+                                  );
+                                }
+                              }
+                            },
+                          },
+                        ]}
+                      >
+                        <Input placeholder="Số điện thoại"></Input>
+                      </Form.Item>
+                      <Form.Item
+                        name={"address"}
+                        rules={[
+                          {
+                            required: true,
+                            message: "Địa chỉ không được để trống",
+                          },
+                        ]}
+                      >
+                        <Input placeholder="Địa chỉ"></Input>
+                      </Form.Item>
+                      <CheckOut
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <Button
+                          type="primary"
+                          htmlType="submit"
+                          // loading={loading}
+                        >
+                          Thanh toán
+                        </Button>
+                      </CheckOut>
+                    </Form>
+                  </div>
+                )}
+              </React.Fragment>
+            ) : null}
           </WrapProduct>
         </Col>
       </Row>

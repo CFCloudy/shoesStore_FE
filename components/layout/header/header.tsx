@@ -8,6 +8,7 @@ import {
   EditOutlined,
   LogoutOutlined,
   ShoppingCartOutlined,
+  ShoppingOutlined,
   UserOutlined,
 } from "@ant-design/icons";
 import {
@@ -134,9 +135,12 @@ export const Header = () => {
     {
       key: "2",
       label: (
-        <a target="_blank" rel="noopener noreferrer">
+        <div onClick={() => Router.push("/my-oder")}>
+          <ShoppingOutlined
+            style={{ marginRight: "8px", color: "black", fontWeight: "600" }}
+          ></ShoppingOutlined>
           Giỏ hành của tôi
-        </a>
+        </div>
       ),
     },
     {

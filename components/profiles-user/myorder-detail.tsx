@@ -131,7 +131,9 @@ export const MyOrderDetail = () => {
             ? `Đơn hàng đang được giao`
             : data.status == 4
             ? `Đơn hàng đang được giao tới bạn`
-            : data.status == 5
+            : data.status == 6
+            ? `Bạn đã hủy đơn hàng`
+            : data.status == 7
             ? `Đơn hàng giao không thành công do bạn từ chối nhận hàng`
             : `Đơn hàng đã hoàn thành`}
         </div>
@@ -147,10 +149,10 @@ export const MyOrderDetail = () => {
               Đã nhận được hàng
             </ButtonBlack>
             <ButtonBlack onClick={() => handleUpdateTrangThai(7)}>
-             Từ chối nhận hàng
+              Từ chối nhận hàng
             </ButtonBlack>
           </React.Fragment>
-        ):null}
+        ) : null}
 
         <br />
         <br />

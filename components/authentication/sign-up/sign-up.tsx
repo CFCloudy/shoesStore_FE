@@ -84,7 +84,7 @@ export const SignUp = () => {
             ]}
             hasFeedback
           >
-            <Input
+            <Input.Password
               type="password"
               placeholder="Password"
               size={"large"}
@@ -114,7 +114,12 @@ export const SignUp = () => {
               }),
             ]}
           >
-            <Input type="e" size={"large"} maxLength={20} className="signin" />
+            <Input.Password
+              type="e"
+              size={"large"}
+              maxLength={20}
+              className="signin"
+            />
           </Form.Item>
           <ButtonBlack htmlType="submit" loading={loading}>
             Đăng ký

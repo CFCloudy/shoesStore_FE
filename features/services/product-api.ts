@@ -63,6 +63,16 @@ class ProductApi {
       data: payload,
     });
   }
+  uploadFile(payload: any) {
+    return axiosClient({
+      method: "post",
+      url: `/api/Media/upload-media`,
+      data: payload,
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+  }
 }
 
 export default new ProductApi();

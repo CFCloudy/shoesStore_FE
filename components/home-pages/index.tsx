@@ -1,5 +1,5 @@
 import { Col, Image, Row } from "antd";
-import { Fragment, useCallback, useRef } from "react";
+import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import banner from "@/assets/banershoes.jpg";
 import { ButtonBlack, SwiperCustom, WrappHomePages } from "./home-pages-styled";
 import { Pagination, Navigation } from "swiper";
@@ -9,9 +9,16 @@ import "swiper/css/navigation";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import { CommonProduct, listProduct } from "../product/product";
+import { getListProduct } from "@/features/product-slice";
+import { useAppDispatch } from "@/app/hook";
+import { IFilterData } from "@/models/product";
 export const HomePages = () => {
   const sliderRef = useRef<any>(null);
-
+  const dispatch = useAppDispatch();
+  const [data, setData] = useState<any>();
+  const [payloadFilter, setPayloadFilter] = useState<IFilterData>(
+    {} as IFilterData
+  );
   const handlePrev = useCallback(() => {
     if (!sliderRef.current) return;
     sliderRef.current.swiper.slidePrev();
@@ -21,6 +28,21 @@ export const HomePages = () => {
     if (!sliderRef.current) return;
     sliderRef.current.swiper.slideNext();
   }, []);
+
+  useEffect(() => {
+    fectchDataAsyn(payloadFilter);
+  }, []);
+
+  const fectchDataAsyn = async (filter: any) => {
+    dispatch(getListProduct(filter))
+      .unwrap()
+      .then()
+      .then((res: any) => {
+        setData(res.shoes.slice(0, 3));
+        // setToltalItem(res.totalItem);
+      });
+  };
+
   return (
     <WrappHomePages>
       <Image
@@ -113,13 +135,14 @@ export const HomePages = () => {
           modules={[Navigation]}
           className="mySwiper"
         >
-          {listProduct.map((x, index: number) => {
-            return (
-              <SwiperSlide className="swiperSlide" key={index}>
-                <CommonProduct data={x} />
-              </SwiperSlide>
-            );
-          })}
+          {data &&
+            data.map((x: any, index: number) => {
+              return (
+                <SwiperSlide className="swiperSlide" key={index}>
+                  <CommonProduct data={x} />
+                </SwiperSlide>
+              );
+            })}
         </Swiper>
       </div>
     </WrappHomePages>
