@@ -212,16 +212,13 @@ const initState: IInitStateUser = {
     : ({} as ILoginResponse),
   loadingAdress: false,
   loadingDeleteAdress: false,
-  cart: {},
 };
 
 const userSlice = createSlice({
   name: "user_slice",
   initialState: initState,
   reducers: {
-    updateStorageValue: (state, action) => {
-      state.cart = action.payload;
-    },
+
   },
   extraReducers(builder) {
     builder

@@ -1,4 +1,4 @@
-import { Col, Row, Steps, message } from "antd";
+import { Col, Row, Steps, message ,Image} from "antd";
 import { WrapperProfile } from "../profiles-user/profiles-tyled";
 import { useState } from "react";
 import { Cart } from "./cart";
@@ -264,6 +264,36 @@ export const CheckOutPage = () => {
                       : formatter.format(0)}
                   </div>
                 </CheckOut>
+                <br/>
+                <h3 >Chi tiết đơn hàng</h3>
+                {/* {cart&&cart.payload&&cart.payload.cartItemDTOs
+                      ? cart.payload.cartItemDTOs.map((shoes: any, i: number) => (
+                          <div className="line" key={i}>
+                            <Image
+                              src={shoes.img}
+                              width={"50px"}
+                              height={"50px"}
+                              style={{ flex: 0 }}
+                            />
+                            <div style={{ flex: 1 }}>
+                              <div className="name">{shoes.variantName}</div>
+                              <div className="wp">
+                                <div>
+                                  <div>Màu sắc:{shoes.color}</div>
+                                  <div>Kích thước:{shoes.color}</div>
+                                </div>
+                                <div>x{shoes.quantity}</div>
+                              </div>
+                              <div className="wp">
+                                <div></div>
+                                <div className="price">
+                                  {formatter.format(shoes.price)}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        ))
+                      : null} */}
               </WrapProduct>
             </Col>
           </Row>

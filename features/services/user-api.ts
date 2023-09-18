@@ -23,7 +23,7 @@ class UserApi {
   userRefreshToken(payload: IPayloadRefresToken) {
     return axiosClient({
       method: "post",
-      url: "/msa-identity/odata/Auth/RefreshToken",
+      url: "/api/Authenticate/refresh-token",
       data: payload,
     });
   }

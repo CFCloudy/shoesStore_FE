@@ -294,8 +294,8 @@ export const Cart = () => {
       query: query,
     });
   };
-  if (cart && cart.payload && cart.payload.cartItemDTOs) {
-    cart.payload.cartItemDTOs.forEach((item) => {
+  if (dataCart && dataCart.payload && dataCart.payload.cartItemDTOs) {
+    dataCart.payload.cartItemDTOs.forEach((item) => {
       sum += item.price * item.quantity;
     });
   }
@@ -642,8 +642,9 @@ export const Cart = () => {
                             dataCart &&
                             dataCart.payload &&
                             dataCart.payload.cartItemDTOs
-                              ? true
-                              : false
+                            &&dataCart.payload.cartItemDTOs.length>0
+                              ? false
+                              : true
                           }
                         >
                           Thanh toán

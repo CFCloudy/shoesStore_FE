@@ -4,16 +4,19 @@ import axios from "axios";
 import { store } from "../../app/store";
 // import { IRefreshTokenResponse } from "@/models/user";
 import { userRefreshToken } from "../user-slice";
+import moment from "moment";
 // import { userRefreshToken } from "../user-slice";
 const storage =
   typeof window !== "undefined" ? localStorage.getItem("u") : undefined;
 let AccessToken = "";
 let RefreshToken = "";
+let ExpiryTime:Date;
 if (storage) {
   let loginInfo = JSON.parse(storage);
   if (loginInfo) {
-    AccessToken = loginInfo.Payload?.AccessToken;
-    RefreshToken = loginInfo.Payload?.RefreshToken;
+    AccessToken = loginInfo.payload?.accessToken;
+    RefreshToken = loginInfo.payload?.refreshToken;
+    ExpiryTime=loginInfo.payload.refreshTokenExpiryTime;
   }
 }
 
@@ -42,11 +45,11 @@ axiosClient.interceptors.response.use(
   },
   async function (error) {
     const originalRequest = error.config;
-    if (error.response.status === 401 && !originalRequest._retry) {
+    if (error.response.status === 401 && !originalRequest._retry||(ExpiryTime&&moment(ExpiryTime)<moment())) {
       originalRequest._retry = true;
       // const response: IRefreshTokenResponse = (await userApi.userRefreshToken(refreshToken)).data;
       const response = await store.dispatch(
-        userRefreshToken({ RefreshToken: RefreshToken, AccessSystem: "" })
+        userRefreshToken({ refreshToken: RefreshToken, accessToken: AccessToken })
       );
       let refreshTokenResult = response.payload;
       AccessToken = refreshTokenResult.AccessToken;

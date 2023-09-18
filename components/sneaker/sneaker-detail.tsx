@@ -221,7 +221,7 @@ export const SneakerDetail = () => {
           }
         })
         .catch((e: any) => {
-          message.error("Failed!!!");
+          message.error("Số lượng trong kho không đủ để thêm!");
         });
     } else if (chooseColor == "" && chooseSizes == "") {
       message.error(`Bạn chưa chọn màu sắc và kích cỡ sản phẩm `);

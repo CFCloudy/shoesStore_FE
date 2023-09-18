@@ -1,4 +1,4 @@
-import { ICartResponse } from "@/components/sneaker/sneaker-detail";
+import { ICartResponse } from "./order";
 
 export interface IInitStateUser {
   loading: boolean;
@@ -8,7 +8,6 @@ export interface IInitStateUser {
   loginInfo: ILoginResponse;
   loadingAdress: boolean;
   loadingDeleteAdress: boolean;
-  cart:ICartResponse
 }
 
 export interface ILoginPayload {
@@ -36,8 +35,8 @@ export interface ILoginResponse {
 }
 
 export interface IPayloadRefresToken {
-  RefreshToken: string;
-  AccessSystem: string;
+  refreshToken: string;
+  accessToken: string;
 }
 
 export interface IRegisterPayload {
