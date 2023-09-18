@@ -38,6 +38,7 @@ export interface IInitStateProduct {
 
 export interface IFilterData {
   nameShoe?: string;
+  sorting: string;
   brandDTOs?: [
     {
       id: number;
@@ -74,4 +75,6 @@ export interface IFilterData {
   isDecrease?: boolean;
   isAscending?: boolean;
   page: number;
+  skipCount: number;
+  maxResultCount: number;
 }

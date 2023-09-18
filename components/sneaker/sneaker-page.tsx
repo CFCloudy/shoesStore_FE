@@ -67,9 +67,11 @@ export const Sneaker = () => {
   // const [dataColors, setDataColors] = useState<IColorsResponse[]>([]);
   const [daataFilter, setDataFilter] = useState<any>();
   const [page, setPage] = useState<number>(1);
-  const [payloadFilter, setPayloadFilter] = useState<IFilterData>(
-    {} as IFilterData
-  );
+  const [payloadFilter, setPayloadFilter] = useState<IFilterData>({
+    skipCount: 0,
+    maxResultCount: 12,
+    sorting: "ok",
+  } as IFilterData);
   const dispatch = useAppDispatch();
 
   const totalItems = 100;
@@ -82,7 +84,8 @@ export const Sneaker = () => {
     setStartIndex(startIndex);
     setEndIndex(endIndex);
     var pa = { ...payloadFilter };
-    pa.page = pageNumber;
+    pa.skipCount = (pageNumber - 1) * 12;
+    pa.maxResultCount = (pageNumber - 1) * 12 + 12;
     setPayloadFilter(pa);
     fectchDataAsyn(pa);
   };
@@ -627,8 +630,8 @@ export const Sneaker = () => {
               alignItems: "center",
               justifyContent: "center",
             }}
-            current={currentPage}
-            pageSize={itemsPerPage}
+            current={payloadFilter.skipCount}
+            pageSize={payloadFilter.maxResultCount}
             total={toltalConut}
             onChange={handlePageChange}
           />
