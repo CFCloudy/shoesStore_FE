@@ -122,39 +122,37 @@ export const MyOders = () => {
                 data.map((item: any, index: number) =>
                   item.status == 0 ? (
                     <WrapperOrder key={index}>
-                      <div className="line">
-                        <Image
-                          src={item.items && item.items[0]?.img}
-                          width={"50px"}
-                          height={"50px"}
-                          style={{ flex: 0 }}
-                        />
-                        <div style={{ flex: 1 }}>
-                          <div className="name">
-                            {item.items && item.items[0]?.color}
-                          </div>
-                          <div className="wp">
-                            <div>
-                              <div>
-                                Màu sắc:{item.items && item.items[0]?.color}
-                              </div>
-                              <div>
-                                Kích thước:{item.items && item.items[0]?.color}
+                      {item.items.length > 0
+                        ? item.items.map((shoes: any, i: number) => (
+                            <div className="line" key={i}>
+                              <Image
+                                src={shoes.img}
+                                width={"50px"}
+                                height={"50px"}
+                                style={{ flex: 0 }}
+                              />
+                              <div style={{ flex: 1 }}>
+                                <div className="name">{shoes.variantName}</div>
+                                <div className="wp">
+                                  <div>
+                                    <div>Màu sắc:{shoes.color}</div>
+                                    <div>Kích thước:{shoes.color}</div>
+                                  </div>
+                                  <div>x{shoes.quantity}</div>
+                                </div>
+                                <div className="wp">
+                                  <div></div>
+                                  <div className="price">
+                                    {formatter.format(shoes.price)}
+                                  </div>
+                                </div>
                               </div>
                             </div>
-                            <div>2</div>
-                          </div>
-                          <div className="wp">
-                            <div></div>
-                            <div className="price">
-                              {formatter.format(200000)}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+                          ))
+                        : null}
                       <div className="wp">
                         <div>{`${item.items.length} sản phẩm`}</div>
-                        <div>Thành tiền {formatter.format(200000)}</div>
+                        <div>Thành tiền {formatter.format(item.total)}</div>
                       </div>
                       <div className="wp">
                         <div></div>
@@ -178,39 +176,37 @@ export const MyOders = () => {
                 data.map((item: any, index: number) =>
                   item.status == 3 ? (
                     <WrapperOrder key={index}>
-                      <div className="line">
-                        <Image
-                          src={item.items && item.items[0]?.img}
-                          width={"50px"}
-                          height={"50px"}
-                          style={{ flex: 0 }}
-                        />
-                        <div style={{ flex: 1 }}>
-                          <div className="name">
-                            {item.items && item.items[0]?.color}
-                          </div>
-                          <div className="wp">
-                            <div>
-                              <div>
-                                Màu sắc:{item.items && item.items[0]?.color}
-                              </div>
-                              <div>
-                                Kích thước:{item.items && item.items[0]?.color}
+                      {item.items.length > 0
+                        ? item.items.map((shoes: any, i: number) => (
+                            <div className="line" key={i}>
+                              <Image
+                                src={shoes.img}
+                                width={"50px"}
+                                height={"50px"}
+                                style={{ flex: 0 }}
+                              />
+                              <div style={{ flex: 1 }}>
+                                <div className="name">{shoes.variantName}</div>
+                                <div className="wp">
+                                  <div>
+                                    <div>Màu sắc:{shoes.color}</div>
+                                    <div>Kích thước:{shoes.color}</div>
+                                  </div>
+                                  <div>x{shoes.quantity}</div>
+                                </div>
+                                <div className="wp">
+                                  <div></div>
+                                  <div className="price">
+                                    {formatter.format(shoes.price)}
+                                  </div>
+                                </div>
                               </div>
                             </div>
-                            <div>2</div>
-                          </div>
-                          <div className="wp">
-                            <div></div>
-                            <div className="price">
-                              {formatter.format(200000)}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+                          ))
+                        : null}
                       <div className="wp">
                         <div>{`${item.items.length} sản phẩm`}</div>
-                        <div>Thành tiền {formatter.format(200000)}</div>
+                        <div>Thành tiền {formatter.format(item.total)}</div>
                       </div>
                       <div className="wp">
                         <div></div>
@@ -234,39 +230,37 @@ export const MyOders = () => {
                 data.map((item: any, index: number) =>
                   item.status == 4 ? (
                     <WrapperOrder key={index}>
-                      <div className="line">
-                        <Image
-                          src={item.items && item.items[0]?.img}
-                          width={"50px"}
-                          height={"50px"}
-                          style={{ flex: 0 }}
-                        />
-                        <div style={{ flex: 1 }}>
-                          <div className="name">
-                            {item.items && item.items[0]?.color}
-                          </div>
-                          <div className="wp">
-                            <div>
-                              <div>
-                                Màu sắc:{item.items && item.items[0]?.color}
-                              </div>
-                              <div>
-                                Kích thước:{item.items && item.items[0]?.color}
+                      {item.items.length > 0
+                        ? item.items.map((shoes: any, i: number) => (
+                            <div className="line" key={i}>
+                              <Image
+                                src={shoes.img}
+                                width={"50px"}
+                                height={"50px"}
+                                style={{ flex: 0 }}
+                              />
+                              <div style={{ flex: 1 }}>
+                                <div className="name">{shoes.variantName}</div>
+                                <div className="wp">
+                                  <div>
+                                    <div>Màu sắc:{shoes.color}</div>
+                                    <div>Kích thước:{shoes.color}</div>
+                                  </div>
+                                  <div>x{shoes.quantity}</div>
+                                </div>
+                                <div className="wp">
+                                  <div></div>
+                                  <div className="price">
+                                    {formatter.format(shoes.price)}
+                                  </div>
+                                </div>
                               </div>
                             </div>
-                            <div>2</div>
-                          </div>
-                          <div className="wp">
-                            <div></div>
-                            <div className="price">
-                              {formatter.format(200000)}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+                          ))
+                        : null}
                       <div className="wp">
                         <div>{`${item.items.length} sản phẩm`}</div>
-                        <div>Thành tiền {formatter.format(200000)}</div>
+                        <div>Thành tiền {formatter.format(item.total)}</div>
                       </div>
                       <div className="wp">
                         <div></div>
@@ -290,39 +284,37 @@ export const MyOders = () => {
                 data.map((item: any, index: number) =>
                   item.status == 5 ? (
                     <WrapperOrder key={index}>
-                      <div className="line">
-                        <Image
-                          src={item.items && item.items[0]?.img}
-                          width={"50px"}
-                          height={"50px"}
-                          style={{ flex: 0 }}
-                        />
-                        <div style={{ flex: 1 }}>
-                          <div className="name">
-                            {item.items && item.items[0]?.color}
-                          </div>
-                          <div className="wp">
-                            <div>
-                              <div>
-                                Màu sắc:{item.items && item.items[0]?.color}
-                              </div>
-                              <div>
-                                Kích thước:{item.items && item.items[0]?.color}
+                      {item.items.length > 0
+                        ? item.items.map((shoes: any, i: number) => (
+                            <div className="line" key={i}>
+                              <Image
+                                src={shoes.img}
+                                width={"50px"}
+                                height={"50px"}
+                                style={{ flex: 0 }}
+                              />
+                              <div style={{ flex: 1 }}>
+                                <div className="name">{shoes.variantName}</div>
+                                <div className="wp">
+                                  <div>
+                                    <div>Màu sắc:{shoes.color}</div>
+                                    <div>Kích thước:{shoes.color}</div>
+                                  </div>
+                                  <div>x{shoes.quantity}</div>
+                                </div>
+                                <div className="wp">
+                                  <div></div>
+                                  <div className="price">
+                                    {formatter.format(shoes.price)}
+                                  </div>
+                                </div>
                               </div>
                             </div>
-                            <div>2</div>
-                          </div>
-                          <div className="wp">
-                            <div></div>
-                            <div className="price">
-                              {formatter.format(200000)}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+                          ))
+                        : null}
                       <div className="wp">
                         <div>{`${item.items.length} sản phẩm`}</div>
-                        <div>Thành tiền {formatter.format(200000)}</div>
+                        <div>Thành tiền {formatter.format(item.total)}</div>
                       </div>
                       <div className="wp">
                         <div></div>
@@ -346,39 +338,37 @@ export const MyOders = () => {
                 data.map((item: any, index: number) =>
                   item.status == 6 ? (
                     <WrapperOrder key={index}>
-                      <div className="line">
-                        <Image
-                          src={item.items && item.items[0]?.img}
-                          width={"50px"}
-                          height={"50px"}
-                          style={{ flex: 0 }}
-                        />
-                        <div style={{ flex: 1 }}>
-                          <div className="name">
-                            {item.items && item.items[0]?.color}
-                          </div>
-                          <div className="wp">
-                            <div>
-                              <div>
-                                Màu sắc:{item.items && item.items[0]?.color}
-                              </div>
-                              <div>
-                                Kích thước:{item.items && item.items[0]?.color}
+                      {item.items.length > 0
+                        ? item.items.map((shoes: any, i: number) => (
+                            <div className="line" key={i}>
+                              <Image
+                                src={shoes.img}
+                                width={"50px"}
+                                height={"50px"}
+                                style={{ flex: 0 }}
+                              />
+                              <div style={{ flex: 1 }}>
+                                <div className="name">{shoes.variantName}</div>
+                                <div className="wp">
+                                  <div>
+                                    <div>Màu sắc:{shoes.color}</div>
+                                    <div>Kích thước:{shoes.color}</div>
+                                  </div>
+                                  <div>x{shoes.quantity}</div>
+                                </div>
+                                <div className="wp">
+                                  <div></div>
+                                  <div className="price">
+                                    {formatter.format(shoes.price)}
+                                  </div>
+                                </div>
                               </div>
                             </div>
-                            <div>2</div>
-                          </div>
-                          <div className="wp">
-                            <div></div>
-                            <div className="price">
-                              {formatter.format(200000)}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+                          ))
+                        : null}
                       <div className="wp">
                         <div>{`${item.items.length} sản phẩm`}</div>
-                        <div>Thành tiền {formatter.format(200000)}</div>
+                        <div>Thành tiền {formatter.format(item.total)}</div>
                       </div>
                       <div className="wp">
                         <div></div>
