@@ -1,15 +1,17 @@
-import { selectUser } from "@/features/user-slice";
+import { selectUser, updateProfiles } from "@/features/user-slice";
 import {
   CameraOutlined,
   CloseCircleOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { Avatar, Button, Col, Form, Input, Row, Image, Upload } from "antd";
+import { Avatar, Button, Col, Form, Input, Row, Image, Upload, Select, message } from "antd";
 import { useEffect, useState } from "react";
 import { BoxImage, BoxInfoUser, UploadCustom } from "./profiles-tyled";
 import { useAppDispatch, useAppSelector } from "@/app/hook";
-import { uploadFile } from "@/features/product-slice";
+import { uploadFile, uploadMultipleFile } from "@/features/product-slice";
+const { Option } = Select;
 import { useSelector } from "react-redux";
+import { IUpdateProfiles } from "@/models/user";
 const storage =
   typeof window !== "undefined" ? localStorage.getItem("u") : undefined;
 
@@ -17,19 +19,37 @@ export const Profile = () => {
   const [data, setData] = useState<any>();
   const [form] = Form.useForm();
   const { setFieldsValue } = form;
-  const [media, setMedia] = useState<any>();
+  const [media, setMedia] = useState<any>([]);
   const { loginInfo } = useAppSelector(selectUser);
   const dispatch = useAppDispatch();
   const handleonsubmit = (values: any) => {
-    console.log("valu", values);
+
+    let payload:IUpdateProfiles={
+      FullName:values.fullName,
+      Gender:values.Gender==1?true:false,
+      PhoneNumber:values.phoneNumber,
+      Id:loginInfo.payload.profilesID
+    }
+    if(media&&media.length>0){
+      payload.Image=media[0].id
+    }
+    dispatch(updateProfiles(payload)).unwrap().then().then((res:any)=>{
+      message.success("Cập nhật thông tin thành công")
+    }).catch(e=>{
+      message.error("Cập nhật thông tin thất bại")
+    })
   };
+  console.log(media)
   const handleChange = (options: any) => {
     const { onSuccess, onError, file } = options;
-    if (file) {
+    if (!file.type.includes("image/")) {
+      message.error("Vui lòng upload ảnh có đuôi là jpg/ png!");
+      return;
+    } else {
       let formData = new FormData();
       let files = file;
       formData.append("file", files);
-      dispatch(uploadFile(formData))
+      dispatch(uploadMultipleFile(formData))
         .unwrap()
         .then()
         .then((res) => {
@@ -42,7 +62,7 @@ export const Profile = () => {
   };
 
   const handleDeleteMedia = () => {
-    setMedia("");
+    setMedia([]);
   };
   console.log("object", loginInfo.payload);
   useEffect(() => {
@@ -78,13 +98,26 @@ export const Profile = () => {
           >
             <Input placeholder="Số điện thoại" />
           </Form.Item>
-          <Form.Item label="Giới tính" name={"userName"}>
-            <Input />
+          <Form.Item label="Giới tính" name={"Gender"}>
+            <Select>
+            <Option
+                          key={1}
+                          value={1}
+                        >
+                          <p className="displayName">Nam</p>
+                        </Option>
+                        <Option
+                          key={2}
+                          value={2}
+                        >
+                          <p className="displayName">Nữ</p>
+                        </Option>
+            </Select>
           </Form.Item>
           <Form.Item label="Avartar" name={"avartar"}>
-            {media ? (
+            {media&&media.length>0 ? (
               <BoxImage>
-                <Image src={media.url} width={"130px"} height={"130px"} />
+                <Image src={media[0].url} width={"130px"} height={"130px"} />
                 <CloseCircleOutlined
                   className="icon"
                   onClick={handleDeleteMedia}

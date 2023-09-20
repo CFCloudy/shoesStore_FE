@@ -12,6 +12,7 @@ import {
   IRegisterPayload,
   IResendOTP,
   IUpdateAddress,
+  IUpdateProfiles,
 } from "@/models/user";
 import { createSlice, createAsyncThunk, createAction } from "@reduxjs/toolkit";
 import userApi from "./services/user-api";
@@ -168,6 +169,21 @@ export const userLogout = createAsyncThunk(
   async (payload: ILogoutPayload, { rejectWithValue }) => {
     try {
       const response = await userApi.userLogout(payload);
+      return response.data;
+    } catch (err: any) {
+      if (!err.response) {
+        throw err.response;
+      }
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
+export const updateProfiles = createAsyncThunk(
+  "updateProfiles",
+  async (payload: IUpdateProfiles, { rejectWithValue }) => {
+    try {
+      const response = await userApi.updateProfiles(payload);
       return response.data;
     } catch (err: any) {
       if (!err.response) {

@@ -24,7 +24,7 @@ export interface ILoginResponse {
     phoneNumber: string;
     gender: boolean;
     fullName: string;
-    Avatar: any;
+    avartar: any;
     refreshToken: string;
     RefreshTokenExpiryTime: Date;
     id: string;
@@ -68,6 +68,14 @@ export interface ICreateAddress {
   addressDetail: string;
   type: boolean;
   isDefault: boolean;
+}
+
+export interface IUpdateProfiles {
+  Image?: number;
+  Gender: boolean;
+  PhoneNumber: string;
+  FullName: string;
+  Id: number;
 }
 
 export interface IUpdateAddress {

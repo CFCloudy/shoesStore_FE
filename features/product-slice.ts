@@ -86,6 +86,20 @@ export const getProductDetail = createAsyncThunk(
     }
   }
 );
+export const uploadMultipleFile = createAsyncThunk(
+  "uploadFile",
+  async (payload: any, { rejectWithValue }) => {
+    try {
+      const response = await productApi.uploadFileMultiple(payload);
+      return response.data;
+    } catch (err: any) {
+      if (!err.response) {
+        throw err;
+      }
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
 export const uploadFile = createAsyncThunk(
   "uploadFile",
   async (payload: any, { rejectWithValue }) => {

@@ -9,6 +9,7 @@ import {
   IRegisterPayload,
   IResendOTP,
   IUpdateAddress,
+  IUpdateProfiles,
 } from "@/models/user";
 import axiosClient from "./axios-client";
 
@@ -68,6 +69,14 @@ class UserApi {
       method: "get",
       url: "/api/Address/get-book-address",
       params: payload,
+    });
+  }
+
+  updateProfiles(payload: IUpdateProfiles) {
+    return axiosClient({
+      method: "put",
+      url: "/api/User/update-profiles",
+      data: payload,
     });
   }
 

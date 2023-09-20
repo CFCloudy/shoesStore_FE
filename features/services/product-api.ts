@@ -73,6 +73,16 @@ class ProductApi {
       },
     });
   }
+  uploadFileMultiple(payload: any) {
+    return axiosClient({
+      method: "post",
+      url: `/api/Media/upload-multipemedia`,
+      data: payload,
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+  }
 }
 
 export default new ProductApi();

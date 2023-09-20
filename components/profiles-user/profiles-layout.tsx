@@ -12,6 +12,7 @@ import {
 import { selectUser } from "@/features/user-slice";
 import { MainLayout } from "../layout/main-layout/main-layout";
 import { WrapperProfile } from "./profiles-tyled";
+import { useAppSelector } from "@/app/hook";
 export interface IMainLayout {}
 
 function ProfileLayout({ children }: LayoutProps) {
@@ -21,6 +22,7 @@ function ProfileLayout({ children }: LayoutProps) {
   //   useEffect(() => {
   //     if(!isAuthentication) router.push('/landingpages')
   //     },[router, isAuthentication,loginInfo])
+  const {loginInfo}=useAppSelector(selectUser)
 
   const storage =
     typeof window !== "undefined" ? localStorage.getItem("u") : undefined;
@@ -29,9 +31,9 @@ function ProfileLayout({ children }: LayoutProps) {
       <Row gutter={[20, 20]}>
         <Col span={6}>
           <div style={{ display: "flex", alignItems: "center" }}>
-            <Avatar style={{ marginRight: "16px" }} />
+            <Avatar style={{ marginRight: "16px" }}  src={loginInfo&&loginInfo.payload?loginInfo.payload.avartar:""}/>
             <Space direction="vertical">
-              <div style={{ fontSize: "15px" }}>Tài khoản của</div>
+              <div style={{ fontSize: "15px" }}>Tài khoản của {loginInfo&&loginInfo.payload?loginInfo.payload.fullName:""}{}</div>
             </Space>
           </div>
           <div

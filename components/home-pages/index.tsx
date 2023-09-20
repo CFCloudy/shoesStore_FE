@@ -17,7 +17,7 @@ export const HomePages = () => {
   const dispatch = useAppDispatch();
   const [data, setData] = useState<any>();
   const [payloadFilter, setPayloadFilter] = useState<IFilterData>(
-    {} as IFilterData
+    {skipCount:0,maxResultCount:10,sorting:"ok"} as IFilterData
   );
   const handlePrev = useCallback(() => {
     if (!sliderRef.current) return;

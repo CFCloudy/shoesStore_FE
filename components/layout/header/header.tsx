@@ -439,7 +439,6 @@ export const Header = () => {
                       </div>
 
                       <div className="action">
-                        <EditOutlined />
                         <DeleteOutlined
                           onClick={() => handleDeleteItem(item)}
                         />

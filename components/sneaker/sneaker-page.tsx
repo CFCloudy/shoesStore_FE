@@ -428,7 +428,7 @@ export const Sneaker = () => {
         </div>
         <div className="result">
           <div className="wrap_col">
-            <div className="title">{toltalItem} kết quả</div>
+            <div className="title">{toltalConut} kết quả</div>
             <div className="icon">{/* <FilterOutlined /> */}</div>
           </div>
         </div>
@@ -632,7 +632,7 @@ export const Sneaker = () => {
             }}
             current={payloadFilter.skipCount}
             pageSize={payloadFilter.maxResultCount}
-            total={toltalConut}
+            total={toltalItem}
             onChange={handlePageChange}
           />
         </div>
