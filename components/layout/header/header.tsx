@@ -115,6 +115,7 @@ export const Header = () => {
       .then()
       .then((res: any) => {
         message.success("Đăng xuất thành công");
+        Router.push("/");
       })
       .catch((e) => {
         message.error("Đăng xuất thất bại");
@@ -225,7 +226,6 @@ export const Header = () => {
       ? cart.payload.cartItemDTOs.length
       : 0
   } sản phẩm`;
-
   return (
     <ContainerHeader>
       <div className="hideMenu" onClick={showDrawer}>
@@ -429,17 +429,17 @@ export const Header = () => {
                       <div className="title">
                         TURBODRK Chuck 70 Low Top in Silver/Egret/Black
                       </div>
-                      <details>
+                      {/* <details>
                         <summary>Chi tiết</summary>
                         <p>Màu sắc: {` ${item.color}`}</p>
                         <p>Kích thước: {` ${item.size}`}</p>
-                      </details>
+                      </details> */}
                       <div className="price">
                         {formatter.format(item.price)}
                       </div>
 
                       <div className="action">
-                        <EditOutlined />
+                        {/* <EditOutlined /> */}
                         <DeleteOutlined
                           onClick={() => handleDeleteItem(item)}
                         />

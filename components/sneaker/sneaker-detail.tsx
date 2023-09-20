@@ -186,8 +186,8 @@ export const SneakerDetail = () => {
   const { loading } = useAppSelector(selectOrder);
   const [choseShoes, setChoseShoes] = useState<any>();
   const handleAddToCard = () => {
-    if(!loginInfo || !loginInfo.payload){
-      message.error("Vui lòng đăng nhập, hoặc đăng ký rồi tiếp tục mua hàng")
+    if (!loginInfo || !loginInfo.payload) {
+      message.error("Vui lòng đăng nhập, hoặc đăng ký rồi tiếp tục mua hàng");
       return;
     }
     if (chooseColor && chooseSizes) {
@@ -239,60 +239,66 @@ export const SneakerDetail = () => {
       {data ? (
         <Row gutter={[40, 20]} key={data.id}>
           <Col xs={24} md={24} xxl={15} lg={15}>
-            {data.available_colors[indexImg]?<React.Fragment>
-              <Swiper
-              style={
-                {
-                  "--swiper-navigation-color": "#fff",
-                  "--swiper-pagination-color": "#fff",
-                } as CSSProperties
-              }
-              scrollbar={{
-                hide: true,
-              }}
-              spaceBetween={10}
-              navigation={true}
-              thumbs={{
-                swiper:
-                  thumbsSwiper && !thumbsSwiper.destroyed ? thumbsSwiper : null,
-              }}
-              modules={[FreeMode, Navigation, Thumbs, Scrollbar]}
-              className="mySwiper2"
-            >
-              {data.available_colors[indexImg]&&data.available_colors[indexImg].imageVariants.map(
-                (img: any, index: number) => {
-                  return (
-                    <SwiperSlide key={index}>
-                      <img src={img.url} />
-                    </SwiperSlide>
-                  );
-                }
-              )}
-            </Swiper>
-            <Swiper
-              onSwiper={setThumbsSwiper}
-              spaceBetween={10}
-              grabCursor={true}
-              slidesPerView={4}
-              freeMode={true}
-              watchSlidesProgress={true}
-              modules={[FreeMode, Navigation, Thumbs, Scrollbar]}
-              scrollbar={{
-                hide: true,
-              }}
-              className="mySwiper"
-            >
-              {data.available_colors[indexImg]&&data.available_colors[indexImg].imageVariants.map(
-                (img: any, index: number) => {
-                  return (
-                    <SwiperSlide key={index}>
-                      <img src={img.url} />
-                    </SwiperSlide>
-                  );
-                }
-              )}
-            </Swiper>
-            </React.Fragment>:null}
+            {data.available_colors[indexImg] ? (
+              <React.Fragment>
+                <Swiper
+                  style={
+                    {
+                      "--swiper-navigation-color": "#fff",
+                      "--swiper-pagination-color": "#fff",
+                    } as CSSProperties
+                  }
+                  scrollbar={{
+                    hide: true,
+                  }}
+                  spaceBetween={10}
+                  navigation={true}
+                  thumbs={{
+                    swiper:
+                      thumbsSwiper && !thumbsSwiper.destroyed
+                        ? thumbsSwiper
+                        : null,
+                  }}
+                  modules={[FreeMode, Navigation, Thumbs, Scrollbar]}
+                  className="mySwiper2"
+                >
+                  {data.available_colors[indexImg] &&
+                    data.available_colors[indexImg].imageVariants.map(
+                      (img: any, index: number) => {
+                        return (
+                          <SwiperSlide key={index}>
+                            <img src={img.url} />
+                          </SwiperSlide>
+                        );
+                      }
+                    )}
+                </Swiper>
+                <Swiper
+                  onSwiper={setThumbsSwiper}
+                  spaceBetween={10}
+                  grabCursor={true}
+                  slidesPerView={4}
+                  freeMode={true}
+                  watchSlidesProgress={true}
+                  modules={[FreeMode, Navigation, Thumbs, Scrollbar]}
+                  scrollbar={{
+                    hide: true,
+                  }}
+                  className="mySwiper"
+                >
+                  {data.available_colors[indexImg] &&
+                    data.available_colors[indexImg].imageVariants.map(
+                      (img: any, index: number) => {
+                        return (
+                          <SwiperSlide key={index}>
+                            <img src={img.url} />
+                          </SwiperSlide>
+                        );
+                      }
+                    )}
+                </Swiper>
+              </React.Fragment>
+            ) : null}
           </Col>
           <Col xs={24} md={24} xxl={9} lg={9}>
             <Swap_Product_Detail>
@@ -300,10 +306,7 @@ export const SneakerDetail = () => {
               <div className="price">
                 {formatter.format(price == 0 ? data.displayPrice : price)}
               </div>
-              <div className="decription">
-                The Converse All Star Chuck ’70 is our re-crafted sneaker that
-                uses modern details to cele
-              </div>
+              <div className="decription">{data.description}</div>
               <hr />
               <br />
               <span className="title">Màu sắc</span>
@@ -409,6 +412,7 @@ export const SneakerDetail = () => {
               </ButtonBlack>
             </Swap_Product_Detail>
           </Col>
+          <div className="decription">{data.descriptionDetails}</div>
         </Row>
       ) : null}
       <Confirm
