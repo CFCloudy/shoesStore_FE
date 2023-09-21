@@ -10,7 +10,7 @@ const storage =
   typeof window !== "undefined" ? localStorage.getItem("u") : undefined;
 let AccessToken = "";
 let RefreshToken = "";
-let ExpiryTime:Date;
+var ExpiryTime:Date;
 if (storage) {
   let loginInfo = JSON.parse(storage);
   if (loginInfo) {
@@ -43,14 +43,25 @@ axiosClient.interceptors.response.use(
   function (response) {
     return response;
   },
+  
   async function (error) {
     const originalRequest = error.config;
-    if (error.response.status === 401 && !originalRequest._retry||(ExpiryTime&&moment(ExpiryTime)<moment())) {
+    if (error.response.status === 401 && !originalRequest._retry
+      // ||(ExpiryTime&&moment(ExpiryTime)<moment())
+      ) {
       originalRequest._retry = true;
       // const response: IRefreshTokenResponse = (await userApi.userRefreshToken(refreshToken)).data;
-      const response = await store.dispatch(
-        userRefreshToken({ refreshToken: RefreshToken, accessToken: AccessToken })
-      );
+      var response:any={}
+      try{
+         response = await store.dispatch(
+          userRefreshToken({ refreshToken: RefreshToken, accessToken: AccessToken })
+        );
+      }catch{
+        if (typeof window !== "undefined") {
+          localStorage.clear();
+        }
+        return;
+      }
       let refreshTokenResult = response.payload;
       AccessToken = refreshTokenResult.AccessToken;
       RefreshToken = refreshTokenResult.RefreshToken;

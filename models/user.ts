@@ -111,3 +111,9 @@ export interface IGetAddressDetails {
 export interface ILogoutPayload {
   id: string;
 }
+
+export interface IChangePassWord {
+  id: string;
+  oldPassword:string,
+  password:string
+}

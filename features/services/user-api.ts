@@ -1,4 +1,5 @@
 import {
+  IChangePassWord,
   IConfirmOTP,
   ICreateAddress,
   IForgotPass,
@@ -108,6 +109,13 @@ class UserApi {
     return axiosClient({
       method: "delete",
       url: `/api/Address/delete-address-detail?id=${payload.id}`,
+      data: payload,
+    });
+  }
+  changePassword(payload: IChangePassWord) {
+    return axiosClient({
+      method: "post",
+      url: `/api/Authentication/changepass`,
       data: payload,
     });
   }

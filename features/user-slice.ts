@@ -1,5 +1,6 @@
 import { RootState, store } from "@/app/store";
 import {
+  IChangePassWord,
   IConfirmOTP,
   ICreateAddress,
   IForgotPass,
@@ -193,6 +194,20 @@ export const updateProfiles = createAsyncThunk(
     }
   }
 );
+export const changePassword = createAsyncThunk(
+  "changePassword",
+  async (payload: IChangePassWord, { rejectWithValue }) => {
+    try {
+      const response = await userApi.changePassword(payload);
+      return response.data;
+    } catch (err: any) {
+      if (!err.response) {
+        throw err.response;
+      }
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
 
 export const removeAddress = createAsyncThunk(
   "removeAddress",
@@ -273,6 +288,18 @@ const userSlice = createSlice({
         state.error = false;
         state.loading = false;
       })
+
+      .addCase(changePassword.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(changePassword.fulfilled, (state, { payload }) => {
+        state.loading = false;
+      })
+      .addCase(changePassword.rejected, (state, { error }) => {
+        state.error = false;
+        state.loading = false;
+      })
+
       .addCase(userLogout.pending, (state) => {
         state.loading = true;
       })

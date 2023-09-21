@@ -63,7 +63,7 @@ function ProfileLayout({ children }: LayoutProps) {
           <div
             className="wrapbutton"
             onClick={() => {
-              router.push("/change-pass");
+              router.push("/auth/change-password");
             }}
           >
             <UserOutlined style={{ marginRight: "8px" }} /> Thay đổi mật khẩu
