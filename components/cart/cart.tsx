@@ -385,8 +385,8 @@ export const Cart = () => {
                 {dataCart &&
                   dataCart.payload &&
                   dataCart.payload.cartItemDTOs &&
-                  dataCart.payload.cartItemDTOs.map((cart: any) => (
-                    <CartItem>
+                  dataCart.payload.cartItemDTOs.map((cart: any, index: number) => (
+                    <CartItem key={index}>
                       <Row gutter={[10, 10]}>
                         <Col span={8}>
                           <Image

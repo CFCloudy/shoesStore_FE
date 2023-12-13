@@ -5,22 +5,22 @@ const nextConfig = {
     sassOptions: {
         includePaths: [path.join(__dirname, 'styles')],
     },
-    env: {
-        BASE_URL: process.env.BASE_URL,
-        BASE_UPLOAD_URL: process.env.BASE_UPLOAD_URL
-    },
+    // env: {
+    //     BASE_URL: process.env.BASE_URL,
+    //     BASE_UPLOAD_URL: process.env.BASE_UPLOAD_URL
+    // },
     compiler: {
         styledComponents: true,
     },
     typescript: {
         ignoreBuildErrors: true
     },
-    experimental: {
-        outputStandalone: false,
-        appDir:true
-    },
+    // experimental: {
+    //     outputStandalone: false,
+    //     appDir:true
+    // },
     optimizeFonts: false,
-    presets: ["next/babel"],
+    // presets: ["next/babel"],
     trailingSlash: true,
 }
 

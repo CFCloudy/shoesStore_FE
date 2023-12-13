@@ -67,7 +67,8 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts"
+    ".next/types/**/*.ts",
+    "env.BASE_URL"
   ],
   "exclude": [
     "node_modules"
