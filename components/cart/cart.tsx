@@ -195,10 +195,10 @@ export const Cart = () => {
           currentPage == 1
             ? 0
             : currentPage == 2
-            ? 3
-            : currentPage == 3
-            ? 6
-            : 9,
+              ? 3
+              : currentPage == 3
+                ? 6
+                : 9,
         maxResultCount: 10,
       };
       dispatch(getListAdress(payload))
@@ -237,7 +237,6 @@ export const Cart = () => {
     }
   }, []);
 
-  console.log(cart);
   const handleUpdateQuantity = (e: any, name: any) => {
     e.preventDefault();
     const newQuantity = Number(e.target.value); // Get the new quantity from the input field
@@ -337,7 +336,7 @@ export const Cart = () => {
         });
     }
   };
-  const cancel = (e: any) => {};
+  const cancel = (e: any) => { };
   const confirm = (e: React.MouseEvent<HTMLElement>, data: any) => {
     let payload: IRemoveItem[] = [
       {
@@ -379,9 +378,9 @@ export const Cart = () => {
             </BoxHeader>
 
             {dataCart &&
-            dataCart.payload &&
-            dataCart.payload.cartItemDTOs &&
-            dataCart.payload.cartItemDTOs.length > 0 ? (
+              dataCart.payload &&
+              dataCart.payload.cartItemDTOs &&
+              dataCart.payload.cartItemDTOs.length > 0 ? (
               <BoxBody>
                 {dataCart &&
                   dataCart.payload &&
@@ -478,9 +477,9 @@ export const Cart = () => {
           <WrapProduct>
             <div className="title">Chi tiết thanh toán</div>
             {dataCart &&
-            dataCart.payload &&
-            dataCart.payload.cartItemDTOs &&
-            dataCart.payload.cartItemDTOs.length > 0 ? (
+              dataCart.payload &&
+              dataCart.payload.cartItemDTOs &&
+              dataCart.payload.cartItemDTOs.length > 0 ? (
               <React.Fragment>
                 <CheckOut>
                   <div>Tổng tiền</div>
@@ -490,7 +489,7 @@ export const Cart = () => {
 
                 <CheckOut>
                   <div style={{ display: "flex", alignItems: "center" }}>
-                    <img src={IconVoucher.src}></img>
+                    <Image src={IconVoucher.src}></Image>
                     <b>{`King Shoes Voucher`}</b>
                   </div>
                   <b
@@ -640,9 +639,9 @@ export const Cart = () => {
                           onClick={handleCheckout}
                           disabled={
                             dataCart &&
-                            dataCart.payload &&
-                            dataCart.payload.cartItemDTOs
-                            &&dataCart.payload.cartItemDTOs.length>0
+                              dataCart.payload &&
+                              dataCart.payload.cartItemDTOs
+                              && dataCart.payload.cartItemDTOs.length > 0
                               ? false
                               : true
                           }
@@ -659,7 +658,7 @@ export const Cart = () => {
                     </div>
                     <Form
                       form={form}
-                      // onFinish={OnSubmit}
+                    // onFinish={OnSubmit}
                     >
                       <Form.Item
                         name={"name"}
@@ -723,7 +722,7 @@ export const Cart = () => {
                         <Button
                           type="primary"
                           htmlType="submit"
-                          // loading={loading}
+                        // loading={loading}
                         >
                           Thanh toán
                         </Button>
@@ -761,7 +760,7 @@ export const Cart = () => {
                 {datavoucher &&
                   datavoucher.map((res: IDiscount, index: number) => {
                     return moment(res.endDate) > moment(new Date()) ? (
-                      <WrapperDiscount>
+                      <WrapperDiscount key={index}>
                         <WrapperDiscountLeft>
                           <div className="circle"></div>
                           {/* <div>Số lượng có hạn</div> */}
@@ -827,32 +826,59 @@ export const Cart = () => {
               <div>
                 {dataAdress
                   ? dataAdress.length > 0
-                    ? dataAdress.map((x: any) => (
-                        <div
-                          style={{ display: "flex", fontFamily: "sans-serif" }}
-                        >
-                          <div style={{ marginRight: "10px" }}>
-                            <TransactionOutlined style={{ color: "red" }} />
-                          </div>
+                    ? dataAdress.map((x: any, index: number) => (
+                      <div
+                        style={{ display: "flex", fontFamily: "sans-serif" }}
+                        key={index}
+                      >
+                        <div style={{ marginRight: "10px" }}>
+                          <TransactionOutlined style={{ color: "red" }} />
+                        </div>
+                        <div>
+                          {" "}
                           <div>
-                            {" "}
-                            <div>
-                              {x.name} | {x.phoneNumber}
-                            </div>
-                            <div>{`${x.addressDetail}, ${x.ward},${x.district}, ${x.city}`}</div>
-                            <div>Địa chỉ nhận hàng</div>
+                            {x.name} | {x.phoneNumber}
                           </div>
+                          <div>{`${x.addressDetail}, ${x.ward},${x.district}, ${x.city}`}</div>
+                          <div>Địa chỉ nhận hàng</div>
+                        </div>
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            marginLeft: "20px",
+                          }}
+                        >
                           <div
                             style={{
-                              display: "flex",
-                              alignItems: "center",
-                              marginLeft: "20px",
+                              position: "absolute",
+                              right: "28px",
+                              // left: "20px",
+                              cursor: "pointer",
+                            }}
+                            onClick={() => {
+                              setNumberOpen(2);
+                              setIsConfirm(true);
                             }}
                           >
+                            <Button type="link"> Sửa</Button>
+                          </div>
+                          {x.id == chooseAddress?.id ? (
                             <div
                               style={{
                                 position: "absolute",
-                                right: "28px",
+                                right: "80px",
+                                // left: "20px",
+                                cursor: "pointer",
+                              }}
+                            >
+                              Đã chọn
+                            </div>
+                          ) : (
+                            <div
+                              style={{
+                                position: "absolute",
+                                right: "80px",
                                 // left: "20px",
                                 cursor: "pointer",
                               }}
@@ -861,41 +887,15 @@ export const Cart = () => {
                                 setIsConfirm(true);
                               }}
                             >
-                              <Button type="link"> Sửa</Button>
+                              <Button onClick={() => setChooseAdress(x)}>
+                                {" "}
+                                Chọn địa chỉ
+                              </Button>
                             </div>
-                            {x.id == chooseAddress?.id ? (
-                              <div
-                                style={{
-                                  position: "absolute",
-                                  right: "80px",
-                                  // left: "20px",
-                                  cursor: "pointer",
-                                }}
-                              >
-                                Đã chọn
-                              </div>
-                            ) : (
-                              <div
-                                style={{
-                                  position: "absolute",
-                                  right: "80px",
-                                  // left: "20px",
-                                  cursor: "pointer",
-                                }}
-                                onClick={() => {
-                                  setNumberOpen(2);
-                                  setIsConfirm(true);
-                                }}
-                              >
-                                <Button onClick={() => setChooseAdress(x)}>
-                                  {" "}
-                                  Chọn địa chỉ
-                                </Button>
-                              </div>
-                            )}
-                          </div>
+                          )}
                         </div>
-                      ))
+                      </div>
+                    ))
                     : ""
                   : ""}
               </div>

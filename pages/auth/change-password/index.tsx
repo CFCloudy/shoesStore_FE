@@ -9,7 +9,7 @@ const ChangePasswordPages: NextPageWithLayout = () => {
 
   return (
     <React.Fragment>
-      <ProfileLayout children={<ChangePassword />} />
+      <ProfileLayout><ChangePassword /></ProfileLayout>
     </React.Fragment>
   );
 };

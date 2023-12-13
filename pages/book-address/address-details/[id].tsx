@@ -9,7 +9,7 @@ const AddressDetailsPages: NextPageWithLayout = () => {
 
   return (
     <React.Fragment>
-      <ProfileLayout children={<AddNewAddress />} />
+      <ProfileLayout><AddNewAddress /></ProfileLayout>
     </React.Fragment>
   );
 };

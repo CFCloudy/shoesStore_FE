@@ -9,7 +9,7 @@ const MyOrderDetailPages: NextPageWithLayout = () => {
 
   return (
     <React.Fragment>
-      <ProfileLayout children={<MyOrderDetail />} />
+      <ProfileLayout><MyOrderDetail /></ProfileLayout>
     </React.Fragment>
   );
 };

@@ -10,7 +10,7 @@ const ProfilesPage: NextPageWithLayout = () => {
 
   return (
     <React.Fragment>
-      <ProfileLayout children={<MyOders />} />
+      <ProfileLayout><MyOders /></ProfileLayout>
     </React.Fragment>
   );
 };

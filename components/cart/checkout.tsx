@@ -1,4 +1,4 @@
-import { Col, Row, Steps, message ,Image} from "antd";
+import { Col, Row, Steps, message, Image } from "antd";
 import { WrapperProfile } from "../profiles-user/profiles-tyled";
 import { useState } from "react";
 import { Cart } from "./cart";
@@ -102,7 +102,7 @@ export const CheckOutPage = () => {
             orderId: res.orderId,
             price: Number(router.query.value),
           };
-          dispatch(useVoucher(useVo)).unwrap().then().then().catch();
+          // dispatch(useVoucher(useVo)).unwrap().then().then().catch();
         }
         setMaHD(res.maDonHang);
         dispatch(removeCartItem(data))
@@ -208,28 +208,27 @@ export const CheckOutPage = () => {
               <WrapProduct>
                 <div className="title">Tóm tắt đơn hàng</div>
                 <CheckOut>
-                  <div>{` ${
-                    Object.entries(cart).length > 0 &&
-                    cart.payload &&
-                    cart.payload.cartItemDTOs.length > 0
+                  <div>{` ${Object.entries(cart).length > 0 &&
+                      cart.payload &&
+                      cart.payload.cartItemDTOs.length > 0
                       ? cart.payload.cartItemDTOs.length
                       : 0
-                  } sản phẩm`}</div>
+                    } sản phẩm`}</div>
                   {/* <div>{Object.entries(dataCart).length > 0 ? sum : ""}</div> */}
                   <div>
                     {" "}
                     {cart && cart.payload && cart.payload.cartItemDTOs
                       ? formatter.format(
-                          cart.payload.cartItemDTOs.reduce(
-                            (accumulator: number, currentValue: any) => {
-                              return (
-                                accumulator +
-                                currentValue.price * currentValue.quantity
-                              );
-                            },
-                            0
-                          )
+                        cart.payload.cartItemDTOs.reduce(
+                          (accumulator: number, currentValue: any) => {
+                            return (
+                              accumulator +
+                              currentValue.price * currentValue.quantity
+                            );
+                          },
+                          0
                         )
+                      )
                       : formatter.format(0)}
                   </div>
                 </CheckOut>
@@ -250,21 +249,21 @@ export const CheckOutPage = () => {
                   <div>
                     {cart && cart.payload && cart.payload.cartItemDTOs
                       ? formatter.format(
-                          cart.payload.cartItemDTOs.reduce(
-                            (accumulator: number, currentValue: any) => {
-                              return (
-                                accumulator +
-                                currentValue.price * currentValue.quantity
-                              );
-                            },
-                            0
-                          ) -
-                            Number(router.query.value ? router.query.value : 0)
-                        )
+                        cart.payload.cartItemDTOs.reduce(
+                          (accumulator: number, currentValue: any) => {
+                            return (
+                              accumulator +
+                              currentValue.price * currentValue.quantity
+                            );
+                          },
+                          0
+                        ) -
+                        Number(router.query.value ? router.query.value : 0)
+                      )
                       : formatter.format(0)}
                   </div>
                 </CheckOut>
-                <br/>
+                <br />
                 <h3 >Chi tiết đơn hàng</h3>
                 {/* {cart&&cart.payload&&cart.payload.cartItemDTOs
                       ? cart.payload.cartItemDTOs.map((shoes: any, i: number) => (

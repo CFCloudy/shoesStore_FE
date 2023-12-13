@@ -12,7 +12,7 @@ const ProfilesPage: NextPageWithLayout = () => {
 
   return (
     <React.Fragment>
-      <ProfileLayout children={<Profile />} />
+      <ProfileLayout><Profile /></ProfileLayout>
     </React.Fragment>
   );
 };
