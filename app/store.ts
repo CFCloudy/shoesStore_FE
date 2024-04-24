@@ -1,6 +1,7 @@
 import userSlice from "@/features/user-slice";
 import productSlice from "@/features/product-slice";
 import orderSlice from "@/features/order-slice";
+import commentSlice from "@/features/comment-slice"
 import { Action, configureStore, ThunkAction } from "@reduxjs/toolkit";
 import {
   MiddlewareAPI,
@@ -12,6 +13,7 @@ const rootReducer = {
   user: userSlice,
   product: productSlice,
   order: orderSlice,
+  comment: commentSlice
 };
 export const store = configureStore({
   reducer: rootReducer,

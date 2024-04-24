@@ -5,7 +5,7 @@ import styles from "@/styles/Home.module.css";
 import { NextPageWithLayout } from "@/models/common";
 import { MainLayout } from "@/components/layout/main-layout/main-layout";
 import { HomePages } from "@/components/home-pages";
-import logo from "@/assets/logo-no-background.svg"
+import logo from "@/assets/logo-no-background.svg";
 const inter = Inter({ subsets: ["latin"] });
 
 const Home: NextPageWithLayout = () => {
@@ -13,18 +13,12 @@ const Home: NextPageWithLayout = () => {
     <>
       <Head>
         <meta charSet="UTF-8" />
-        <title>King Shoes</title>
-        <meta name="description" content="Shoes Store" />
+        <title>King Shoes - Shoes Store</title>
+        <meta name="description" content="Browse our collection of high-quality shoes at King Shoes Store" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        {/* <link rel="icon" href="/favicon.ico" /> */}
-        <link rel="shortcut icon"
-          href={logo.src}
-          
-          type="image/png" />
-        <link
-          rel="stylesheet"
-          href="https://fonts.googleapis.com/css?family=Proxima+Nova"
-        />
+        <meta property="og:type" content="website" />
+        <link rel="shortcut icon" href={logo.src} type="image/png" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Proxima+Nova" />
       </Head>
       <main className={styles.main}>
         <HomePages />

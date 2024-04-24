@@ -17,14 +17,19 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
   if (!showChild) {
     return null;
   }
+  const theme = {
+    fg: "#BF4F74",
+    bg: "red"
+  };
+
   return (
     <Fragment>
       <Provider store={store}>
-        {/* <ThemeProvider theme={red}> */}
-        <Layout>
-          <Component {...pageProps}></Component>
-        </Layout>
-        {/* </ThemeProvider> */}
+        <ThemeProvider theme={theme}>
+          <Layout>
+            <Component {...pageProps}></Component>
+          </Layout>
+        </ThemeProvider>
       </Provider>
     </Fragment>
   );

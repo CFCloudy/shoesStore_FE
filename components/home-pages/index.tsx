@@ -17,7 +17,7 @@ export const HomePages = () => {
   const dispatch = useAppDispatch();
   const [data, setData] = useState<any>();
   const [payloadFilter, setPayloadFilter] = useState<IFilterData>(
-    {skipCount:0,maxResultCount:10,sorting:"ok"} as IFilterData
+    { skipCount: 0, maxResultCount: 10, sorting: "ok" } as IFilterData
   );
   const handlePrev = useCallback(() => {
     if (!sliderRef.current) return;
@@ -139,7 +139,7 @@ export const HomePages = () => {
             data.map((x: any, index: number) => {
               return (
                 <SwiperSlide className="swiperSlide" key={index}>
-                  <CommonProduct data={x} />
+                  <CommonProduct data={x} heigth={200} />
                 </SwiperSlide>
               );
             })}

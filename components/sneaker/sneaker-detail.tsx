@@ -4,8 +4,8 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/free-mode";
 import "swiper/css/navigation";
-import "swiper/css/thumbs";
-
+import "swiper/css/thumbs"
+import imgtbalesize from "@/assets/tablesize.jpg"
 import {
   ContainerSneaker,
   SizeGuid,
@@ -15,7 +15,6 @@ import { FreeMode, Navigation, Thumbs, Scrollbar, EffectCube } from "swiper";
 import React, { useEffect, useState } from "react";
 import { Col, Image, Row, message } from "antd";
 import { formatter } from "@/models/common";
-import { listProduct } from "../product/product";
 import { Confirm } from "../dialog_size";
 import { ButtonBlack } from "../home-pages/home-pages-styled";
 import { CSSProperties } from "styled-components";
@@ -25,13 +24,26 @@ import { selectUser, updateStorageValue } from "@/features/user-slice";
 import { getProductDetail } from "@/features/product-slice";
 import { IAddToCart } from "@/models/order";
 import { AddToCart, getCart, selectOrder } from "@/features/order-slice";
+import { Comment } from "../comment/comment";
+import useNode from "@/app/useNode";
+import { deleteCmt, getAllComment, postComment, reactCmt } from "@/features/comment-slice";
 
+const comments = {
+  id: 1,
+  createdAtTime: new Date(),
+  isLiked: false,
+  isDisLiked: false,
+  numberOfLike: 0,
+  numberOfDisLike: 0,
+  owner: 2,
+  numberOfReact: 0,
+  items: []
+}
 export const SneakerDetail = () => {
   const [thumbsSwiper, setThumbsSwiper] = useState<any>(null);
   const [isConfirm, setIsConfirm] = useState<boolean>(false);
   const [idColorChooes, setIdColorChooes] = useState<Number>();
   const [idSizeChooes, setIdSizeChooes] = useState<Number>();
-  const [notExist, setNotExist] = useState<any>();
   const [isActiveColor, setIsActiveColor] = useState<boolean>(false);
   const [isActiveSize, setIsActiveSize] = useState<boolean>(false);
   const [chooseColor, setChooseColor] = useState<String>("");
@@ -39,6 +51,54 @@ export const SneakerDetail = () => {
   const [indexImg, setIndexImg] = useState<any>(0);
   const [price, setPrice] = useState<number>(0);
   const [data, setData] = useState<any>();
+  //Commnet
+  const [commentsData, setCommentsData] = useState<any>(comments);
+  const { insertNode, editNode, deleteNode, reaction } = useNode();
+
+  const handleInsertNode = (folderId: any, item: any, parentId: number) => {
+    const cmt = {
+      content: item,
+      shoesId: Number(Router.query.id),
+      userId: loginInfo.payload.profilesID,
+      parentId: parentId ? parentId : null
+    }
+    dispatch(postComment(cmt)).unwrap().then().then((res: any) => {
+      const finalStructure = insertNode(commentsData, folderId, cmt);
+      setCommentsData(finalStructure);
+    })
+  };
+
+  const handleEditNode = (folderId: any, value: any) => {
+    const finalStructure = editNode(commentsData, folderId, value);
+    setCommentsData(finalStructure);
+  };
+
+  const handleReacttion = (folderId: any, value: any) => {
+    const cmt = {
+      commentId: folderId,
+      userId: loginInfo.payload.profilesID,
+      type: value
+    }
+    dispatch(reactCmt(cmt)).unwrap().then().then((res: any) => {
+      const finalStructure = reaction(commentsData, folderId, value);
+      setCommentsData(finalStructure);
+    }).catch((e: any) => {
+
+    })
+  };
+
+  const handleDeleteNode = (folderId: any) => {
+    let payload = {
+      shoesId: Number(Router.query.id),
+      id: folderId
+    }
+    dispatch(deleteCmt(payload)).unwrap().then().then((res: any) => {
+      const finalStructure = deleteNode(commentsData, folderId);
+      const temp = { ...finalStructure };
+      setCommentsData(temp);
+    }).catch();
+  };
+
   const onChooseOption = (
     type: String,
     value: any,
@@ -83,12 +143,63 @@ export const SneakerDetail = () => {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      dispatch(getProductDetail(Number(Router.query.id)))
-        .unwrap()
-        .then()
-        .then((res: any) => {
-          setData(res);
+      dispatch(getAllComment(Number(Router.query.id))).unwrap().then().then((res: any) => {
+        setCommentsData({
+          id: 'root',
+          comments: [...res.payload]
         });
+      })
+    }
+  }, [Router.query.id])
+
+  // const nestedCommetn = () => {
+  //   const datacmt = [...Comment]
+  //   const nestedData = [];
+  //   const map: any = {};
+
+  //   for (const comment of datacmt) {
+  //     const { id, idParent, ...rest } = comment;
+
+  //     if (!map[id]) {
+  //       map[id] = { children: [] };
+  //     }
+
+  //     map[id] = { id, idParent, ...rest, children: map[id].children };
+  //     if (idParent != null) {
+  //       const parentComment = map[idParent];
+
+  //       if (!parentComment) {
+  //         nestedData.push(map[id]);
+  //       } else {
+  //         parentComment.children.push(map[id]);
+  //         if (parentComment.idParent === null) {
+  //           nestedData.push(parentComment);
+  //         }
+  //       }
+  //     }
+  //   }
+  //   return nestedData;
+  // }
+
+  const convertString = (htmlString: string) => {
+    const theObj = { __html: htmlString };
+
+    return <div dangerouslySetInnerHTML={theObj} />
+  }
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      if (Router.query.id) {
+        dispatch(getProductDetail(Number(Router.query.id)))
+          .unwrap()
+          .then()
+          .then((res: any) => {
+            setData(res);
+          });
+        dispatch(getAllComment(Number(Router.query.id))).unwrap().then().then((res: any) => {
+          console.log(res.payload);
+        })
+      }
     }
   }, [Router.query.id]);
 
@@ -217,7 +328,7 @@ export const SneakerDetail = () => {
             dispatch(getCart(loginInfo.payload.profilesID))
               .unwrap()
               .then()
-              .then((res: any) => {});
+              .then((res: any) => { });
           }
         })
         .catch((e: any) => {
@@ -227,12 +338,16 @@ export const SneakerDetail = () => {
       message.error(`Bạn chưa chọn màu sắc và kích cỡ sản phẩm `);
     } else if (chooseColor == "" || chooseSizes == "") {
       message.error(
-        `Bạn chưa chọn ${
-          chooseColor == "" ? "màu sắc của sản phẩm" : "kích cỡ của sản phẩm"
+        `Bạn chưa chọn ${chooseColor == "" ? "màu sắc của sản phẩm" : "kích cỡ của sản phẩm"
         }`
       );
     }
   };
+
+  //Commmnet
+
+
+
 
   return (
     <ContainerSneaker>
@@ -251,6 +366,7 @@ export const SneakerDetail = () => {
                   scrollbar={{
                     hide: true,
                   }}
+                  speed={400}
                   spaceBetween={10}
                   navigation={true}
                   thumbs={{
@@ -318,13 +434,12 @@ export const SneakerDetail = () => {
                       className="color"
                       key={index}
                       style={{
-                        pointerEvents: `${
-                          chooseSizes
-                            ? checkColor(x.name)?.check
-                              ? "auto"
-                              : "none"
-                            : "auto"
-                        }`,
+                        pointerEvents: `${chooseSizes
+                          ? checkColor(x.name)?.check
+                            ? "auto"
+                            : "none"
+                          : "auto"
+                          }`,
                       }}
                     >
                       <Image
@@ -334,17 +449,16 @@ export const SneakerDetail = () => {
                           //     ? "rgba(198, 198, 198, 0.88)"
                           //     : "#fff"
                           // }`,
-                          border: `${
-                            checkColor(x.name)?.check
-                              ? "solid 1px black"
-                              : "none"
-                          }`,
+                          border: `${checkColor(x.name)?.check
+                            ? "solid 1px black"
+                            : "none"
+                            }`,
                         }}
                         preview={false}
                         onClick={() =>
                           onChooseOption("Color", x.name, data.id, index)
                         }
-                        src={x.imageVariants[0].url}
+                        src={x.imageVariants[0]?.url}
                       />
                       {isActiveColor && chooseColor == x.name ? <p></p> : null}
                     </div>
@@ -361,28 +475,24 @@ export const SneakerDetail = () => {
                       className="box"
                       onClick={() => onChooseOption("Size", sz, data.id, index)}
                       style={{
-                        background: `${
-                          isActiveSize && chooseSizes == sz ? "black" : "white"
-                        }`,
-                        color: `${
-                          isActiveSize && chooseSizes == sz ? "white" : "black"
-                        }`,
-                        border: `${
-                          checkSize(sz)?.check
-                            ? "solid 1px black"
-                            : "0.0625rem solid #e5e5e5"
-                        }`,
+                        background: `${isActiveSize && chooseSizes == sz ? "black" : "white"
+                          }`,
+                        color: `${isActiveSize && chooseSizes == sz ? "white" : "black"
+                          }`,
+                        border: `${checkSize(sz)?.check
+                          ? "solid 1px black"
+                          : "0.0625rem solid #e5e5e5"
+                          }`,
                         // pointerEvents:`${
                         //   chooseColor&&chooseSizes?checkSize(sz)?.check?'auto':'none'
                         //   :'auto'
                         // }`
-                        pointerEvents: `${
-                          chooseColor
-                            ? checkSize(sz)?.check
-                              ? "auto"
-                              : "none"
-                            : "auto"
-                        }`,
+                        pointerEvents: `${chooseColor
+                          ? checkSize(sz)?.check
+                            ? "auto"
+                            : "none"
+                          : "auto"
+                          }`,
                       }}
                       key={sz}
                     >
@@ -412,7 +522,15 @@ export const SneakerDetail = () => {
               </ButtonBlack>
             </Swap_Product_Detail>
           </Col>
-          <div className="decription">{data.descriptionDetails}</div>
+          <div className="decription" id="decription">{convertString(data?.descriptionDetail)}</div>
+
+          <Comment
+            handleInsertNode={handleInsertNode}
+            handleEditNode={handleEditNode}
+            handleDeleteNode={handleDeleteNode}
+            comment={commentsData}
+            handleReaction={handleReacttion}
+          />
         </Row>
       ) : null}
       <Confirm
@@ -429,6 +547,7 @@ export const SneakerDetail = () => {
             <p>Hotline tư vấn chọn size: 090000099</p>
 
             <div>Bảng Size giày nam</div>
+            <Image src={imgtbalesize.src} preview={false} width="100%"></Image>
           </SizeGuid>
         }
         width={"720px"}

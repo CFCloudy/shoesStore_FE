@@ -2,10 +2,7 @@
 
 import {
   AlignLeftOutlined,
-  AlignRightOutlined,
   DeleteOutlined,
-  DownOutlined,
-  EditOutlined,
   LogoutOutlined,
   ShoppingCartOutlined,
   ShoppingOutlined,
@@ -17,17 +14,15 @@ import {
   Drawer,
   DrawerProps,
   Input,
-  Row,
   Space,
   Image,
   Dropdown,
-  Menu,
   message,
   Badge,
   Spin,
 } from "antd";
 import Router from "next/router";
-import React, { Fragment, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   ContainerHeader,
   DrawerCustom,
@@ -46,28 +41,19 @@ import type { MenuProps } from "antd";
 import { useAppDispatch, useAppSelector } from "@/app/hook";
 import {
   selectUser,
-  updateStorageValue,
   userLogout,
 } from "@/features/user-slice";
 import { ILogoutPayload } from "@/models/user";
 import { getCart, removeCartItem, selectOrder } from "@/features/order-slice";
-import { ICartResponse } from "@/models/order";
 import { IRemoveItem } from "@/features/services/order-api";
 import {
-  IFeaturesResponse,
   IFilterData,
-  IStylesResponse,
 } from "@/models/product";
 import {
-  getListBrands,
-  getListFeature,
   getListProduct,
-  getListStyles,
   selectProduct,
 } from "@/features/product-slice";
 
-const cartstorage =
-  typeof window !== "undefined" ? localStorage.getItem("cart") : undefined;
 
 export const Header = () => {
   const [open, setOpen] = useState(false);
@@ -78,7 +64,6 @@ export const Header = () => {
   const [isOpenMenu, setOpenMenu] = useState<string>("none");
 
   const [mainTiltle, setMainTitle] = useState<string>("");
-  // const [cartItem,setCart]=useState<ICartResponse>()
   const dispatch = useAppDispatch();
   const storage =
     typeof window !== "undefined" ? localStorage.getItem("u") : undefined;
@@ -102,7 +87,6 @@ export const Header = () => {
         .unwrap()
         .then()
         .then((res: any) => {
-          // setCart(res)
         });
     }
   }, []);
@@ -154,11 +138,16 @@ export const Header = () => {
       ),
     },
   ];
+
   const [idchoose, setId] = useState<number>(0);
   const { loading } = useAppSelector(selectProduct);
   const [data, setData] = useState<any>();
   const [payloadFilter, setPayloadFilter] = useState<IFilterData>(
-    {} as IFilterData
+    {
+      skipCount: 0,
+      maxResultCount: 12,
+      sorting: "ok",
+    } as IFilterData
   );
   const handleSearch = (e: any) => {
     e.preventDefault();
@@ -219,13 +208,12 @@ export const Header = () => {
     setOpenMenu("none");
   };
 
-  let title = `Giỏ hàng của tôi. ${
-    Object.entries(cart).length > 0 &&
+  let title = `Giỏ hàng của tôi. ${Object.entries(cart).length > 0 &&
     cart.payload &&
     cart.payload.cartItemDTOs.length > 0
-      ? cart.payload.cartItemDTOs.length
-      : 0
-  } sản phẩm`;
+    ? cart.payload.cartItemDTOs.length
+    : 0
+    } sản phẩm`;
   return (
     <ContainerHeader>
       <div className="hideMenu" onClick={showDrawer}>
@@ -273,7 +261,10 @@ export const Header = () => {
                     setMainTitle(x.name);
                   }
                 }}
-                onClick={() => Router.push("/sneaker")}
+                onClick={() => {
+                  Router.push("/sneaker")
+                  document.title = "King Shoes"
+                }}
                 style={{ color: `${x.color}` }}
               >
                 {x.name}
@@ -312,8 +303,8 @@ export const Header = () => {
               <Badge
                 count={
                   Object.entries(cart).length > 0 &&
-                  cart.payload &&
-                  cart.payload.cartItemDTOs.length > 0
+                    cart.payload &&
+                    cart.payload.cartItemDTOs.length > 0
                     ? cart.payload.cartItemDTOs.length
                     : 0
                 }
@@ -340,7 +331,7 @@ export const Header = () => {
                 }}
               ></Input>
             </li>
-            <Spin spinning={loading} delay={500}>
+            <Spin spinning={false} delay={500}>
               <WrapperSearch
                 ref={wrapperRef}
                 hidden={isEditTarget ? false : true}
@@ -416,37 +407,37 @@ export const Header = () => {
           <div className="item">
             {cart && cart?.payload && cart?.payload.cartItemDTOs
               ? cart.payload.cartItemDTOs.map((item: any) => (
-                  <WrapCartItemPopup key={item.id}>
-                    <div className="img">
-                      <img
-                        src={item.image}
-                        alt=""
-                        width={"110px"}
-                        height={"110px"}
-                      />
+                <WrapCartItemPopup key={item.id}>
+                  <div className="img">
+                    <img
+                      src={item.image}
+                      alt=""
+                      width={"110px"}
+                      height={"110px"}
+                    />
+                  </div>
+                  <div className="right_content">
+                    <div className="title">
+                      TURBODRK Chuck 70 Low Top in Silver/Egret/Black
                     </div>
-                    <div className="right_content">
-                      <div className="title">
-                        TURBODRK Chuck 70 Low Top in Silver/Egret/Black
-                      </div>
-                      {/* <details>
+                    {/* <details>
                         <summary>Chi tiết</summary>
                         <p>Màu sắc: {` ${item.color}`}</p>
                         <p>Kích thước: {` ${item.size}`}</p>
                       </details> */}
-                      <div className="price">
-                        {formatter.format(item.price)}
-                      </div>
-
-                      <div className="action">
-                        {/* <EditOutlined /> */}
-                        <DeleteOutlined
-                          onClick={() => handleDeleteItem(item)}
-                        />
-                      </div>
+                    <div className="price">
+                      {formatter.format(item.price)}
                     </div>
-                  </WrapCartItemPopup>
-                ))
+
+                    <div className="action">
+                      {/* <EditOutlined /> */}
+                      <DeleteOutlined
+                        onClick={() => handleDeleteItem(item)}
+                      />
+                    </div>
+                  </div>
+                </WrapCartItemPopup>
+              ))
               : ""}
           </div>
           <FooterPopupCart>
@@ -455,16 +446,16 @@ export const Header = () => {
               <div className="price">
                 {cart && cart.payload && cart.payload.cartItemDTOs
                   ? formatter.format(
-                      cart.payload.cartItemDTOs.reduce(
-                        (accumulator: number, currentValue: any) => {
-                          return (
-                            accumulator +
-                            currentValue.price * currentValue.quantity
-                          );
-                        },
-                        0
-                      )
+                    cart.payload.cartItemDTOs.reduce(
+                      (accumulator: number, currentValue: any) => {
+                        return (
+                          accumulator +
+                          currentValue.price * currentValue.quantity
+                        );
+                      },
+                      0
                     )
+                  )
                   : formatter.format(0)}
               </div>
             </div>

@@ -5,7 +5,7 @@ export const WrappProduct = styled.div`
   /* height: 260px; */
   .image {
     width: 100%;
-    height: 260px;
+    /* height: 260px; */
   }
   @media (max-width: 502px) {
     .image_product {
@@ -19,6 +19,9 @@ export const WrappProduct = styled.div`
   }
   .image_product {
     width: 100% !important;
+    img{
+      width: 100%;
+    }
   }
   .name_product {
     cursor: pointer;

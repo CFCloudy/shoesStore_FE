@@ -6,6 +6,7 @@ import { WrappProduct } from "./product-styled";
 
 export interface IPopsProduct {
   data: any;
+  heigth: number
 }
 const lstColor = [
   {
@@ -30,7 +31,7 @@ const lstColor = [
   },
 ];
 export const CommonProduct = (props: IPopsProduct) => {
-  const { data } = props;
+  const { data, heigth } = props;
   const [show, setShow] = useState<string>("");
   // const handleOnHover=()=>{
   //   setShow()
@@ -43,14 +44,19 @@ export const CommonProduct = (props: IPopsProduct) => {
         <Image
           preview={false}
           src={data.displayImage}
+          alt={data.productName}
           className="image"
           width={"100%"}
+          loading="lazy"
+          height={`${heigth}px`}
+          style={{ height: `${heigth}px` }}
         />
       </div>
       <div
         className="name_product"
         onClick={() => {
           router.push(`/sneaker/detail/${data.id}`);
+          document.title = data.productName
         }}
       >
         <Tooltip title={data.productName.length > 55 ? data.productName : ""}>

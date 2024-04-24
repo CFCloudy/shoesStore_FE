@@ -41,6 +41,7 @@ import {
   IStylesResponse,
 } from "@/models/product";
 import Router from "next/router";
+import { log } from "console";
 
 export const Sneaker = () => {
   const [hideFilter, setHideFilter] = useState<boolean>(true);
@@ -157,6 +158,8 @@ export const Sneaker = () => {
         setToltalConut(res.toltalConut);
       });
   };
+  console.log(toltalItem);
+
   useEffect(() => {
     function handleResize() {
       if (window.innerWidth <= 980) {
@@ -181,11 +184,6 @@ export const Sneaker = () => {
       setHideSidebar(!hideSidebar);
     }
   };
-  function arrayRemove(arr: any, value: any) {
-    return arr.filter(function (ele: any) {
-      return ele != value;
-    });
-  }
 
   useEffect(() => {
     dispatch(getListColors())
@@ -194,7 +192,7 @@ export const Sneaker = () => {
       .then((res: any) => {
         setDataColors(res);
       })
-      .catch((er: any) => {});
+      .catch((er: any) => { });
   }, []);
 
   useEffect(() => {
@@ -204,7 +202,7 @@ export const Sneaker = () => {
       .then((res: any) => {
         setDataStyles(res);
       })
-      .catch((er: any) => {});
+      .catch((er: any) => { });
   }, []);
   useEffect(() => {
     dispatch(getListSize())
@@ -213,7 +211,7 @@ export const Sneaker = () => {
       .then((res: any) => {
         setDataSizes(res);
       })
-      .catch((er: any) => {});
+      .catch((er: any) => { });
   }, []);
   useEffect(() => {
     dispatch(getListFeature())
@@ -222,7 +220,7 @@ export const Sneaker = () => {
       .then((res: any) => {
         setDataFeatures(res);
       })
-      .catch((er: any) => {});
+      .catch((er: any) => { });
   }, []);
   useEffect(() => {
     dispatch(getListBrands())
@@ -231,7 +229,7 @@ export const Sneaker = () => {
       .then((res: any) => {
         setDataBrands(res);
       })
-      .catch((er: any) => {});
+      .catch((er: any) => { });
   }, []);
 
   const handleChooseId = (id: any) => {
@@ -405,7 +403,7 @@ export const Sneaker = () => {
     fectchDataAsyn(fil);
   };
 
-  const handleHideSideBar = () => {};
+  const handleHideSideBar = () => { };
   return (
     <ContainerSneaker>
       <Breadcrumb>
@@ -470,21 +468,21 @@ export const Sneaker = () => {
                   {f.size1
                     ? "Kích cỡ :"
                     : f.styleName
-                    ? "Phong cách: "
-                    : f.colorName
-                    ? "Màu sắc :"
-                    : f.brandName
-                    ? "Hãng : "
-                    : "Feature : "}
+                      ? "Phong cách: "
+                      : f.colorName
+                        ? "Màu sắc :"
+                        : f.brandName
+                          ? "Hãng : "
+                          : "Feature : "}
                   {f.size1
                     ? f.size1
                     : f.styleName
-                    ? f.styleName
-                    : f.colorName
-                    ? f.colorName
-                    : f.brandName
-                    ? f.brandName
-                    : f.featureName}
+                      ? f.styleName
+                      : f.colorName
+                        ? f.colorName
+                        : f.brandName
+                          ? f.brandName
+                          : f.featureName}
                 </div>
                 <div
                   style={{ cursor: "pointer" }}
@@ -510,7 +508,7 @@ export const Sneaker = () => {
                       onClick={() => handleChooseId(filter.id)}
                     >
                       {listId.length > 0 &&
-                      listId.find((x: any) => x == filter.id) ? (
+                        listId.find((x: any) => x == filter.id) ? (
                         <MinusOutlined />
                       ) : (
                         <PlusOutlined />
@@ -520,31 +518,30 @@ export const Sneaker = () => {
                   <div
                     className="wrapp_color"
                     style={{
-                      display: `${
-                        listId.length > 0 &&
+                      display: `${listId.length > 0 &&
                         listId.find((x: any) => x == filter.id)
-                          ? ""
-                          : "none"
-                      }`,
+                        ? ""
+                        : "none"
+                        }`,
                     }}
                   >
                     {filter.name === "Màu sắc"
                       ? filter.arrays &&
-                        filter.arrays.map((arr: any, index: number) => {
-                          return (
-                            <Tooltip title={arr.color} key={index}>
-                              <div
-                                onClick={(e) => {
-                                  handleFilter(e, arr);
-                                }}
-                                className="box_color"
-                                style={{ background: `rgba(${arr.rgba})` }}
-                              ></div>
-                            </Tooltip>
-                          );
-                        })
+                      filter.arrays.map((arr: any, index: number) => {
+                        return (
+                          <Tooltip title={arr.color} key={index}>
+                            <div
+                              onClick={(e) => {
+                                handleFilter(e, arr);
+                              }}
+                              className="box_color"
+                              style={{ background: `rgba(${arr.rgba})` }}
+                            ></div>
+                          </Tooltip>
+                        );
+                      })
                       : filter.name === "Kích cỡ"
-                      ? filter.arrays.map((arr: any, index: number) => {
+                        ? filter.arrays.map((arr: any, index: number) => {
                           return (
                             <div
                               className="box_size"
@@ -555,46 +552,46 @@ export const Sneaker = () => {
                             </div>
                           );
                         })
-                      : filter.name === "Phong cách"
-                      ? filter.arrays.map((arr: any, index: number) => {
-                          return (
-                            <div
-                              className="box_styles"
-                              key={index}
-                              onClick={(e) => handleFilter(e, arr)}
-                            >
-                              <div className="name">{arr.styleName}</div>
-                              <div className="count">112</div>
-                            </div>
-                          );
-                        })
-                      : filter.name === "Hãng"
-                      ? filter.arrays.map((arr: any, index: number) => {
-                          return (
-                            <div
-                              className="box_styles"
-                              key={index}
-                              onClick={(e) => handleFilter(e, arr)}
-                            >
-                              <div className="name">{arr.brandName}</div>
-                              <div className="count">112</div>
-                            </div>
-                          );
-                        })
-                      : filter.name === "Feature"
-                      ? filter.arrays.map((arr: any, index: number) => {
-                          return (
-                            <div
-                              className="box_styles"
-                              key={index}
-                              onClick={(e) => handleFilter(e, arr)}
-                            >
-                              <div className="name">{arr.featureName}</div>
-                              <div className="count">112</div>
-                            </div>
-                          );
-                        })
-                      : null}
+                        : filter.name === "Phong cách"
+                          ? filter.arrays.map((arr: any, index: number) => {
+                            return (
+                              <div
+                                className="box_styles"
+                                key={index}
+                                onClick={(e) => handleFilter(e, arr)}
+                              >
+                                <div className="name">{arr.styleName}</div>
+                                <div className="count">112</div>
+                              </div>
+                            );
+                          })
+                          : filter.name === "Hãng"
+                            ? filter.arrays.map((arr: any, index: number) => {
+                              return (
+                                <div
+                                  className="box_styles"
+                                  key={index}
+                                  onClick={(e) => handleFilter(e, arr)}
+                                >
+                                  <div className="name">{arr.brandName}</div>
+                                  <div className="count">112</div>
+                                </div>
+                              );
+                            })
+                            : filter.name === "Feature"
+                              ? filter.arrays.map((arr: any, index: number) => {
+                                return (
+                                  <div
+                                    className="box_styles"
+                                    key={index}
+                                    onClick={(e) => handleFilter(e, arr)}
+                                  >
+                                    <div className="name">{arr.featureName}</div>
+                                    <div className="count">112</div>
+                                  </div>
+                                );
+                              })
+                              : null}
                   </div>
                 </div>
               );
@@ -618,7 +615,7 @@ export const Sneaker = () => {
                     lg={!hideSidebar ? 8 : 6}
                     key={x.id}
                   >
-                    <CommonProduct data={x} />
+                    <CommonProduct data={x} heigth={400} />
                   </Col>
                 );
               })}
@@ -630,8 +627,8 @@ export const Sneaker = () => {
               alignItems: "center",
               justifyContent: "center",
             }}
-            current={payloadFilter.skipCount}
-            pageSize={payloadFilter.maxResultCount}
+            current={currentPage}
+            pageSize={12}
             total={toltalItem}
             onChange={handlePageChange}
           />
@@ -667,7 +664,7 @@ export const Sneaker = () => {
                     onClick={() => handleChooseId(filter.id)}
                   >
                     {listId.length > 0 &&
-                    listId.find((x: any) => x == filter.id) ? (
+                      listId.find((x: any) => x == filter.id) ? (
                       <MinusOutlined />
                     ) : (
                       <PlusOutlined />
@@ -677,45 +674,44 @@ export const Sneaker = () => {
                 <div
                   className="wrapp_color"
                   style={{
-                    display: `${
-                      listId.length > 0 &&
+                    display: `${listId.length > 0 &&
                       listId.find((x: any) => x == filter.id)
-                        ? ""
-                        : "none"
-                    }`,
+                      ? ""
+                      : "none"
+                      }`,
                   }}
                 >
                   {filter.name === "Màu sắc"
                     ? filter.arrays
-                        .filter((x: any) => x.type === "Color")
-                        .map((arr: any, index: number) => {
-                          return (
-                            <Tooltip title={arr.color} key={index}>
-                              <div
-                                className="box_color"
-                                style={{ background: `rgba(${arr.rgba})` }}
-                              ></div>
-                            </Tooltip>
-                          );
-                        })
+                      .filter((x: any) => x.type === "Color")
+                      .map((arr: any, index: number) => {
+                        return (
+                          <Tooltip title={arr.color} key={index}>
+                            <div
+                              className="box_color"
+                              style={{ background: `rgba(${arr.rgba})` }}
+                            ></div>
+                          </Tooltip>
+                        );
+                      })
                     : filter.name === "Kích cỡ"
-                    ? filter.arrays.map((arr: any, index: number) => {
+                      ? filter.arrays.map((arr: any, index: number) => {
                         return (
                           <div className="box_size" key={index}>
                             {arr.size}
                           </div>
                         );
                       })
-                    : filter.name === "Phong cách"
-                    ? filter.arrays.map((arr: any, index: number) => {
-                        return (
-                          <div className="box_styles" key={index}>
-                            <div className="name">{arr.styles}</div>
-                            <div className="count">112</div>
-                          </div>
-                        );
-                      })
-                    : null}
+                      : filter.name === "Phong cách"
+                        ? filter.arrays.map((arr: any, index: number) => {
+                          return (
+                            <div className="box_styles" key={index}>
+                              <div className="name">{arr.styles}</div>
+                              <div className="count">112</div>
+                            </div>
+                          );
+                        })
+                        : null}
                 </div>
               </div>
             );

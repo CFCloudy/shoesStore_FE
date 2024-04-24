@@ -10,13 +10,13 @@ const storage =
   typeof window !== "undefined" ? localStorage.getItem("u") : undefined;
 let AccessToken = "";
 let RefreshToken = "";
-var ExpiryTime:Date;
+var ExpiryTime: Date;
 if (storage) {
   let loginInfo = JSON.parse(storage);
   if (loginInfo) {
     AccessToken = loginInfo.payload?.accessToken;
     RefreshToken = loginInfo.payload?.refreshToken;
-    ExpiryTime=loginInfo.payload.refreshTokenExpiryTime;
+    ExpiryTime = loginInfo.payload.refreshTokenExpiryTime;
   }
 }
 
@@ -24,9 +24,8 @@ const axiosClient = axios.create({
   baseURL: "https://localhost:44311",
   headers: {
     "Content-Type": "application/json",
-    Authorization: `Bearer ${
-      storage ? JSON.parse(storage).payload?.accessToken : null
-    }`,
+    Authorization: `Bearer ${storage ? JSON.parse(storage).payload?.accessToken : null
+      }`,
   },
 });
 
@@ -43,20 +42,20 @@ axiosClient.interceptors.response.use(
   function (response) {
     return response;
   },
-  
+
   async function (error) {
     const originalRequest = error.config;
     if (error.response.status === 401 && !originalRequest._retry
       // ||(ExpiryTime&&moment(ExpiryTime)<moment())
-      ) {
+    ) {
       originalRequest._retry = true;
       // const response: IRefreshTokenResponse = (await userApi.userRefreshToken(refreshToken)).data;
-      var response:any={}
-      try{
-         response = await store.dispatch(
+      var response: any = {}
+      try {
+        response = await store.dispatch(
           userRefreshToken({ refreshToken: RefreshToken, accessToken: AccessToken })
         );
-      }catch{
+      } catch {
         if (typeof window !== "undefined") {
           localStorage.clear();
         }

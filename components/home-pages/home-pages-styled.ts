@@ -5,6 +5,7 @@ import { Swiper } from "swiper/react";
 export const WrappHomePages = styled.div`
   .nav_style {
     padding: 35px 0;
+    ackground: ${props => props.theme.bg};
     text-align: center;
     /* padding: 40px 0; */
     line-height: 55px;

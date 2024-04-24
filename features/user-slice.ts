@@ -336,7 +336,7 @@ const userSlice = createSlice({
         state.error = false;
         state.loading = false;
       })
-      .addCase(userRefreshToken.pending, (state) => {})
+      .addCase(userRefreshToken.pending, (state) => { })
       .addCase(userRefreshToken.fulfilled, (state, { payload }) => {
         // When the API call is successful and we get some data,the data becomes the `fulfilled` action payload
         // state.isAuthentication = true;
