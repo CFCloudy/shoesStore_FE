@@ -87,3 +87,21 @@ a {
     width: 200px;
     /* Set the width of the dropdown menu */
 }
+
+/* body img {
+    animation: fade linear forwards;
+    scale: 0.8;
+    opacity: 0%;
+    animation-timeline: view();
+    animation-range-start: entry -70px;
+    animation-range-end: exit -80px;
+}
+
+@keyframes fade {
+
+
+    100% {
+        scale: 1;
+        opacity: 100%;
+    }
+} */

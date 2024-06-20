@@ -21,7 +21,7 @@ if (storage) {
 }
 
 const axiosClient = axios.create({
-  baseURL: "https://localhost:44311",
+  baseURL: "https://kingshoes-api.azurewebsites.net/",
   headers: {
     "Content-Type": "application/json",
     Authorization: `Bearer ${storage ? JSON.parse(storage).payload?.accessToken : null

@@ -3,9 +3,24 @@ import styled from "styled-components";
 import { Swiper } from "swiper/react";
 
 export const WrappHomePages = styled.div`
+  img {
+      animation: fade linear forwards;
+      scale: 0;
+      opacity: 0%;
+      animation-timeline: view();
+      animation-range-start: entry -70px;
+      animation-range-end: exit -80px;
+  }
+
+  @keyframes fade {
+      100% {
+          scale: 1;
+          opacity: 100%;
+      }
+  }
   .nav_style {
     padding: 35px 0;
-    ackground: ${props => props.theme.bg};
+    /* background: ${props => props.theme.bg}; */
     text-align: center;
     /* padding: 40px 0; */
     line-height: 55px;

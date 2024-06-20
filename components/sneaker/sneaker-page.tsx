@@ -19,7 +19,7 @@ import {
   Space,
   Tooltip,
 } from "antd";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { CommonProduct, listProduct } from "../product/product";
 import { ContainerSneaker, Container_Filter } from "./sneaker-pages-styled";
 import { Paging } from "../paging/paging";
@@ -91,6 +91,20 @@ export const Sneaker = () => {
     fectchDataAsyn(pa);
   };
 
+  const onscroll = (e: any) => {
+    console.log(listInnerRef);
+
+    if (listInnerRef.current) {
+      const { scrollTop, scrollHeight, clientHeight } = listInnerRef.current;
+      if (scrollTop + clientHeight === scrollHeight) {
+        console.log(scrollHeight);
+
+        // This will be triggered after hitting the last element.
+        // API call should be made here while implementing pagination.
+      }
+    }
+  }
+
   useEffect(() => {
     console.log(Router.query.type, Router.query.id);
     var pay = { ...payloadFilter };
@@ -155,10 +169,9 @@ export const Sneaker = () => {
       .then((res: any) => {
         setData(res);
         setToltalItem(res.totalItem);
-        setToltalConut(res.toltalConut);
+        setToltalConut(res.totalItem);
       });
   };
-  console.log(toltalItem);
 
   useEffect(() => {
     function handleResize() {
@@ -402,10 +415,11 @@ export const Sneaker = () => {
     setPayloadFilter(fil);
     fectchDataAsyn(fil);
   };
+  const listInnerRef = useRef<HTMLDivElement | null>(null);
 
   const handleHideSideBar = () => { };
   return (
-    <ContainerSneaker>
+    <ContainerSneaker onScroll={onscroll} ref={listInnerRef}>
       <Breadcrumb>
         <Breadcrumb.Item>Trang chủ</Breadcrumb.Item>
         <Breadcrumb.Item>Nam</Breadcrumb.Item>
@@ -440,7 +454,7 @@ export const Sneaker = () => {
               </div> */}
               <Select
                 defaultValue="Tất cả"
-                style={{ width: "auto" }}
+                style={{ width: "130px" }}
                 onChange={handleChange}
                 // className="filter2"
                 bordered={false}
@@ -620,6 +634,7 @@ export const Sneaker = () => {
                 );
               })}
           </Row>
+
           <Pagination
             defaultCurrent={1}
             style={{
